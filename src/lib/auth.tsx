@@ -21,6 +21,10 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// DEV MODE: Set to true to auto-login as admin (skip login during development)
+const DEV_MODE = true;
+const DEV_USER_ROLE: "member" | "coach" | "admin" = "admin"; // Change this to test different roles
+
 // Mock users for demo - will be replaced with Convex queries
 const MOCK_USERS: Record<string, { user: User; role: string }> = {
   "a.chen@bbk.ac.uk": {
@@ -45,6 +49,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Check for existing session on mount
   useEffect(() => {
+    // DEV MODE: Auto-login for development/testing
+    if (DEV_MODE) {
+      const devEmails: Record<string, string> = {
+        member: "a.chen@bbk.ac.uk",
+        coach: "coach@bbk.ac.uk",
+        admin: "admin@bbk.ac.uk"
+      };
+      const devEmail = devEmails[DEV_USER_ROLE];
+      if (MOCK_USERS[devEmail]) {
+        setUser(MOCK_USERS[devEmail].user);
+        setRole(MOCK_USERS[devEmail].role);
+      }
+      setIsLoading(false);
+      return;
+    }
+
     const savedEmail = localStorage.getItem("judo_auth_email");
     if (savedEmail) {
       const normalizedEmail = savedEmail.toLowerCase();

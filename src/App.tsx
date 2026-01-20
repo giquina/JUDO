@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./lib/auth";
 import { Spinner } from "./components/ui/spinner";
 import LoginPage from "./pages/LoginPage";
+import LandingPage from "./pages/LandingPage";
 import MemberDashboard from "./pages/MemberDashboard";
 import CoachDashboard from "./pages/CoachDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -23,11 +24,12 @@ function HomeRedirect() {
     );
   }
 
+  // Show landing page for unauthenticated users
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <LandingPage />;
   }
 
-  // Redirect based on role
+  // Redirect authenticated users to their dashboard
   switch (role) {
     case "admin":
       return <Navigate to="/admin" replace />;
