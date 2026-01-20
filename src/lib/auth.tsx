@@ -46,9 +46,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Check for existing session on mount
   useEffect(() => {
     const savedEmail = localStorage.getItem("judo_auth_email");
-    if (savedEmail && MOCK_USERS[savedEmail]) {
-      setUser(MOCK_USERS[savedEmail].user);
-      setRole(MOCK_USERS[savedEmail].role);
+    if (savedEmail) {
+      const normalizedEmail = savedEmail.toLowerCase();
+      if (MOCK_USERS[normalizedEmail]) {
+        setUser(MOCK_USERS[normalizedEmail].user);
+        setRole(MOCK_USERS[normalizedEmail].role);
+      } else {
+        // Restore session for any previously logged-in user
+        const savedUser = localStorage.getItem("judo_auth_user");
+        const savedRole = localStorage.getItem("judo_auth_role");
+        if (savedUser && savedRole) {
+          setUser(JSON.parse(savedUser));
+          setRole(savedRole);
+        }
+      }
     }
     setIsLoading(false);
   }, []);
@@ -77,24 +88,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Called when user clicks the magic link (simulated)
   const confirmSignIn = (email: string) => {
     const normalizedEmail = email.toLowerCase();
+    let newUser: User;
+    let newRole: string;
 
     if (MOCK_USERS[normalizedEmail]) {
-      setUser(MOCK_USERS[normalizedEmail].user);
-      setRole(MOCK_USERS[normalizedEmail].role);
+      newUser = MOCK_USERS[normalizedEmail].user;
+      newRole = MOCK_USERS[normalizedEmail].role;
     } else {
-      // Create new member for any @bbk.ac.uk email
-      const newUser: User = {
+      // Create new member for any email
+      newUser = {
         _id: Date.now().toString(),
         name: email.split("@")[0],
         email: normalizedEmail,
         beltRank: "white",
         subscriptionStatus: "pending"
       };
-      setUser(newUser);
-      setRole("member");
+      newRole = "member";
     }
 
+    setUser(newUser);
+    setRole(newRole);
+
+    // Persist session
     localStorage.setItem("judo_auth_email", normalizedEmail);
+    localStorage.setItem("judo_auth_user", JSON.stringify(newUser));
+    localStorage.setItem("judo_auth_role", newRole);
     setPendingEmail(null);
   };
 
@@ -103,6 +121,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setRole(null);
     setPendingEmail(null);
     localStorage.removeItem("judo_auth_email");
+    localStorage.removeItem("judo_auth_user");
+    localStorage.removeItem("judo_auth_role");
   };
 
   // Expose confirmSignIn through window for demo purposes
