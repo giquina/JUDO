@@ -1,7 +1,11 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { authTables } from "@convex-dev/auth/server";
 
 export default defineSchema({
+  // Auth tables
+  ...authTables,
+
   // Members collection
   members: defineTable({
     userId: v.string(),
@@ -130,5 +134,6 @@ export default defineSchema({
     createdAt: v.number(),
   })
     .index("by_userId", ["userId"])
-    .index("by_role", ["role"]),
+    .index("by_role", ["role"])
+    .index("by_email", ["email"]),
 });
