@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import Navigation from "@/components/Navigation";
+import PageTransition from "@/components/PageTransition";
 
 // Mock data - will be replaced with Convex queries
 const mockMembers = [
@@ -54,8 +55,9 @@ export default function AdminDashboard() {
   const activeMembers = mockMembers.filter((m) => m.subscriptionStatus === "active").length;
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
+    <PageTransition>
+      <div className="min-h-screen bg-background">
+        <Navigation />
       <main className="container mx-auto p-4 space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
@@ -234,6 +236,7 @@ export default function AdminDashboard() {
           <Button variant="outline">Generate Report</Button>
         </div>
       </main>
-    </div>
+      </div>
+    </PageTransition>
   );
 }
