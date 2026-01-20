@@ -1,20 +1,47 @@
-# JUDO APP - Claude Project Instructions
+# JUDO APP - Project Instructions
 
-> Universal Operating System for Claude | Version 1.0 | January 2026
-
-This document defines mandatory operating instructions for Claude. Apply these rules automatically to every interaction.
+> Judo Club Manager | University of London at Birkbeck | January 2026
 
 ---
 
-## Quick Navigation
+## Project Links
 
-| Document | Purpose |
-|----------|---------|
-| [01-STRATEGIC-UPGRADE.md](docs/instructions/01-STRATEGIC-UPGRADE.md) | Automatic optimization layer |
-| [02-EXECUTION-FIRST.md](docs/instructions/02-EXECUTION-FIRST.md) | Execution-first operating model |
-| [03-INTERVIEW-WORKFLOW.md](docs/instructions/03-INTERVIEW-WORKFLOW.md) | Interview-first & spec-driven workflow |
-| [04-WEB-RESEARCH.md](docs/instructions/04-WEB-RESEARCH.md) | Web research guidelines |
-| [05-QUICK-REFERENCE.md](docs/instructions/05-QUICK-REFERENCE.md) | Cheat sheet & summary |
+| Resource | URL |
+|----------|-----|
+| **Live Site** | https://judo-club-app.vercel.app |
+| **GitHub** | https://github.com/giquina/JUDO |
+| **Convex Dashboard** | https://dashboard.convex.dev/t/muhammad-giquina/judo/scintillating-clam-299 |
+
+---
+
+## Tech Stack
+
+- **Frontend:** React 18 + TypeScript + Vite
+- **Styling:** Tailwind CSS v4 + Shadcn/UI
+- **Animations:** Framer Motion + Sonner (toasts)
+- **Backend:** Convex (real-time database)
+- **Payments:** Stripe (to be integrated)
+- **Hosting:** Vercel
+
+---
+
+## Current Rating: 8.0/10
+
+### Completed
+- UI/UX with animations
+- Toast notifications
+- Loading states
+- Error handling
+- Dark mode
+- QR check-in system
+- All dashboards
+
+### Remaining for 10/10
+- Convex auth (magic links)
+- Real-time data (replace mock)
+- Stripe payments
+- PWA support
+- Push notifications
 
 ---
 
