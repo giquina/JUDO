@@ -1,65 +1,23 @@
 import { cn } from "@/lib/utils";
 import { Badge } from "./ui/badge";
+import { getBeltInfo, type BeltRank } from "@/lib/judoUtils";
 
 interface BeltBadgeProps {
-  belt: "white" | "yellow" | "orange" | "green" | "blue" | "brown" | "black";
+  belt: BeltRank;
   size?: "sm" | "md" | "lg";
   className?: string;
   showIcon?: boolean;
+  showJapanese?: boolean; // Show Japanese name
 }
-
-const beltConfig = {
-  white: {
-    bg: "bg-gray-100 dark:bg-gray-200",
-    text: "text-gray-900",
-    border: "border-gray-300",
-    label: "White Belt",
-  },
-  yellow: {
-    bg: "bg-yellow-400",
-    text: "text-gray-900",
-    border: "border-yellow-500",
-    label: "Yellow Belt",
-  },
-  orange: {
-    bg: "bg-orange-500",
-    text: "text-white",
-    border: "border-orange-600",
-    label: "Orange Belt",
-  },
-  green: {
-    bg: "bg-green-600",
-    text: "text-white",
-    border: "border-green-700",
-    label: "Green Belt",
-  },
-  blue: {
-    bg: "bg-blue-700",
-    text: "text-white",
-    border: "border-blue-800",
-    label: "Blue Belt",
-  },
-  brown: {
-    bg: "bg-amber-800",
-    text: "text-white",
-    border: "border-amber-900",
-    label: "Brown Belt",
-  },
-  black: {
-    bg: "bg-gray-900",
-    text: "text-white",
-    border: "border-gray-950",
-    label: "Black Belt",
-  },
-};
 
 export default function BeltBadge({
   belt,
   size = "md",
   className,
   showIcon = false,
+  showJapanese = false,
 }: BeltBadgeProps) {
-  const config = beltConfig[belt];
+  const beltInfo = getBeltInfo(belt);
 
   const sizeClasses = {
     sm: "px-2 py-0.5 text-xs",
@@ -67,16 +25,22 @@ export default function BeltBadge({
     lg: "px-4 py-1.5 text-base",
   };
 
+  // Determine if text should be dark or light based on belt color
+  const isDark = ["#FFFFFF", "#FFD700"].includes(beltInfo.color);
+  const textColor = isDark ? "text-gray-900" : "text-white";
+
   return (
     <Badge
       className={cn(
-        config.bg,
-        config.text,
-        `border ${config.border}`,
+        "border font-semibold rounded-full elevation-1",
+        textColor,
         sizeClasses[size],
-        "font-semibold rounded-full elevation-1",
         className
       )}
+      style={{
+        backgroundColor: beltInfo.color,
+        borderColor: beltInfo.color === "#FFFFFF" ? "#E5E7EB" : beltInfo.color,
+      }}
     >
       {showIcon && (
         <span className="mr-1.5">
@@ -89,7 +53,32 @@ export default function BeltBadge({
           </svg>
         </span>
       )}
-      {config.label}
+      {showJapanese ? beltInfo.japaneseName : beltInfo.displayName}
     </Badge>
+  );
+}
+
+// Helper component for showing just the color with tooltip
+export function BeltColorDot({ belt, size = "md" }: { belt: BeltRank; size?: "sm" | "md" | "lg" }) {
+  const beltInfo = getBeltInfo(belt);
+
+  const sizeClasses = {
+    sm: "w-2 h-2",
+    md: "w-3 h-3",
+    lg: "w-4 h-4",
+  };
+
+  return (
+    <span
+      className={cn(
+        "inline-block rounded-full border-2",
+        sizeClasses[size]
+      )}
+      style={{
+        backgroundColor: beltInfo.color,
+        borderColor: beltInfo.color === "#FFFFFF" ? "#E5E7EB" : beltInfo.color,
+      }}
+      title={beltInfo.displayName}
+    />
   );
 }
