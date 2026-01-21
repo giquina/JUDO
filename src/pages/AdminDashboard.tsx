@@ -147,52 +147,117 @@ export default function AdminDashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b text-left">
-                      <th className="pb-3 font-medium">Name</th>
-                      <th className="pb-3 font-medium">Belt</th>
-                      <th className="pb-3 font-medium">Subscription</th>
-                      <th className="pb-3 font-medium">Sessions</th>
-                      <th className="pb-3 font-medium">Last Attended</th>
-                      <th className="pb-3 font-medium">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredMembers.map((member) => (
-                      <tr key={member._id} className="border-b">
-                        <td className="py-3">
-                          <div>
-                            <p className="font-medium">{member.name}</p>
-                            <p className="text-sm text-muted-foreground">{member.email}</p>
+              {/* Empty State */}
+              {filteredMembers.length === 0 && (
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
+                    <svg className="w-8 h-8 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="heading-5 mb-2">No members found</h3>
+                  <p className="body-small text-muted-foreground mb-4">
+                    {searchQuery ? "Try a different search term" : "Add your first member to get started"}
+                  </p>
+                  {!searchQuery && (
+                    <Button>+ Add Member</Button>
+                  )}
+                </div>
+              )}
+
+              {/* Mobile Card Layout */}
+              {filteredMembers.length > 0 && (
+                <div className="md:hidden space-y-4">
+                  {filteredMembers.map((member) => (
+                    <Card key={member._id} className="elevation-2">
+                      <CardContent className="pt-6">
+                        <div className="space-y-4">
+                          {/* Header */}
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-semibold text-base truncate">{member.name}</h4>
+                              <p className="text-sm text-muted-foreground truncate">{member.email}</p>
+                            </div>
+                            <Badge className={BELT_COLORS[member.beltRank]} style={{ marginLeft: '0.5rem' }}>
+                              {member.beltRank}
+                            </Badge>
                           </div>
-                        </td>
-                        <td className="py-3">
-                          <Badge className={BELT_COLORS[member.beltRank]}>
-                            {member.beltRank}
-                          </Badge>
-                        </td>
-                        <td className="py-3">
-                          <Badge variant={member.subscriptionStatus === "active" ? "default" : "destructive"}>
-                            {member.subscriptionTier}
-                          </Badge>
-                        </td>
-                        <td className="py-3">{member.totalSessions}</td>
-                        <td className="py-3 text-sm text-muted-foreground">
-                          {new Date(member.lastAttended).toLocaleDateString("en-GB", {
-                            day: "numeric",
-                            month: "short",
-                          })}
-                        </td>
-                        <td className="py-3">
-                          <Button variant="ghost" size="sm">Edit</Button>
-                        </td>
+
+                          {/* Stats Grid */}
+                          <div className="grid grid-cols-2 gap-4 pt-2 border-t">
+                            <div>
+                              <p className="caption text-muted-foreground mb-1">Subscription</p>
+                              <Badge variant={member.subscriptionStatus === "active" ? "default" : "destructive"}>
+                                {member.subscriptionTier}
+                              </Badge>
+                            </div>
+                            <div>
+                              <p className="caption text-muted-foreground mb-1">Sessions</p>
+                              <p className="font-semibold">{member.totalSessions}</p>
+                            </div>
+                            <div className="col-span-2">
+                              <p className="caption text-muted-foreground mb-1">Last Attended</p>
+                              <p className="text-sm">
+                                {new Date(member.lastAttended).toLocaleDateString("en-GB", {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                                })}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+
+              {/* Desktop Table Layout */}
+              {filteredMembers.length > 0 && (
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b text-left">
+                        <th className="pb-3 font-medium">Name</th>
+                        <th className="pb-3 font-medium">Belt</th>
+                        <th className="pb-3 font-medium">Subscription</th>
+                        <th className="pb-3 font-medium">Sessions</th>
+                        <th className="pb-3 font-medium">Last Attended</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {filteredMembers.map((member) => (
+                        <tr key={member._id} className="border-b hover:bg-muted/50 transition-colors">
+                          <td className="py-3">
+                            <div>
+                              <p className="font-medium">{member.name}</p>
+                              <p className="text-sm text-muted-foreground">{member.email}</p>
+                            </div>
+                          </td>
+                          <td className="py-3">
+                            <Badge className={BELT_COLORS[member.beltRank]}>
+                              {member.beltRank}
+                            </Badge>
+                          </td>
+                          <td className="py-3">
+                            <Badge variant={member.subscriptionStatus === "active" ? "default" : "destructive"}>
+                              {member.subscriptionTier}
+                            </Badge>
+                          </td>
+                          <td className="py-3">{member.totalSessions}</td>
+                          <td className="py-3 text-sm text-muted-foreground">
+                            {new Date(member.lastAttended).toLocaleDateString("en-GB", {
+                              day: "numeric",
+                              month: "short",
+                            })}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </CardContent>
           </Card>
         )}
@@ -204,29 +269,43 @@ export default function AdminDashboard() {
               <CardDescription>Last 30 days</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {mockRecentPayments.map((payment) => (
-                  <div
-                    key={payment._id}
-                    className="flex items-center justify-between p-3 rounded-lg border"
-                  >
-                    <div>
-                      <p className="font-medium">{payment.memberName}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {new Date(payment.date).toLocaleDateString("en-GB", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold">£{(payment.amount / 100).toFixed(2)}</p>
-                      <Badge variant="secondary">{payment.type}</Badge>
-                    </div>
+              {mockRecentPayments.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
+                    <svg className="w-8 h-8 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
                   </div>
-                ))}
-              </div>
+                  <h3 className="heading-5 mb-2">No payments yet</h3>
+                  <p className="body-small text-muted-foreground">
+                    Payment history will appear here once members start subscribing
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {mockRecentPayments.map((payment) => (
+                    <div
+                      key={payment._id}
+                      className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 transition-colors"
+                    >
+                      <div>
+                        <p className="font-medium">{payment.memberName}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {new Date(payment.date).toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold">£{(payment.amount / 100).toFixed(2)}</p>
+                        <Badge variant="secondary">{payment.type}</Badge>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         )}
