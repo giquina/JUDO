@@ -21,6 +21,7 @@ import TreasurerDashboard from "./pages/TreasurerDashboard";
 import ContentManagerDashboard from "./pages/ContentManagerDashboard";
 import ChatPage from "./pages/ChatPage";
 import NotificationsPage from "./pages/NotificationsPage";
+import ProgressAnalyticsPage from "./pages/ProgressAnalyticsPage";
 import NotFound from "./pages/NotFound";
 
 // Smart redirect based on auth status
@@ -108,6 +109,11 @@ function App() {
                 <Route path="/notifications" element={
                   <ProtectedRoute allowedRoles={["member", "coach", "treasurer", "content_manager", "super_admin"]}>
                     <NotificationsPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/progress" element={
+                  <ProtectedRoute allowedRoles={["member", "coach", "treasurer", "content_manager", "super_admin"]}>
+                    <ProgressAnalyticsPage />
                   </ProtectedRoute>
                 } />
                 <Route path="*" element={<NotFound />} />
