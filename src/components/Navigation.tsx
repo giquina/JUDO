@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "./ThemeProvider";
+import { Logo } from "./Logo";
 import {
   LayoutDashboard,
   Users,
@@ -83,36 +84,21 @@ export default function Navigation() {
       <header
         className={`sticky top-0 z-50 w-full transition-all duration-300 ${
           scrolled
-            ? "bg-background/95 backdrop-blur-xl shadow-lg border-b border-border/50"
-            : "bg-background/80 backdrop-blur-md border-b border-transparent"
+            ? "bg-background/95 backdrop-blur-xl elevation-3 border-b border-border/50"
+            : "bg-background/80 backdrop-blur-md elevation-1 border-b border-transparent"
         }`}
       >
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-3 group">
+            <Link to="/" className="group">
               <motion.div
-                className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/70 shadow-lg shadow-primary/25"
-                whileHover={{ scale: 1.05, rotate: -5 }}
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
               >
-                <span className="text-xl font-bold text-primary-foreground">J</span>
-                <motion.div
-                  className="absolute inset-0 rounded-xl bg-white/20"
-                  initial={{ opacity: 0 }}
-                  whileHover={{ opacity: 1 }}
-                  transition={{ duration: 0.2 }}
-                />
+                <Logo size="md" className="group-hover:opacity-90 transition-opacity" />
               </motion.div>
-              <div className="hidden sm:flex flex-col">
-                <span className="font-bold text-lg leading-tight tracking-tight group-hover:text-primary transition-colors">
-                  Judo Club
-                </span>
-                <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">
-                  Management
-                </span>
-              </div>
             </Link>
 
             {/* Desktop Navigation */}
@@ -266,7 +252,7 @@ export default function Navigation() {
 
             {/* Mobile Menu Panel */}
             <motion.div
-              className="fixed top-16 left-0 right-0 z-40 md:hidden bg-background border-b shadow-2xl"
+              className="fixed top-16 left-0 right-0 z-40 md:hidden bg-background border-b elevation-5"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}

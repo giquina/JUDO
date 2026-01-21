@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Logo } from "@/components/Logo";
 import {
   QrCode, Calendar, Trophy, Users, Shield, Zap,
   ChevronDown, ChevronUp, Check, Star, Menu, X,
@@ -185,11 +186,8 @@ export default function LandingPage() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2">
-              <span className="text-2xl">🥋</span>
-              <span className="font-bold text-xl bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-                Judo Club
-              </span>
+            <Link to="/">
+              <Logo size="md" />
             </Link>
 
             {/* Desktop Navigation */}
@@ -339,7 +337,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6"
+              className="heading-display mb-6"
             >
               Train Smarter.{" "}
               <span className="bg-gradient-to-r from-primary via-blue-500 to-blue-600 bg-clip-text text-transparent">
@@ -353,7 +351,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto"
+              className="body-large text-muted-foreground mb-8 max-w-2xl mx-auto"
             >
               The modern membership management platform for martial arts clubs.
               Streamline attendance, track belt progression, and grow your dojo.
@@ -383,22 +381,26 @@ export default function LandingPage() {
               </Button>
             </motion.div>
 
-            {/* Animated Judo Gi */}
+            {/* Professional Visual Element */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.5 }}
+              initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.6, type: "spring", stiffness: 100 }}
-              className="text-8xl md:text-9xl mb-12"
+              className="mb-12 flex justify-center"
             >
-              <motion.span
-                animate={{
-                  rotate: [0, -5, 5, -5, 0],
-                }}
-                transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-                className="inline-block"
-              >
-                🥋
-              </motion.span>
+              <div className="relative">
+                <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary/20 to-blue-600/20 backdrop-blur-sm elevation-3 flex items-center justify-center">
+                  <Trophy className="w-16 h-16 text-primary" />
+                </div>
+                <motion.div
+                  className="absolute inset-0 rounded-full border-2 border-primary/30"
+                  animate={{
+                    scale: [1, 1.1, 1],
+                    opacity: [0.5, 0, 0.5],
+                  }}
+                  transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+                />
+              </div>
             </motion.div>
 
             {/* Stats bar */}
@@ -447,7 +449,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 md:py-32 bg-muted/30">
+      <section id="features" className="py-20 md:py-32 bg-gradient-subtle">
         <div className="container mx-auto px-4">
           <motion.div
             initial="hidden"
@@ -457,13 +459,13 @@ export default function LandingPage() {
             className="text-center mb-16"
           >
             <Badge variant="outline" className="mb-4">Features</Badge>
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+            <h2 className="heading-2 mb-4">
               Everything you need to{" "}
               <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
                 run your club
               </span>
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="body-large text-muted-foreground max-w-2xl mx-auto">
               From check-in to championship, we've got every aspect of your martial arts journey covered.
             </p>
           </motion.div>
@@ -477,18 +479,18 @@ export default function LandingPage() {
           >
             {features.map((feature, index) => (
               <motion.div key={index} variants={scaleIn}>
-                <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-card/50 backdrop-blur-sm border-border/50">
+                <Card className="h-full elevation-2 hover:elevation-3 card-enhanced bg-card/95 backdrop-blur-sm border-border/50">
                   <CardHeader>
                     <motion.div
                       whileHover={{ scale: 1.1, rotate: 5 }}
-                      className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-blue-600/20 flex items-center justify-center mb-4"
+                      className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-blue-600/20 flex items-center justify-center mb-4 elevation-1"
                     >
                       <feature.icon className="w-6 h-6 text-primary" />
                     </motion.div>
-                    <CardTitle className="text-xl">{feature.title}</CardTitle>
+                    <CardTitle className="heading-5">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <CardDescription className="text-base">
+                    <CardDescription className="body-default">
                       {feature.description}
                     </CardDescription>
                   </CardContent>
@@ -510,14 +512,14 @@ export default function LandingPage() {
             className="text-center mb-16"
           >
             <Badge variant="outline" className="mb-4">Pricing</Badge>
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+            <h2 className="heading-2 mb-4">
               Simple,{" "}
               <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
                 transparent
               </span>{" "}
               pricing
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="body-large text-muted-foreground max-w-2xl mx-auto">
               Choose the plan that fits your training goals. All plans include a 7-day free trial.
             </p>
           </motion.div>
@@ -534,9 +536,9 @@ export default function LandingPage() {
                 <Card
                   className={`h-full relative ${
                     plan.popular
-                      ? "border-primary shadow-lg shadow-primary/10 scale-105"
-                      : "hover:border-primary/50"
-                  } transition-all duration-300 hover:shadow-lg`}
+                      ? "border-primary elevation-4 scale-105"
+                      : "elevation-2 hover:elevation-3"
+                  } card-enhanced`}
                 >
                   {plan.popular && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
@@ -583,7 +585,7 @@ export default function LandingPage() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 md:py-32 bg-muted/30">
+      <section className="py-20 md:py-32 bg-gradient-subtle">
         <div className="container mx-auto px-4">
           <motion.div
             initial="hidden"
@@ -593,13 +595,13 @@ export default function LandingPage() {
             className="text-center mb-16"
           >
             <Badge variant="outline" className="mb-4">Testimonials</Badge>
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+            <h2 className="heading-2 mb-4">
               Loved by{" "}
               <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
                 judoka everywhere
               </span>
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="body-large text-muted-foreground max-w-2xl mx-auto">
               See what our members and coaches have to say about their experience.
             </p>
           </motion.div>
@@ -613,7 +615,7 @@ export default function LandingPage() {
           >
             {testimonials.map((testimonial, index) => (
               <motion.div key={index} variants={scaleIn}>
-                <Card className="h-full hover:shadow-lg transition-all duration-300 bg-card/50 backdrop-blur-sm">
+                <Card className="h-full elevation-2 hover:elevation-3 card-enhanced bg-card/95 backdrop-blur-sm">
                   <CardContent className="pt-6">
                     <div className="flex gap-1 mb-4">
                       {[...Array(testimonial.rating)].map((_, i) => (
@@ -651,13 +653,13 @@ export default function LandingPage() {
             className="text-center mb-16"
           >
             <Badge variant="outline" className="mb-4">FAQ</Badge>
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+            <h2 className="heading-2 mb-4">
               Frequently asked{" "}
               <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
                 questions
               </span>
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="body-large text-muted-foreground max-w-2xl mx-auto">
               Everything you need to know about Judo Club Manager.
             </p>
           </motion.div>
@@ -672,8 +674,8 @@ export default function LandingPage() {
             {faqs.map((faq, index) => (
               <motion.div key={index} variants={fadeInUp}>
                 <Card
-                  className={`overflow-hidden transition-all duration-300 ${
-                    openFaq === index ? "border-primary" : ""
+                  className={`overflow-hidden elevation-2 hover:elevation-3 transition-all duration-300 ${
+                    openFaq === index ? "border-primary elevation-3" : ""
                   }`}
                 >
                   <button
@@ -731,17 +733,19 @@ export default function LandingPage() {
                 scale: [1, 1.05, 1],
               }}
               transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-              className="text-6xl mb-8"
+              className="mb-8 flex justify-center"
             >
-              🥋
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/30 to-blue-600/30 backdrop-blur-sm elevation-3 flex items-center justify-center">
+                <Zap className="w-10 h-10 text-primary" />
+              </div>
             </motion.div>
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+            <h2 className="heading-2 mb-4">
               Ready to transform{" "}
               <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
                 your club?
               </span>
             </h2>
-            <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
+            <p className="body-large text-muted-foreground mb-8 max-w-xl mx-auto">
               Join hundreds of martial arts clubs already using Judo Club Manager to streamline their operations.
             </p>
             <Link to="/login">
@@ -760,18 +764,15 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t bg-muted/30 py-12">
+      <footer className="border-t bg-gradient-subtle py-12">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             {/* Logo and tagline */}
             <div className="md:col-span-2">
-              <Link to="/" className="flex items-center gap-2 mb-4">
-                <span className="text-2xl">🥋</span>
-                <span className="font-bold text-xl bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-                  Judo Club
-                </span>
+              <Link to="/" className="inline-block mb-4">
+                <Logo size="md" />
               </Link>
-              <p className="text-muted-foreground max-w-sm">
+              <p className="body-default text-muted-foreground max-w-sm">
                 The modern membership management platform for martial arts clubs.
                 Train smarter, track progress, level up.
               </p>
