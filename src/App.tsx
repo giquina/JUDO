@@ -8,7 +8,7 @@ import { Spinner } from "./components/ui/spinner";
 import LoginPage from "./pages/LoginPage";
 import LandingPage from "./pages/LandingPage";
 import MemberDashboard from "./pages/MemberDashboard";
-import CoachDashboard from "./pages/CoachDashboard";
+import SenseiDashboard from "./pages/SenseiDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -34,7 +34,7 @@ function HomeRedirect() {
     case "admin":
       return <Navigate to="/admin" replace />;
     case "coach":
-      return <Navigate to="/coach" replace />;
+      return <Navigate to="/sensei" replace />;
     default:
       return <Navigate to="/member" replace />;
   }
@@ -53,11 +53,12 @@ function App() {
                 <MemberDashboard />
               </ProtectedRoute>
             } />
-            <Route path="/coach" element={
+            <Route path="/sensei" element={
               <ProtectedRoute allowedRoles={["coach", "admin"]}>
-                <CoachDashboard />
+                <SenseiDashboard />
               </ProtectedRoute>
             } />
+            <Route path="/coach" element={<Navigate to="/sensei" replace />} />
             <Route path="/admin" element={
               <ProtectedRoute allowedRoles={["admin"]}>
                 <AdminDashboard />

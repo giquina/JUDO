@@ -61,7 +61,7 @@ export default function AdminDashboard() {
       <main className="container mx-auto p-4 space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-          <Button>+ Add Member</Button>
+          <Button>+ Add Judoka</Button>
         </div>
 
         {/* Key Metrics */}
@@ -69,7 +69,7 @@ export default function AdminDashboard() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Members
+                Total Judoka
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -86,8 +86,9 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-bold">{activeMembers}</p>
-              <p className="text-xs text-muted-foreground">{Math.round((activeMembers / mockMembers.length) * 100)}% of members</p>
+              <p className="text-xs text-muted-foreground">{Math.round((activeMembers / mockMembers.length) * 100)}% of Judoka</p>
             </CardContent>
+
           </Card>
 
           <Card>
@@ -134,7 +135,7 @@ export default function AdminDashboard() {
         {selectedTab === "members" && (
           <Card>
             <CardHeader>
-              <CardTitle>Members</CardTitle>
+              <CardTitle>Judoka</CardTitle>
               <CardDescription>
                 <Input
                   placeholder="Search by name or email..."
@@ -231,7 +232,7 @@ export default function AdminDashboard() {
 
         {/* Export Actions */}
         <div className="flex gap-4">
-          <Button variant="outline">Export Members CSV</Button>
+          <Button variant="outline">Export Judoka CSV</Button>
           <Button variant="outline">Export Payments CSV</Button>
           <Button variant="outline">Generate Report</Button>
         </div>

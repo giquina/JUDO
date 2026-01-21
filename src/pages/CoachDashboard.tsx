@@ -88,7 +88,7 @@ export default function CoachDashboard() {
         <Navigation />
       <main className="container mx-auto p-4 space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Coach Dashboard</h1>
+          <h1 className="text-3xl font-bold">Sensei Dashboard</h1>
           <Badge variant="outline" className="text-lg px-4 py-2">
             {new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "short" })}
           </Badge>
@@ -116,7 +116,7 @@ export default function CoachDashboard() {
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-bold">{attendedCount}/{attendance.length}</p>
-              <p className="text-sm text-muted-foreground">members present</p>
+              <p className="text-sm text-muted-foreground">Judoka present</p>
             </CardContent>
           </Card>
 
@@ -190,7 +190,7 @@ export default function CoachDashboard() {
               <Badge>{attendedCount} present</Badge>
             </CardTitle>
             <CardDescription>
-              Tap a member to toggle their attendance status
+              Tap a Judoka to toggle their attendance status
             </CardDescription>
           </CardHeader>
           <CardContent>

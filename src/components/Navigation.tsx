@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "./ThemeProvider";
+import { useAuth } from "@/lib/auth";
 import {
   LayoutDashboard,
   Users,
@@ -24,10 +25,10 @@ const navItems = [
     description: "View your training progress"
   },
   {
-    path: "/coach",
-    label: "Coach",
+    path: "/sensei",
+    label: "Sensei",
     icon: Users,
-    description: "Manage students and classes"
+    description: "Manage dojo and Judoka"
   },
   {
     path: "/admin",
@@ -41,6 +42,7 @@ export default function Navigation() {
   const location = useLocation();
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
+  const { user, role, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -74,7 +76,8 @@ export default function Navigation() {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await signOut();
     navigate("/login");
   };
 
@@ -198,8 +201,12 @@ export default function Navigation() {
                     <User className="w-4 h-4 text-primary-foreground" />
                   </div>
                   <div className="hidden lg:flex flex-col">
-                    <span className="text-sm font-medium leading-tight">User</span>
-                    <span className="text-[10px] text-muted-foreground">Member</span>
+                    <span className="text-sm font-medium leading-tight">
+                      {user?.name.split(' ')[0] || 'User'}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground capitalize">
+                      {role === 'coach' ? 'Sensei' : role || 'Member'}
+                    </span>
                   </div>
                 </motion.div>
 
@@ -279,8 +286,10 @@ export default function Navigation() {
                     <User className="w-6 h-6 text-primary-foreground" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold">User</p>
-                    <p className="text-sm text-muted-foreground">Member Account</p>
+                    <p className="font-semibold">{user?.name || 'User'}</p>
+                    <p className="text-sm text-muted-foreground capitalize">
+                      {role === 'coach' ? 'Sensei' : role || 'Member'} Account
+                    </p>
                   </div>
                 </div>
 

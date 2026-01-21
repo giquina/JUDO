@@ -51,8 +51,8 @@ const features = [
   },
   {
     icon: Users,
-    title: "Coach Dashboard",
-    description: "Real-time attendance management. Coaches see who's training at a glance."
+    title: "Sensei Dashboard",
+    description: "Real-time attendance management. Senseis see who's training at a glance."
   },
   {
     icon: Shield,
