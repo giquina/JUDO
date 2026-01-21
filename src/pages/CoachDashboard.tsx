@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import Navigation from "@/components/Navigation";
 import QRCodeGenerator from "@/components/QRCodeGenerator";
 import PageTransition from "@/components/PageTransition";
+import { DemoBanner } from "@/components/DemoBanner";
 
 // Mock data - will be replaced with Convex queries
 const mockClasses = [
@@ -86,6 +87,7 @@ export default function CoachDashboard() {
     <PageTransition>
       <div className="min-h-screen bg-background">
         <Navigation />
+        <DemoBanner />
       <main className="container mx-auto p-4 space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold">Coach Dashboard</h1>

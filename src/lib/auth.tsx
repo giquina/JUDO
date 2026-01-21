@@ -1,12 +1,15 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 
+// Multi-Tenant User Interface (Judoka)
 interface User {
   _id: string;
+  userId: string; // Auth user ID
   name: string;
   email: string;
-  beltRank: string;
-  subscriptionStatus: string;
+  currentBelt: string; // Using Kyu/Dan system
+  membershipStatus: string;
+  role: string; // Club role: judoka, sensei, head_sensei, club_owner, etc.
 }
 
 interface AuthContextType {
@@ -21,23 +24,48 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// DEV MODE: Set to true to auto-login as admin (skip login during development)
+// DEV MODE: Set to true to auto-login (skip login during development)
 const DEV_MODE = true;
-const DEV_USER_ROLE: "member" | "coach" | "admin" = "admin"; // Change this to test different roles
+const DEV_USER_ROLE: "judoka" | "sensei" | "club_owner" = "club_owner"; // Change this to test different roles
 
 // Mock users for demo - will be replaced with Convex queries
+// Using proper judo terminology and Kyu/Dan system
 const MOCK_USERS: Record<string, { user: User; role: string }> = {
   "a.chen@bbk.ac.uk": {
-    user: { _id: "1", name: "Alice Chen", email: "a.chen@bbk.ac.uk", beltRank: "blue", subscriptionStatus: "active" },
-    role: "member"
+    user: {
+      _id: "1",
+      userId: "user_1",
+      name: "Alice Chen",
+      email: "a.chen@bbk.ac.uk",
+      currentBelt: "2nd_kyu", // Blue belt (2nd Kyu)
+      membershipStatus: "active",
+      role: "judoka" // Regular member
+    },
+    role: "judoka"
   },
-  "coach@bbk.ac.uk": {
-    user: { _id: "2", name: "Sensei Tanaka", email: "coach@bbk.ac.uk", beltRank: "black", subscriptionStatus: "active" },
-    role: "coach"
+  "sensei@bbk.ac.uk": {
+    user: {
+      _id: "2",
+      userId: "user_2",
+      name: "Sensei Tanaka",
+      email: "sensei@bbk.ac.uk",
+      currentBelt: "3rd_dan", // Black belt 3rd Dan
+      membershipStatus: "active",
+      role: "sensei" // Instructor
+    },
+    role: "sensei"
   },
-  "admin@bbk.ac.uk": {
-    user: { _id: "3", name: "Admin User", email: "admin@bbk.ac.uk", beltRank: "black", subscriptionStatus: "active" },
-    role: "admin"
+  "owner@bbk.ac.uk": {
+    user: {
+      _id: "3",
+      userId: "user_3",
+      name: "Shihan Yamamoto",
+      email: "owner@bbk.ac.uk",
+      currentBelt: "5th_dan", // Black belt 5th Dan
+      membershipStatus: "active",
+      role: "club_owner" // Club owner/head sensei
+    },
+    role: "club_owner"
   }
 };
 
@@ -52,9 +80,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // DEV MODE: Auto-login for development/testing
     if (DEV_MODE) {
       const devEmails: Record<string, string> = {
-        member: "a.chen@bbk.ac.uk",
-        coach: "coach@bbk.ac.uk",
-        admin: "admin@bbk.ac.uk"
+        judoka: "a.chen@bbk.ac.uk",
+        sensei: "sensei@bbk.ac.uk",
+        club_owner: "owner@bbk.ac.uk"
       };
       const devEmail = devEmails[DEV_USER_ROLE];
       if (MOCK_USERS[devEmail]) {
@@ -115,15 +143,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       newUser = MOCK_USERS[normalizedEmail].user;
       newRole = MOCK_USERS[normalizedEmail].role;
     } else {
-      // Create new member for any email
+      // Create new judoka (member) for any email
       newUser = {
         _id: Date.now().toString(),
+        userId: `user_${Date.now()}`,
         name: email.split("@")[0],
         email: normalizedEmail,
-        beltRank: "white",
-        subscriptionStatus: "pending"
+        currentBelt: "6th_kyu", // White belt (6th Kyu) for new members
+        membershipStatus: "trial",
+        role: "judoka" // New members start as judoka
       };
-      newRole = "member";
+      newRole = "judoka";
     }
 
     setUser(newUser);

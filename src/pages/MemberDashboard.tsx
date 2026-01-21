@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import Navigation from "@/components/Navigation";
 import CheckInQR from "@/components/CheckInQR";
 import PageTransition from "@/components/PageTransition";
+import { DemoBanner } from "@/components/DemoBanner";
 import { Calendar, Clock, Trophy, CheckCircle2, XCircle, Dumbbell } from "lucide-react";
 
 // Mock data - will be replaced with Convex queries
@@ -134,10 +135,25 @@ export default function MemberDashboard() {
   const maxSessions = mockMember.subscriptionTier === "student" ? 8 : 12;
   const sessionProgress = (sessionsThisMonth / maxSessions) * 100;
 
+  // Calculate next class date (next Monday)
+  const getNextMonday = () => {
+    const today = new Date();
+    const dayOfWeek = today.getDay();
+    const daysUntilMonday = dayOfWeek === 0 ? 1 : dayOfWeek === 1 ? 0 : 8 - dayOfWeek;
+    const nextMonday = new Date(today);
+    nextMonday.setDate(today.getDate() + daysUntilMonday);
+    return nextMonday;
+  };
+
+  const nextClassDate = getNextMonday();
+  const daysUntil = Math.floor((nextClassDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+  const nextClassText = daysUntil === 0 ? "TODAY" : daysUntil === 1 ? "Tomorrow" : `in ${daysUntil} days`;
+
   return (
     <PageTransition>
       <div className="min-h-screen bg-background">
         <Navigation />
+        <DemoBanner />
         <main className="container mx-auto p-4 space-y-6">
           {/* Welcome Header */}
           <motion.div
@@ -198,7 +214,12 @@ export default function MemberDashboard() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-2xl font-bold text-blue-700 dark:text-blue-400">Monday 7pm</p>
-                  <p className="text-sm text-muted-foreground">Fundamentals</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Badge variant="outline" className="text-xs font-semibold">
+                      {nextClassText}
+                    </Badge>
+                    <span className="text-sm text-muted-foreground">• Fundamentals</span>
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>
@@ -246,27 +267,90 @@ export default function MemberDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
+            className="grid gap-4 md:grid-cols-2"
           >
             {showScanner ? (
-              <CheckInQR onCheckIn={handleCheckIn} isLoading={isCheckingIn} />
+              <div className="md:col-span-2">
+                <CheckInQR onCheckIn={handleCheckIn} isLoading={isCheckingIn} />
+              </div>
             ) : (
-              <Card className="bg-gradient-to-r from-primary/10 via-blue-500/10 to-primary/5 border-primary/20">
-                <CardContent className="py-6">
-                  <motion.div
-                    animate={{ scale: [1, 1.02, 1] }}
-                    transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+              <>
+                {/* Scan to Check-in Card */}
+                <Card className="bg-gradient-to-r from-primary/10 via-blue-500/10 to-primary/5 border-primary/20 elevation-2">
+                  <CardContent className="py-6">
+                    <motion.div
+                      animate={{ scale: [1, 1.02, 1] }}
+                      transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
                   >
-                    <Button
-                      onClick={() => setShowScanner(true)}
-                      size="lg"
-                      className="w-full text-lg py-8 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 shadow-lg hover:shadow-xl transition-all duration-300"
-                    >
-                      <span className="mr-2 text-2xl">📱</span>
-                      Scan QR to Check In
-                    </Button>
-                  </motion.div>
-                </CardContent>
-              </Card>
+                      <Button
+                        onClick={() => setShowScanner(true)}
+                        size="lg"
+                        className="w-full text-lg py-8 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 shadow-lg hover:shadow-xl transition-all duration-300"
+                      >
+                        <svg className="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                        </svg>
+                        Scan QR to Check In
+                      </Button>
+                    </motion.div>
+                    <p className="text-sm text-muted-foreground text-center mt-4">
+                      Use the QR scanner at the entrance, or show your QR code below
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Your QR Code Card */}
+                <Card className="bg-gradient-to-br from-purple-500/10 to-indigo-500/10 border-purple-200 dark:border-purple-800 elevation-2">
+                  <CardHeader>
+                    <CardTitle className="heading-5 flex items-center gap-2">
+                      <svg className="w-5 h-5 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                      </svg>
+                      Your QR Code
+                    </CardTitle>
+                    <CardDescription className="body-small">
+                      Show this at the entrance for quick check-in
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="bg-white p-4 rounded-lg inline-block w-full">
+                      <div className="aspect-square w-full max-w-[200px] mx-auto bg-white rounded-lg flex items-center justify-center border-4 border-purple-200">
+                        <svg viewBox="0 0 100 100" className="w-full h-full">
+                          {/* Simple QR code representation */}
+                          <rect x="10" y="10" width="15" height="15" fill="black" />
+                          <rect x="10" y="30" width="5" height="5" fill="black" />
+                          <rect x="20" y="30" width="5" height="5" fill="black" />
+                          <rect x="10" y="40" width="5" height="5" fill="black" />
+                          <rect x="20" y="40" width="5" height="5" fill="black" />
+                          <rect x="10" y="50" width="15" height="15" fill="black" />
+
+                          <rect x="75" y="10" width="15" height="15" fill="black" />
+                          <rect x="75" y="30" width="5" height="5" fill="black" />
+                          <rect x="85" y="30" width="5" height="5" fill="black" />
+
+                          <rect x="40" y="40" width="5" height="5" fill="black" />
+                          <rect x="50" y="40" width="5" height="5" fill="black" />
+                          <rect x="60" y="40" width="5" height="5" fill="black" />
+                          <rect x="45" y="50" width="5" height="5" fill="black" />
+                          <rect x="55" y="50" width="5" height="5" fill="black" />
+
+                          <rect x="10" y="75" width="15" height="15" fill="black" />
+                          <rect x="30" y="75" width="5" height="5" fill="black" />
+                          <rect x="30" y="85" width="5" height="5" fill="black" />
+
+                          <rect x="75" y="75" width="5" height="5" fill="black" />
+                          <rect x="85" y="75" width="5" height="5" fill="black" />
+                          <rect x="75" y="85" width="5" height="5" fill="black" />
+                          <rect x="85" y="85" width="5" height="5" fill="black" />
+                        </svg>
+                      </div>
+                      <p className="text-center caption text-muted-foreground mt-3">
+                        Member ID: {mockMember.email.split('@')[0].toUpperCase()}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </>
             )}
           </motion.div>
 
