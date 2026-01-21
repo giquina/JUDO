@@ -10,6 +10,8 @@ import LandingPage from "./pages/LandingPage";
 import MemberDashboard from "./pages/MemberDashboard";
 import CoachDashboard from "./pages/CoachDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import PricingPage from "./pages/PricingPage";
+import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import NotFound from "./pages/NotFound";
 
 // Smart redirect based on auth status
@@ -48,6 +50,8 @@ function App() {
           <Routes>
             <Route path="/" element={<HomeRedirect />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/subscription/success" element={<SubscriptionSuccess />} />
             <Route path="/member" element={
               <ProtectedRoute allowedRoles={["member", "coach", "admin"]}>
                 <MemberDashboard />
