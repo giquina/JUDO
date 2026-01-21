@@ -274,7 +274,7 @@ export default function LandingPage() {
               >
                 🥋
               </motion.span>
-              <span className="font-bold text-xl bg-gradient-to-r from-primary via-blue-500 to-blue-600 bg-clip-text text-transparent">
+              <span className="font-bold text-xl bg-gradient-to-r from-violet-600 via-blue-500 to-blue-600 bg-clip-text text-transparent">
                 Judo Club
               </span>
             </Link>
@@ -546,7 +546,7 @@ export default function LandingPage() {
                   <div className="stat-card-icon opacity-50 group-hover:opacity-100 transition-opacity">
                     <stat.icon className="w-5 h-5 text-primary" />
                   </div>
-                  <p className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent mb-1">
+                  <p className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent mb-1">
                     {stat.value}
                   </p>
                   <p className="text-xs sm:text-sm text-muted-foreground">{stat.label}</p>
@@ -598,7 +598,7 @@ export default function LandingPage() {
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
               Everything you need to{" "}
               <span className="animated-underline">
-                <span className="bg-gradient-to-r from-primary via-blue-500 to-blue-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-violet-600 via-blue-500 to-blue-600 bg-clip-text text-transparent">
                   run your club
                 </span>
               </span>
@@ -663,7 +663,7 @@ export default function LandingPage() {
             </Badge>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
               Simple,{" "}
-              <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
                 transparent
               </span>{" "}
               pricing
@@ -708,7 +708,7 @@ export default function LandingPage() {
                     <CardTitle className="text-2xl md:text-3xl mb-2">{plan.name}</CardTitle>
                     <CardDescription className="text-base">{plan.description}</CardDescription>
                     <div className="mt-6">
-                      <span className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+                      <span className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
                         £{plan.price}
                       </span>
                       <span className="text-muted-foreground text-lg">/{plan.period}</span>
@@ -779,7 +779,7 @@ export default function LandingPage() {
             </Badge>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
               Loved by{" "}
-              <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
                 judoka everywhere
               </span>
             </h2>
@@ -854,7 +854,7 @@ export default function LandingPage() {
             <Badge variant="outline" className="mb-4 px-4 py-1">FAQ</Badge>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
               Frequently asked{" "}
-              <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
                 questions
               </span>
             </h2>
@@ -954,7 +954,7 @@ export default function LandingPage() {
             </motion.div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
               Ready to transform{" "}
-              <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
                 your club?
               </span>
             </h2>
@@ -996,7 +996,7 @@ export default function LandingPage() {
                 >
                   🥋
                 </motion.span>
-                <span className="font-bold text-2xl bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+                <span className="font-bold text-2xl bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
                   Judo Club
                 </span>
               </Link>

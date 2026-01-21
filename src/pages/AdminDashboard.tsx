@@ -549,7 +549,7 @@ export default function AdminDashboard() {
             className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
           >
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
                 Admin Dashboard
               </h1>
               <p className="text-sm sm:text-base text-muted-foreground mt-1">Manage members, payments, and club analytics</p>

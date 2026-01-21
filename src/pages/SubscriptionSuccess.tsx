@@ -206,7 +206,7 @@ export default function SubscriptionSuccess() {
               </Badge>
               <h1 className="text-3xl md:text-4xl font-bold mb-4">
                 Welcome to{" "}
-                <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
                   {planName}!
                 </span>
               </h1>
@@ -269,7 +269,7 @@ export default function SubscriptionSuccess() {
               <Link to="/member">
                 <Button
                   size="lg"
-                  className="w-full sm:w-auto bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 shadow-lg shadow-primary/25"
+                  className="w-full sm:w-auto bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-600/90 hover:to-blue-600/90 shadow-lg shadow-violet-600/25"
                 >
                   Go to Dashboard
                   <ArrowRight className="w-4 h-4 ml-2" />

@@ -118,7 +118,7 @@ export default function PricingPage() {
               <div className="h-6 w-px bg-border" />
               <Link to="/" className="flex items-center gap-2">
                 <span className="text-2xl">🥋</span>
-                <span className="font-bold text-xl bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+                <span className="font-bold text-xl bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
                   Judo Club
                 </span>
               </Link>
@@ -160,7 +160,7 @@ export default function PricingPage() {
             </Badge>
             <h1 className="text-3xl md:text-5xl font-bold mb-4">
               Simple,{" "}
-              <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
                 transparent
               </span>{" "}
               pricing
@@ -221,7 +221,7 @@ export default function PricingPage() {
                   >
                     {isPopular && (
                       <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <Badge className="bg-gradient-to-r from-primary to-blue-600 text-white px-4">
+                        <Badge className="bg-gradient-to-r from-violet-600 to-blue-600 text-white px-4">
                           Most Popular
                         </Badge>
                       </div>
@@ -258,7 +258,7 @@ export default function PricingPage() {
                         size="lg"
                         className={`w-full ${
                           isPopular
-                            ? "bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90"
+                            ? "bg-gradient-to-r from-violet-600 to-blue-600 hover:from-primary/90 hover:to-blue-600/90"
                             : ""
                         }`}
                       >
@@ -311,7 +311,7 @@ export default function PricingPage() {
             <Badge variant="outline" className="mb-4">Compare Plans</Badge>
             <h2 className="text-2xl md:text-4xl font-bold mb-4">
               Feature{" "}
-              <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
                 comparison
               </span>
             </h2>
@@ -404,7 +404,7 @@ export default function PricingPage() {
             </Badge>
             <h2 className="text-2xl md:text-4xl font-bold mb-4">
               Payment{" "}
-              <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
                 questions
               </span>
             </h2>
@@ -479,7 +479,7 @@ export default function PricingPage() {
           >
             <h2 className="text-2xl md:text-4xl font-bold mb-4">
               Ready to start your{" "}
-              <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
                 judo journey?
               </span>
             </h2>
@@ -492,7 +492,7 @@ export default function PricingPage() {
                 planName="Standard"
                 mode="subscription"
                 size="lg"
-                className="bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 px-8"
+                className="bg-gradient-to-r from-violet-600 to-blue-600 hover:from-primary/90 hover:to-blue-600/90 px-8"
               >
                 Start Free Trial
               </PaymentButton>
@@ -515,7 +515,7 @@ export default function PricingPage() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <Link to="/" className="flex items-center gap-2">
               <span className="text-2xl">🥋</span>
-              <span className="font-bold text-xl bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+              <span className="font-bold text-xl bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
                 Judo Club
               </span>
             </Link>

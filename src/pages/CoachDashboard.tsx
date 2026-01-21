@@ -455,7 +455,7 @@ export default function CoachDashboard() {
             className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
           >
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
                 Coach Dashboard
               </h1>
               <p className="text-sm sm:text-base text-muted-foreground mt-1">Manage attendance and track your classes</p>
@@ -575,7 +575,7 @@ export default function CoachDashboard() {
                     <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                       <Button
                         onClick={() => setShowQR(!showQR)}
-                        className="w-full bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90"
+                        className="w-full bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-600/90 hover:to-blue-600/90"
                         size="lg"
                       >
                         <QrCode className="h-5 w-5 mr-2" />
@@ -750,7 +750,7 @@ export default function CoachDashboard() {
               </Button>
             </motion.div>
             <motion.div className="flex-1" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Button className="w-full min-h-[48px] bg-gradient-to-r from-primary to-blue-600 touch-manipulation">
+              <Button className="w-full min-h-[48px] bg-gradient-to-r from-violet-600 to-blue-600 touch-manipulation">
                 <CheckCircle2 className="h-4 w-4 mr-2" />
                 Save & Close Class
               </Button>
