@@ -84,6 +84,7 @@ export function MessageInput({
                 size="sm"
                 className="h-7 w-7 p-0"
                 onClick={onCancelReply}
+                aria-label="Cancel reply"
               >
                 <X className="w-4 h-4" />
               </Button>
@@ -113,6 +114,7 @@ export function MessageInput({
             onInput={handleInput}
             placeholder={placeholder}
             disabled={disabled}
+            aria-label="Message input"
             className={cn(
               "min-h-[44px] max-h-[200px] resize-none",
               "pr-10"
@@ -137,6 +139,7 @@ export function MessageInput({
           disabled={disabled || !message.trim()}
           size="sm"
           className="h-9 w-9 p-0 flex-shrink-0"
+          aria-label="Send message"
         >
           <Send className="w-4 h-4" />
         </Button>

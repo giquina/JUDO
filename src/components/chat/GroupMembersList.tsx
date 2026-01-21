@@ -10,6 +10,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { SimpleTooltip } from "@/components/ui/tooltip";
+import { useConfirm } from "@/hooks/useConfirm";
 import {
   UserPlus,
   Crown,
@@ -71,8 +73,57 @@ export function GroupMembersList({
   onPromoteToAdmin,
   onDemoteToMember,
 }: GroupMembersListProps) {
+  const confirm = useConfirm();
   const canManageMembers = ["owner", "admin"].includes(currentMemberRole || "");
   const isOwner = currentMemberRole === "owner";
+
+  const handleRemoveMember = async (member: GroupMember) => {
+    if (!onRemoveMember) return;
+
+    const confirmed = await confirm({
+      title: "Remove Member?",
+      description: `Are you sure you want to remove ${member.name} from this group? They will lose access to all group messages.`,
+      confirmLabel: "Remove",
+      cancelLabel: "Cancel",
+      variant: "danger",
+    });
+
+    if (confirmed) {
+      onRemoveMember(member._id);
+    }
+  };
+
+  const handlePromoteToAdmin = async (member: GroupMember) => {
+    if (!onPromoteToAdmin) return;
+
+    const confirmed = await confirm({
+      title: "Make Admin?",
+      description: `Give ${member.name} admin privileges? They will be able to manage members and group settings.`,
+      confirmLabel: "Make Admin",
+      cancelLabel: "Cancel",
+      variant: "default",
+    });
+
+    if (confirmed) {
+      onPromoteToAdmin(member._id);
+    }
+  };
+
+  const handleDemoteToMember = async (member: GroupMember) => {
+    if (!onDemoteToMember) return;
+
+    const confirmed = await confirm({
+      title: "Remove Admin Role?",
+      description: `Remove admin privileges from ${member.name}? They will become a regular member.`,
+      confirmLabel: "Remove Admin",
+      cancelLabel: "Cancel",
+      variant: "warning",
+    });
+
+    if (confirmed) {
+      onDemoteToMember(member._id);
+    }
+  };
 
   const getInitials = (name: string) => {
     return name
@@ -159,19 +210,23 @@ export function GroupMembersList({
                     </Badge>
 
                     <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <RoleIcon className="w-4 h-4" />
-                        <span className="hidden sm:inline">
-                          {roleLabels[member.groupRole]}
-                        </span>
-                      </div>
+                      <SimpleTooltip content={roleLabels[member.groupRole]} side="top">
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <RoleIcon className="w-4 h-4" />
+                          <span className="hidden sm:inline">
+                            {roleLabels[member.groupRole]}
+                          </span>
+                        </div>
+                      </SimpleTooltip>
 
                       {canModify && (
                         <Popover>
                           <PopoverTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                              <MoreVertical className="w-4 h-4" />
-                            </Button>
+                            <SimpleTooltip content="Member actions" side="top">
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                <MoreVertical className="w-4 h-4" />
+                              </Button>
+                            </SimpleTooltip>
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-1" align="end">
                             {isOwner && (
@@ -182,9 +237,7 @@ export function GroupMembersList({
                                       variant="ghost"
                                       size="sm"
                                       className="w-full justify-start"
-                                      onClick={() =>
-                                        onPromoteToAdmin(member._id)
-                                      }
+                                      onClick={() => handlePromoteToAdmin(member)}
                                     >
                                       <ShieldCheck className="w-4 h-4 mr-2" />
                                       Make Admin
@@ -196,9 +249,7 @@ export function GroupMembersList({
                                       variant="ghost"
                                       size="sm"
                                       className="w-full justify-start"
-                                      onClick={() =>
-                                        onDemoteToMember(member._id)
-                                      }
+                                      onClick={() => handleDemoteToMember(member)}
                                     >
                                       <ShieldOff className="w-4 h-4 mr-2" />
                                       Remove Admin
@@ -211,7 +262,7 @@ export function GroupMembersList({
                                 variant="ghost"
                                 size="sm"
                                 className="w-full justify-start text-destructive hover:text-destructive"
-                                onClick={() => onRemoveMember(member._id)}
+                                onClick={() => handleRemoveMember(member)}
                               >
                                 <UserMinus className="w-4 h-4 mr-2" />
                                 Remove

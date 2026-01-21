@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Navigation from "@/components/Navigation";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import CheckInQR from "@/components/CheckInQR";
 import PageTransition from "@/components/PageTransition";
 import { Calendar, Clock, Trophy, CheckCircle2, XCircle, Dumbbell } from "lucide-react";
@@ -139,6 +140,8 @@ export default function MemberDashboard() {
       <div className="min-h-screen bg-background">
         <Navigation />
         <main className="container mx-auto p-4 space-y-6">
+          <Breadcrumbs />
+
           {/* Welcome Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}

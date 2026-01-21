@@ -2,6 +2,8 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { SimpleTooltip } from "@/components/ui/tooltip";
+import { useConfirm } from "@/hooks/useConfirm";
 import {
   MoreVertical,
   Reply,
@@ -62,6 +64,21 @@ export function MessageItem({
   onReact,
 }: MessageItemProps) {
   const [showActions, setShowActions] = useState(false);
+  const confirm = useConfirm();
+
+  const handleDelete = async () => {
+    const confirmed = await confirm({
+      title: "Delete Message?",
+      description: "This message will be permanently deleted. This action cannot be undone.",
+      confirmLabel: "Delete",
+      cancelLabel: "Cancel",
+      variant: "danger",
+    });
+
+    if (confirmed && onDelete) {
+      onDelete(message._id);
+    }
+  };
 
   if (message.type === "system") {
     return (
@@ -209,13 +226,15 @@ export function MessageItem({
           {/* React */}
           <Popover>
             <PopoverTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-7 w-7 p-0 hover:bg-accent"
-              >
-                <Smile className="w-4 h-4" />
-              </Button>
+              <SimpleTooltip content="Add reaction" side="top">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 w-7 p-0 hover:bg-accent"
+                >
+                  <Smile className="w-4 h-4" />
+                </Button>
+              </SimpleTooltip>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-2" align="start">
               <div className="flex gap-1">
@@ -233,14 +252,16 @@ export function MessageItem({
           </Popover>
 
           {/* Reply */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-7 w-7 p-0 hover:bg-accent"
-            onClick={() => onReply?.(message._id)}
-          >
-            <Reply className="w-4 h-4" />
-          </Button>
+          <SimpleTooltip content="Reply to message" side="top">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 w-7 p-0 hover:bg-accent"
+              onClick={() => onReply?.(message._id)}
+            >
+              <Reply className="w-4 h-4" />
+            </Button>
+          </SimpleTooltip>
 
           {/* More options */}
           {isOwnMessage && (
@@ -268,7 +289,7 @@ export function MessageItem({
                   variant="ghost"
                   size="sm"
                   className="w-full justify-start text-destructive hover:text-destructive"
-                  onClick={() => onDelete?.(message._id)}
+                  onClick={handleDelete}
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
                   Delete

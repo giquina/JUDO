@@ -5,8 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import Navigation from "@/components/Navigation";
 import PageTransition from "@/components/PageTransition";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import StatsCard from "@/components/StatsCard";
 import { useAuth } from "@/lib/auth";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Users, UserCheck, DollarSign, TrendingUp } from "lucide-react";
 
 // Mock data - will be replaced with Convex queries
 const mockMembers = [
@@ -86,6 +88,8 @@ export default function AdminDashboard() {
       <div className="min-h-screen bg-background">
         <Navigation />
       <main className="container mx-auto p-4 space-y-6">
+        <Breadcrumbs />
+
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
           <Button>+ Add Member</Button>
@@ -93,53 +97,39 @@ export default function AdminDashboard() {
 
         {/* Key Metrics */}
         <div className="grid gap-4 md:grid-cols-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Members
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold">{mockMembers.length}</p>
-              <p className="text-xs text-green-600">+3 this month</p>
-            </CardContent>
-          </Card>
+          <StatsCard
+            title="Total Members"
+            value={mockMembers.length}
+            icon={Users}
+            trend={{ value: 15, label: "from last month" }}
+            sparklineData={[8, 12, 10, 15, 18, 20, 24]}
+          />
 
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Active Subscriptions
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold">{activeMembers}</p>
-              <p className="text-xs text-muted-foreground">{Math.round((activeMembers / mockMembers.length) * 100)}% of members</p>
-            </CardContent>
-          </Card>
+          <StatsCard
+            title="Active Subscriptions"
+            value={activeMembers}
+            icon={UserCheck}
+            description={`${Math.round((activeMembers / mockMembers.length) * 100)}% of members`}
+            variant="success"
+            sparklineData={[5, 6, 5, 7, 7, 7, 7]}
+          />
 
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Monthly Revenue
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold">£{(totalRevenue / 100).toFixed(0)}</p>
-              <p className="text-xs text-green-600">+12% vs last month</p>
-            </CardContent>
-          </Card>
+          <StatsCard
+            title="Monthly Revenue"
+            value={`£${(totalRevenue / 100).toFixed(0)}`}
+            icon={DollarSign}
+            trend={{ value: 12, label: "vs last month" }}
+            variant="success"
+            sparklineData={[300, 320, 340, 360, 380, 390, 400]}
+          />
 
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Avg Attendance
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold">18/class</p>
-              <p className="text-xs text-muted-foreground">72% capacity</p>
-            </CardContent>
-          </Card>
+          <StatsCard
+            title="Avg Attendance"
+            value="18/class"
+            icon={TrendingUp}
+            description="72% capacity"
+            sparklineData={[15, 16, 17, 18, 19, 18, 18]}
+          />
         </div>
 
         {/* Tab Navigation */}

@@ -44,14 +44,26 @@ export function GroupListItem({ group, isActive, onClick }: GroupListItemProps) 
     .toUpperCase()
     .slice(0, 2);
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onClick?.();
+    }
+  };
+
   return (
     <motion.div
+      role="button"
+      tabIndex={0}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
+      onKeyDown={handleKeyDown}
+      aria-label={`${group.name} - ${group.unreadCount ? `${group.unreadCount} unread messages` : 'No unread messages'}`}
+      aria-current={isActive ? 'page' : undefined}
       className={cn(
         "flex items-start gap-3 p-3 cursor-pointer rounded-lg transition-colors",
-        "hover:bg-accent/50",
+        "hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         isActive && "bg-accent",
         group.membership?.isPinned && "bg-primary/5 border-l-2 border-primary"
       )}

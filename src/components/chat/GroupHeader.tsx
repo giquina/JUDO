@@ -72,6 +72,7 @@ export function GroupHeader({
         size="sm"
         className="md:hidden h-9 w-9 p-0"
         onClick={onToggleSidebar}
+        aria-label="Toggle sidebar"
       >
         <Menu className="w-5 h-5" />
       </Button>
@@ -117,6 +118,7 @@ export function GroupHeader({
             group.membership?.isPinned && "text-primary"
           )}
           onClick={onTogglePin}
+          aria-label={group.membership?.isPinned ? "Unpin group" : "Pin group"}
           title={group.membership?.isPinned ? "Unpin" : "Pin"}
         >
           <Pin
@@ -133,6 +135,7 @@ export function GroupHeader({
           size="sm"
           className="h-9 w-9 p-0"
           onClick={onToggleMute}
+          aria-label={group.membership?.isMuted ? "Unmute notifications" : "Mute notifications"}
           title={group.membership?.isMuted ? "Unmute" : "Mute"}
         >
           {group.membership?.isMuted ? (
@@ -148,6 +151,7 @@ export function GroupHeader({
           size="sm"
           className="h-9 w-9 p-0"
           onClick={onOpenSettings}
+          aria-label="Open group settings"
           title="Group settings"
         >
           <Settings className="w-4 h-4" />

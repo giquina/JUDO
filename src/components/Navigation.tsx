@@ -3,6 +3,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { SimpleTooltip } from "@/components/ui/tooltip";
+import GlobalSearch from "./GlobalSearch";
+import NotificationsCenter from "./NotificationsCenter";
 import { useTheme } from "./ThemeProvider";
 import { useAuth } from "@/lib/auth";
 import { useQuery } from "convex/react";
@@ -152,6 +155,17 @@ export default function Navigation() {
     navigate("/login");
   };
 
+  // Handle opening command palette from global search
+  const handleOpenCommandPalette = () => {
+    // Dispatch keyboard event to trigger command palette
+    const event = new KeyboardEvent("keydown", {
+      key: "k",
+      metaKey: true,
+      ctrlKey: true,
+    });
+    document.dispatchEvent(event);
+  };
+
   return (
     <>
       <header
@@ -188,6 +202,11 @@ export default function Navigation() {
                 </span>
               </div>
             </Link>
+
+            {/* Global Search - Hidden on mobile */}
+            <div className="hidden lg:flex flex-1 max-w-md mx-8">
+              <GlobalSearch onOpenCommandPalette={handleOpenCommandPalette} />
+            </div>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-1 bg-muted/50 rounded-full p-1.5">
@@ -242,32 +261,40 @@ export default function Navigation() {
 
             {/* Right Side Actions */}
             <div className="flex items-center gap-2">
+              {/* Notifications */}
+              <NotificationsCenter />
+
               {/* Theme Toggle */}
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={toggleTheme}
-                  className="rounded-full w-10 h-10 bg-muted/50 hover:bg-muted"
-                  aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-                >
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={theme}
-                      initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
-                      animate={{ rotate: 0, opacity: 1, scale: 1 }}
-                      exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {theme === "dark" ? (
-                        <Sun className="w-5 h-5 text-yellow-500" />
-                      ) : (
-                        <Moon className="w-5 h-5 text-slate-700" />
-                      )}
-                    </motion.div>
-                  </AnimatePresence>
-                </Button>
-              </motion.div>
+              <SimpleTooltip
+                content={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+                side="bottom"
+              >
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={toggleTheme}
+                    className="rounded-full w-10 h-10 bg-muted/50 hover:bg-muted"
+                    aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+                  >
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={theme}
+                        initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
+                        animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                        exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        {theme === "dark" ? (
+                          <Sun className="w-5 h-5 text-yellow-500" />
+                        ) : (
+                          <Moon className="w-5 h-5 text-slate-700" />
+                        )}
+                      </motion.div>
+                    </AnimatePresence>
+                  </Button>
+                </motion.div>
+              </SimpleTooltip>
 
               {/* User Menu - Desktop */}
               <div className="hidden md:flex items-center gap-2">
@@ -287,49 +314,56 @@ export default function Navigation() {
                   </div>
                 </motion.div>
 
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleLogout}
-                    className="rounded-full w-10 h-10 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                    aria-label="Logout"
-                  >
-                    <LogOut className="w-5 h-5" />
-                  </Button>
-                </motion.div>
+                <SimpleTooltip content="Sign out of your account" side="bottom">
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={handleLogout}
+                      className="rounded-full w-10 h-10 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                      aria-label="Logout"
+                    >
+                      <LogOut className="w-5 h-5" />
+                    </Button>
+                  </motion.div>
+                </SimpleTooltip>
               </div>
 
               {/* Mobile Menu Button */}
-              <motion.div
-                className="md:hidden"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <SimpleTooltip
+                content={mobileMenuOpen ? "Close menu" : "Open menu"}
+                side="bottom"
               >
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className="rounded-full w-10 h-10 bg-muted/50 hover:bg-muted"
-                  aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+                <motion.div
+                  className="md:hidden"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={mobileMenuOpen ? "close" : "menu"}
-                      initial={{ rotate: -90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: 90, opacity: 0 }}
-                      transition={{ duration: 0.15 }}
-                    >
-                      {mobileMenuOpen ? (
-                        <X className="w-5 h-5" />
-                      ) : (
-                        <Menu className="w-5 h-5" />
-                      )}
-                    </motion.div>
-                  </AnimatePresence>
-                </Button>
-              </motion.div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    className="rounded-full w-10 h-10 bg-muted/50 hover:bg-muted"
+                    aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+                  >
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={mobileMenuOpen ? "close" : "menu"}
+                        initial={{ rotate: -90, opacity: 0 }}
+                        animate={{ rotate: 0, opacity: 1 }}
+                        exit={{ rotate: 90, opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                      >
+                        {mobileMenuOpen ? (
+                          <X className="w-5 h-5" />
+                        ) : (
+                          <Menu className="w-5 h-5" />
+                        )}
+                      </motion.div>
+                    </AnimatePresence>
+                  </Button>
+                </motion.div>
+              </SimpleTooltip>
             </div>
           </div>
         </div>

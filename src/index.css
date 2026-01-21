@@ -87,10 +87,125 @@ body {
   color: hsl(var(--foreground));
 }
 
-/* Focus styles */
+/* Focus styles - WCAG 2.1 Level AA compliant */
 *:focus-visible {
   outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
+  transition: outline 0.15s ease-in-out;
+}
+
+/* Enhanced focus for interactive elements */
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid hsl(var(--ring));
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px hsl(var(--ring) / 0.1);
+}
+
+/* Skip links - only visible on keyboard focus */
+.skip-links {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  padding: 0.75rem 1.5rem;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 0 0 0.5rem 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: top 0.2s ease-in-out;
+  white-space: nowrap;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Focus ring utilities */
+.focus-ring-primary:focus-visible {
+  outline-color: hsl(var(--primary));
+}
+
+.focus-ring-destructive:focus-visible {
+  outline-color: hsl(var(--destructive));
+}
+
+/* Touch target size - WCAG 2.1 Level AA requires minimum 44x44px */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* Screen reader only text */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Visible only on keyboard focus */
+.focus-visible-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.focus-visible-only:focus-visible {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  *:focus-visible {
+    outline-width: 3px;
+  }
+
+  button:focus-visible,
+  a:focus-visible {
+    outline-width: 4px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Gradient text utility */
@@ -166,4 +281,96 @@ body {
 .page-exit-active {
   opacity: 0;
   transition: opacity 300ms;
+}
+
+/* Command Palette (cmdk) Styles */
+[cmdk-root] {
+  max-width: 100%;
+}
+
+[cmdk-input] {
+  font-family: inherit;
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+}
+
+[cmdk-input]::placeholder {
+  color: hsl(var(--muted-foreground));
+}
+
+[cmdk-item] {
+  content-visibility: auto;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  user-select: none;
+  will-change: background, color;
+  transition: all 0.15s ease;
+}
+
+[cmdk-item][data-selected="true"] {
+  background: hsl(var(--primary) / 0.1);
+  color: hsl(var(--primary));
+}
+
+[cmdk-item][data-disabled="true"] {
+  color: hsl(var(--muted-foreground));
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+[cmdk-group-heading] {
+  user-select: none;
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  padding: 0 0.5rem;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+[cmdk-separator] {
+  height: 1px;
+  width: 100%;
+  background: hsl(var(--border));
+  margin: 0.25rem 0;
+}
+
+[cmdk-empty] {
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 4rem;
+  white-space: pre-wrap;
+  color: hsl(var(--muted-foreground));
+}
+
+[cmdk-list] {
+  overflow: auto;
+  overscroll-behavior: contain;
+  transition: height 0.15s ease;
+}
+
+[cmdk-list]::-webkit-scrollbar {
+  width: 8px;
+}
+
+[cmdk-list]::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+[cmdk-list]::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 4px;
+}
+
+[cmdk-list]::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
 }

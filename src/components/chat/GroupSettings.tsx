@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { useConfirm } from "@/hooks/useConfirm";
 import { Loader2, LogOut, Trash2, Users } from "lucide-react";
 import { Id } from "../../../convex/_generated/dataModel";
 
@@ -62,6 +63,7 @@ export function GroupSettings({
   onDelete,
 }: GroupSettingsProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const confirm = useConfirm();
   const [formData, setFormData] = useState({
     name: group.name,
     description: group.description || "",
@@ -109,7 +111,16 @@ export function GroupSettings({
 
   const handleLeave = async () => {
     if (!onLeave) return;
-    if (!confirm("Are you sure you want to leave this group?")) return;
+
+    const confirmed = await confirm({
+      title: "Leave Group?",
+      description: `Are you sure you want to leave ${group.name}? You can rejoin later if it's not private.`,
+      confirmLabel: "Leave Group",
+      cancelLabel: "Cancel",
+      variant: "warning",
+    });
+
+    if (!confirmed) return;
 
     setIsSubmitting(true);
     try {
@@ -124,12 +135,16 @@ export function GroupSettings({
 
   const handleDelete = async () => {
     if (!onDelete) return;
-    if (
-      !confirm(
-        "Are you sure you want to delete this group? This action cannot be undone."
-      )
-    )
-      return;
+
+    const confirmed = await confirm({
+      title: "Delete Group?",
+      description: `Are you sure you want to permanently delete ${group.name}? This will remove all messages and cannot be undone. ${group.memberCount} member${group.memberCount !== 1 ? 's' : ''} will lose access to this group.`,
+      confirmLabel: "Delete Group",
+      cancelLabel: "Cancel",
+      variant: "danger",
+    });
+
+    if (!confirmed) return;
 
     setIsSubmitting(true);
     try {

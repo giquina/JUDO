@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Navigation from "@/components/Navigation";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import PageTransition from "@/components/PageTransition";
 import { useAuth } from "@/lib/auth";
 import { MessageSquare, Calendar, Image, AlertCircle, Plus } from "lucide-react";
@@ -63,6 +64,8 @@ export default function ContentManagerDashboard() {
       <div className="min-h-screen bg-background">
         <Navigation />
         <main className="container mx-auto p-4 space-y-6">
+          <Breadcrumbs />
+
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold">Content Manager Dashboard</h1>

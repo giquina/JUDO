@@ -54,7 +54,7 @@ export default function QRCodeGenerator({ classId, className }: QRCodeGeneratorP
         {qrCodeUrl && (
           <img
             src={qrCodeUrl}
-            alt="Class QR Code"
+            alt={`QR code for ${className} check-in`}
             className="w-80 h-80 md:w-96 md:h-96"
           />
         )}
@@ -72,11 +72,11 @@ export default function QRCodeGenerator({ classId, className }: QRCodeGeneratorP
         {qrCodeUrl ? (
           <img
             src={qrCodeUrl}
-            alt="Class QR Code"
+            alt={`QR code for ${className} check-in`}
             className="w-48 h-48"
           />
         ) : (
-          <div className="w-48 h-48 bg-muted animate-pulse rounded" />
+          <div className="w-48 h-48 bg-muted animate-pulse rounded" aria-label="Loading QR code" />
         )}
         <Button onClick={toggleFullscreen} variant="outline" className="w-full">
           Display Fullscreen

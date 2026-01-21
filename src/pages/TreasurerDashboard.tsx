@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import Navigation from "@/components/Navigation";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import PageTransition from "@/components/PageTransition";
 import { useAuth } from "@/lib/auth";
 import { DollarSign, TrendingUp, Users, FileDown, AlertCircle } from "lucide-react";
@@ -72,6 +73,8 @@ export default function TreasurerDashboard() {
       <div className="min-h-screen bg-background">
         <Navigation />
         <main className="container mx-auto p-4 space-y-6">
+          <Breadcrumbs />
+
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold">Treasurer Dashboard</h1>

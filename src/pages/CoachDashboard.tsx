@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Navigation from "@/components/Navigation";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import QRCodeGenerator from "@/components/QRCodeGenerator";
 import PageTransition from "@/components/PageTransition";
 import { useAuth } from "@/lib/auth";
@@ -114,6 +115,8 @@ export default function CoachDashboard() {
       <div className="min-h-screen bg-background">
         <Navigation />
       <main className="container mx-auto p-4 space-y-6">
+        <Breadcrumbs />
+
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold">Coach Dashboard</h1>
           <Badge variant="outline" className="text-lg px-4 py-2">
