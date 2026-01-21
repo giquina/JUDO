@@ -7,9 +7,11 @@ import { useAuth } from "./lib/auth";
 import { Spinner } from "./components/ui/spinner";
 import LoginPage from "./pages/LoginPage";
 import LandingPage from "./pages/LandingPage";
+import CareersPage from "./pages/CareersPage";
 import MemberDashboard from "./pages/MemberDashboard";
 import SenseiDashboard from "./pages/SenseiDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import SocialFeedPage from "./pages/SocialFeedPage";
 import NotFound from "./pages/NotFound";
 
 // Smart redirect based on auth status
@@ -48,9 +50,15 @@ function App() {
           <Routes>
             <Route path="/" element={<HomeRedirect />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/careers" element={<CareersPage />} />
             <Route path="/member" element={
               <ProtectedRoute allowedRoles={["member", "coach", "admin"]}>
                 <MemberDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/community" element={
+              <ProtectedRoute allowedRoles={["member", "coach", "admin"]}>
+                <SocialFeedPage />
               </ProtectedRoute>
             } />
             <Route path="/sensei" element={

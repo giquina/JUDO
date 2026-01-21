@@ -6,44 +6,10 @@ import Navigation from "@/components/Navigation";
 import Calendar from "@/components/Calendar";
 import ClassManagementModal from "@/components/ClassManagementModal";
 import PageTransition from "@/components/PageTransition";
-import { DemoBanner } from "@/components/DemoBanner";
 import { Users, Calendar as CalendarIcon, TrendingUp, Award, MessageSquare, Plus } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Mock data - will be replaced with Convex queries
-const mockClasses = [
-  {
-    _id: "class-1",
-    name: "Monday Evening Fundamentals",
-    dayOfWeek: "Monday",
-    startTime: "19:00",
-    endTime: "20:30",
-    level: "beginner" as const,
-    maxCapacity: 25,
-    location: "Main Dojo",
-  },
-  {
-    _id: "class-2",
-    name: "Wednesday Intermediate",
-    dayOfWeek: "Wednesday",
-    startTime: "19:00",
-    endTime: "20:30",
-    level: "intermediate" as const,
-    maxCapacity: 20,
-    location: "Main Dojo",
-  },
-  {
-    _id: "class-3",
-    name: "Friday Advanced",
-    dayOfWeek: "Friday",
-    startTime: "20:00",
-    endTime: "21:30",
-    level: "advanced" as const,
-    maxCapacity: 15,
-    location: "Studio B",
-  },
-];
-
 const mockAttendance = [
   { memberId: "1", name: "Alice Chen", beltRank: "blue", status: "attended", checkInTime: Date.now() - 3600000 },
   { memberId: "2", name: "Raj Patel", beltRank: "white", status: "attended", checkInTime: Date.now() - 3500000 },
@@ -70,11 +36,9 @@ const BELT_COLORS: Record<string, string> = {
 };
 
 export default function SenseiDashboard() {
-  const [selectedClass, setSelectedClass] = useState<string | null>(null);
   const [attendance, setAttendance] = useState(mockAttendance);
   const [showClassModal, setShowClassModal] = useState(false);
   const [classModalMode, setClassModalMode] = useState<"create" | "edit">("create");
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const toggleAttendance = (memberId: string) => {
     setAttendance(prev => prev.map(a => {
@@ -90,13 +54,12 @@ export default function SenseiDashboard() {
     }));
   };
 
-  const handleAddClass = (date: Date) => {
-    setSelectedDate(date);
+  const handleAddClass = (_date: Date) => {
     setClassModalMode("create");
     setShowClassModal(true);
   };
 
-  const handleEditClass = (classId: string) => {
+  const handleEditClass = (_classId: string) => {
     setClassModalMode("edit");
     setShowClassModal(true);
   };
@@ -117,7 +80,6 @@ export default function SenseiDashboard() {
     <PageTransition>
       <div className="min-h-screen bg-background">
         <Navigation />
-        <DemoBanner />
         <main className="container mx-auto p-4 space-y-6">
           <div className="flex items-center justify-between">
             <div>

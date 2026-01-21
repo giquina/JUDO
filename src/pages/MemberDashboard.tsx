@@ -7,7 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import Navigation from "@/components/Navigation";
 import CheckInQR from "@/components/CheckInQR";
 import PageTransition from "@/components/PageTransition";
-import { Calendar, Clock, Trophy, CheckCircle2, XCircle, Dumbbell } from "lucide-react";
+import Leaderboard from "@/components/Leaderboard";
+import AchievementBadge from "@/components/AchievementBadge";
+import AchievementUnlockModal from "@/components/AchievementUnlockModal";
+import ProgressStats from "@/components/ProgressStats";
+import { Calendar, Clock, Trophy, CheckCircle2, XCircle, Dumbbell, Award } from "lucide-react";
+import { allAchievements, type Achievement } from "@/data/gamificationMockData";
 
 // Mock data - will be replaced with Convex queries
 const mockMember = {
@@ -112,6 +117,8 @@ export default function MemberDashboard() {
   const [showScanner, setShowScanner] = useState(false);
   const [checkInStatus, setCheckInStatus] = useState<"idle" | "success" | "error">("idle");
   const [isCheckingIn, setIsCheckingIn] = useState(false);
+  const [selectedAchievement, setSelectedAchievement] = useState<Achievement | null>(null);
+  const [showAchievementModal, setShowAchievementModal] = useState(false);
 
   const handleCheckIn = async (classId: string) => {
     setIsCheckingIn(true);
@@ -400,7 +407,87 @@ export default function MemberDashboard() {
               </CardContent>
             </Card>
           </motion.div>
+
+          {/* Gamification Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.0 }}
+            className="pt-8"
+            data-section="achievements"
+          >
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+              <Trophy className="h-6 w-6 text-yellow-500" />
+              Your Achievements
+            </h2>
+          </motion.div>
+
+          {/* Progress Stats */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.1 }}
+          >
+            <ProgressStats />
+          </motion.div>
+
+          {/* Achievement Badges */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2 }}
+          >
+            <Card className="hover:shadow-lg transition-shadow duration-300">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Award className="h-5 w-5 text-purple-500" />
+                  Badge Collection
+                </CardTitle>
+                <CardDescription>
+                  {allAchievements.filter(a => a.unlocked).length} of {allAchievements.length} earned
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
+                  {allAchievements.map((achievement) => (
+                    <AchievementBadge
+                      key={achievement.id}
+                      achievement={achievement}
+                      size="md"
+                      onClick={() => {
+                        if (achievement.unlocked) {
+                          setSelectedAchievement(achievement);
+                          setShowAchievementModal(true);
+                        }
+                      }}
+                    />
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Leaderboard */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.3 }}
+          >
+            <Leaderboard />
+          </motion.div>
         </main>
+
+        {/* Achievement Unlock Modal */}
+        <AchievementUnlockModal
+          achievement={selectedAchievement}
+          isOpen={showAchievementModal}
+          onClose={() => setShowAchievementModal(false)}
+          onViewAll={() => {
+            // Scroll to achievements section
+            const achievementsSection = document.querySelector('[data-section="achievements"]');
+            achievementsSection?.scrollIntoView({ behavior: 'smooth' });
+          }}
+        />
       </div>
     </PageTransition>
   );

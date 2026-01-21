@@ -783,7 +783,7 @@ export default function LandingPage() {
               <ul className="space-y-2 text-muted-foreground">
                 <li><a href="#" className="hover:text-foreground transition-colors">About</a></li>
                 <li><a href="#" className="hover:text-foreground transition-colors">Contact</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Careers</a></li>
+                <li><Link to="/careers" className="hover:text-foreground transition-colors">Careers</Link></li>
               </ul>
             </div>
 

@@ -1,0 +1,180 @@
+import type { Post } from "@/types/social";
+
+// Mock posts for the social feed - will be replaced with Convex queries
+export const mockPosts: Post[] = [
+  {
+    _id: "post-1",
+    authorId: "3",
+    authorName: "Admin User",
+    authorRole: "admin",
+    authorBeltRank: "black",
+    type: "announcement",
+    content: "⚠️ Important: Dojo will be closed tomorrow (22nd January) due to facility maintenance. We'll resume normal schedule on Wednesday. Stay strong! 💪",
+    reactions: [
+      { type: "like", count: 23, userReacted: false },
+      { type: "respect", count: 12, userReacted: false },
+    ],
+    commentCount: 8,
+    isPinned: true,
+    createdAt: Date.now() - 2 * 60 * 60 * 1000, // 2 hours ago
+    updatedAt: Date.now() - 2 * 60 * 60 * 1000,
+  },
+  {
+    _id: "post-2",
+    authorId: "2",
+    authorName: "Sensei Tanaka",
+    authorRole: "coach",
+    authorBeltRank: "black",
+    type: "achievement",
+    content: "🎉 Huge congratulations to Sarah Williams on her promotion to Blue Belt! Your dedication and perseverance have truly paid off. Keep up the excellent work! 🥋",
+    reactions: [
+      { type: "like", count: 45, userReacted: true },
+      { type: "respect", count: 38, userReacted: false },
+      { type: "fire", count: 22, userReacted: false },
+    ],
+    commentCount: 15,
+    isPinned: false,
+    createdAt: Date.now() - 5 * 60 * 60 * 1000, // 5 hours ago
+    updatedAt: Date.now() - 5 * 60 * 60 * 1000,
+  },
+  {
+    _id: "post-3",
+    authorId: "1",
+    authorName: "Alice Chen",
+    authorRole: "member",
+    authorBeltRank: "blue",
+    type: "community",
+    content: "Just nailed my first clean Uchi Mata in randori! 💪 Been working on this technique for months. Thanks to everyone who's helped me practice!",
+    reactions: [
+      { type: "like", count: 28, userReacted: false },
+      { type: "strong", count: 19, userReacted: false },
+      { type: "fire", count: 15, userReacted: true },
+    ],
+    commentCount: 9,
+    isPinned: false,
+    createdAt: Date.now() - 8 * 60 * 60 * 1000, // 8 hours ago
+    updatedAt: Date.now() - 8 * 60 * 60 * 1000,
+  },
+  {
+    _id: "post-4",
+    authorId: "2",
+    authorName: "Sensei Tanaka",
+    authorRole: "coach",
+    authorBeltRank: "black",
+    type: "event",
+    content: "📅 Regional Competition next Saturday (25th Jan) at Excel London! Who's competing? Please confirm by Wednesday so we can arrange transport. This is a great opportunity to test your skills! 🏆",
+    reactions: [
+      { type: "like", count: 31, userReacted: false },
+      { type: "respect", count: 18, userReacted: false },
+      { type: "fire", count: 24, userReacted: false },
+    ],
+    commentCount: 12,
+    isPinned: false,
+    createdAt: Date.now() - 12 * 60 * 60 * 1000, // 12 hours ago
+    updatedAt: Date.now() - 12 * 60 * 60 * 1000,
+  },
+  {
+    _id: "post-5",
+    authorId: "4",
+    authorName: "Marcus Johnson",
+    authorRole: "member",
+    authorBeltRank: "green",
+    type: "community",
+    content: "Thank you to my training partners tonight! Really pushed me to my limits during newaza. Feeling stronger every session 💪🥋",
+    reactions: [
+      { type: "like", count: 18, userReacted: false },
+      { type: "respect", count: 14, userReacted: false },
+    ],
+    commentCount: 6,
+    isPinned: false,
+    createdAt: Date.now() - 20 * 60 * 60 * 1000, // 20 hours ago
+    updatedAt: Date.now() - 20 * 60 * 60 * 1000,
+  },
+  {
+    _id: "post-6",
+    authorId: "2",
+    authorName: "Sensei Tanaka",
+    authorRole: "coach",
+    authorBeltRank: "black",
+    type: "community",
+    content: "Reminder: Proper breakfall technique is crucial! Don't rush through ukemi practice. A few extra minutes of breakfalls now can prevent injuries later. Stay safe on the mat! 🥋",
+    reactions: [
+      { type: "like", count: 42, userReacted: false },
+      { type: "respect", count: 35, userReacted: true },
+    ],
+    commentCount: 7,
+    isPinned: false,
+    createdAt: Date.now() - 2 * 24 * 60 * 60 * 1000, // 2 days ago
+    updatedAt: Date.now() - 2 * 24 * 60 * 60 * 1000,
+  },
+  {
+    _id: "post-7",
+    authorId: "5",
+    authorName: "Emma Davies",
+    authorRole: "member",
+    authorBeltRank: "orange",
+    type: "community",
+    content: "First competition nerves kicking in! 😅 Any tips for staying calm during matches? Competing this Saturday.",
+    reactions: [
+      { type: "like", count: 22, userReacted: false },
+      { type: "strong", count: 16, userReacted: false },
+    ],
+    commentCount: 18,
+    isPinned: false,
+    createdAt: Date.now() - 3 * 24 * 60 * 60 * 1000, // 3 days ago
+    updatedAt: Date.now() - 3 * 24 * 60 * 60 * 1000,
+  },
+  {
+    _id: "post-8",
+    authorId: "6",
+    authorName: "James Wilson",
+    authorRole: "member",
+    authorBeltRank: "yellow",
+    type: "community",
+    content: "Completed my first full month of training! Already feeling more confident and fit. Love this club's supportive atmosphere 🙏",
+    reactions: [
+      { type: "like", count: 35, userReacted: false },
+      { type: "fire", count: 12, userReacted: false },
+    ],
+    commentCount: 11,
+    isPinned: false,
+    createdAt: Date.now() - 4 * 24 * 60 * 60 * 1000, // 4 days ago
+    updatedAt: Date.now() - 4 * 24 * 60 * 60 * 1000,
+  },
+  {
+    _id: "post-9",
+    authorId: "2",
+    authorName: "Sensei Tanaka",
+    authorRole: "coach",
+    authorBeltRank: "black",
+    type: "announcement",
+    content: "New training schedule starting February 1st! Adding an extra beginners class on Saturday mornings (10am-11:30am). Perfect for those who can't make weekday sessions. 📅",
+    reactions: [
+      { type: "like", count: 56, userReacted: false },
+      { type: "respect", count: 24, userReacted: false },
+    ],
+    commentCount: 14,
+    isPinned: false,
+    createdAt: Date.now() - 5 * 24 * 60 * 60 * 1000, // 5 days ago
+    updatedAt: Date.now() - 5 * 24 * 60 * 60 * 1000,
+  },
+  {
+    _id: "post-10",
+    authorId: "7",
+    authorName: "Olivia Martinez",
+    authorRole: "member",
+    authorBeltRank: "brown",
+    type: "achievement",
+    content: "Just got selected for the national squad! 🎉 Dream come true. Thank you to everyone at Birkbeck Judo for helping me get here! 🥋🇬🇧",
+    reactions: [
+      { type: "like", count: 67, userReacted: true },
+      { type: "respect", count: 54, userReacted: true },
+      { type: "fire", count: 48, userReacted: false },
+      { type: "strong", count: 32, userReacted: false },
+    ],
+    commentCount: 28,
+    isPinned: false,
+    createdAt: Date.now() - 6 * 24 * 60 * 60 * 1000, // 6 days ago
+    updatedAt: Date.now() - 6 * 24 * 60 * 60 * 1000,
+  },
+];

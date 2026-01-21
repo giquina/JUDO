@@ -15,6 +15,8 @@ import {
   X,
   ChevronRight,
   User,
+  MessageSquare,
+  Briefcase,
 } from "lucide-react";
 
 const navItems = [
@@ -23,6 +25,18 @@ const navItems = [
     label: "Dashboard",
     icon: LayoutDashboard,
     description: "View your training progress"
+  },
+  {
+    path: "/community",
+    label: "Community",
+    icon: MessageSquare,
+    description: "Connect with the dojo"
+  },
+  {
+    path: "/careers",
+    label: "Careers",
+    icon: Briefcase,
+    description: "Join the JUDO team"
   },
   {
     path: "/sensei",
