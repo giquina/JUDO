@@ -25,9 +25,9 @@ export default function LoginPage() {
         case "coach":
           navigate("/coach");
           break;
-        case "admin":
         case "treasurer":
         case "super_admin":
+        case "content_manager":
           navigate("/admin");
           break;
         default:
@@ -49,9 +49,17 @@ export default function LoginPage() {
       return;
     }
 
-    // Recommend @bbk.ac.uk for students but allow other emails
-    if (!email.endsWith("@bbk.ac.uk")) {
-      toast.info("Tip: Use your @bbk.ac.uk email for student access");
+    // Check for university email and show appropriate message
+    const universityDomains = [
+      "@mail.bbk.ac.uk", "@bbk.ac.uk", "@ucl.ac.uk", "@imperial.ac.uk",
+      "@kcl.ac.uk", "@qmul.ac.uk", "@soas.ac.uk", "@lse.ac.uk"
+    ];
+    const isUniversityEmail = universityDomains.some(domain => email.toLowerCase().endsWith(domain));
+
+    if (isUniversityEmail) {
+      toast.success("University email detected - Student discount eligible!");
+    } else {
+      toast.info("Tip: Use your university email (.ac.uk) to qualify for the £25 student discount");
     }
 
     setIsLoading(true);
@@ -179,9 +187,14 @@ export default function LoginPage() {
                           disabled={isLoading}
                           className="h-12"
                         />
-                        <p className="text-xs text-muted-foreground">
-                          Use your @bbk.ac.uk email for student access
-                        </p>
+                        <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                          <p className="text-xs text-blue-800 dark:text-blue-300 font-medium mb-1">
+                            Student Discount Available
+                          </p>
+                          <p className="text-xs text-blue-700 dark:text-blue-400">
+                            Use your university email (.ac.uk) to get £25/month student pricing. Non-students welcome at standard rates.
+                          </p>
+                        </div>
                       </div>
                       <Button
                         type="submit"

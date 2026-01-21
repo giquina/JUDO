@@ -7,9 +7,13 @@ import { useAuth } from "./lib/auth";
 import { Spinner } from "./components/ui/spinner";
 import LoginPage from "./pages/LoginPage";
 import LandingPage from "./pages/LandingPage";
+import SenseiLandingPage from "./pages/SenseiLandingPage";
 import MemberDashboard from "./pages/MemberDashboard";
 import CoachDashboard from "./pages/CoachDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import TreasurerDashboard from "./pages/TreasurerDashboard";
+import ContentManagerDashboard from "./pages/ContentManagerDashboard";
+import ChatPage from "./pages/ChatPage";
 import NotFound from "./pages/NotFound";
 
 // Smart redirect based on auth status
@@ -29,12 +33,17 @@ function HomeRedirect() {
     return <LandingPage />;
   }
 
-  // Redirect authenticated users to their dashboard
+  // Redirect authenticated users to their dashboard based on role
   switch (role) {
-    case "admin":
+    case "super_admin":
       return <Navigate to="/admin" replace />;
+    case "treasurer":
+      return <Navigate to="/treasurer" replace />;
+    case "content_manager":
+      return <Navigate to="/content" replace />;
     case "coach":
       return <Navigate to="/coach" replace />;
+    case "member":
     default:
       return <Navigate to="/member" replace />;
   }
@@ -48,19 +57,37 @@ function App() {
           <Routes>
             <Route path="/" element={<HomeRedirect />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/for-senseis" element={<SenseiLandingPage />} />
+            <Route path="/for-coaches" element={<Navigate to="/for-senseis" replace />} />
+            <Route path="/for-instructors" element={<Navigate to="/for-senseis" replace />} />
             <Route path="/member" element={
-              <ProtectedRoute allowedRoles={["member", "coach", "admin"]}>
+              <ProtectedRoute allowedRoles={["member", "coach", "treasurer", "content_manager", "super_admin"]}>
                 <MemberDashboard />
               </ProtectedRoute>
             } />
             <Route path="/coach" element={
-              <ProtectedRoute allowedRoles={["coach", "admin"]}>
+              <ProtectedRoute allowedRoles={["coach", "super_admin"]}>
                 <CoachDashboard />
               </ProtectedRoute>
             } />
+            <Route path="/treasurer" element={
+              <ProtectedRoute allowedRoles={["treasurer", "super_admin"]}>
+                <TreasurerDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/content" element={
+              <ProtectedRoute allowedRoles={["content_manager", "super_admin"]}>
+                <ContentManagerDashboard />
+              </ProtectedRoute>
+            } />
             <Route path="/admin" element={
-              <ProtectedRoute allowedRoles={["admin"]}>
+              <ProtectedRoute allowedRoles={["super_admin"]}>
                 <AdminDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/chat" element={
+              <ProtectedRoute allowedRoles={["member", "coach", "treasurer", "content_manager", "super_admin"]}>
+                <ChatPage />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />

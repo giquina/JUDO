@@ -70,38 +70,43 @@ const features = [
 const pricingPlans = [
   {
     name: "Student",
-    price: "15",
+    price: "25",
     period: "month",
-    description: "Perfect for beginners",
+    description: "For university students",
+    badge: "University Email Required",
     features: [
       "8 sessions per month",
       "QR check-in access",
       "Progress tracking",
       "Class schedule access",
-      "Email support"
+      "Email support",
+      "Valid .ac.uk email required"
     ],
     cta: "Start Training",
-    popular: false
+    popular: false,
+    studentOnly: true
   },
   {
     name: "Standard",
-    price: "25",
+    price: "40",
     period: "month",
     description: "Most popular choice",
     features: [
       "12 sessions per month",
-      "All Student features",
+      "QR check-in access",
+      "Progress tracking",
       "Priority class booking",
       "Belt grading access",
       "Coach feedback",
       "Competition entry"
     ],
     cta: "Get Started",
-    popular: true
+    popular: true,
+    studentOnly: false
   },
   {
     name: "Premium",
-    price: "40",
+    price: "60",
     period: "month",
     description: "For dedicated judoka",
     features: [
@@ -114,7 +119,8 @@ const pricingPlans = [
       "Competition coaching"
     ],
     cta: "Go Premium",
-    popular: false
+    popular: false,
+    studentOnly: false
   }
 ];
 
@@ -203,6 +209,9 @@ export default function LandingPage() {
               <a href="#faq" className="text-muted-foreground hover:text-foreground transition-colors">
                 FAQ
               </a>
+              <Link to="/for-senseis" className="text-muted-foreground hover:text-foreground transition-colors">
+                For Instructors
+              </Link>
             </div>
 
             {/* Desktop Actions */}
@@ -277,6 +286,13 @@ export default function LandingPage() {
                 >
                   FAQ
                 </a>
+                <Link
+                  to="/for-senseis"
+                  className="text-muted-foreground hover:text-foreground transition-colors py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  For Instructors
+                </Link>
                 <div className="flex flex-col gap-2 pt-4 border-t">
                   <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
                     <Button variant="outline" className="w-full">Sign In</Button>
@@ -520,6 +536,11 @@ export default function LandingPage() {
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Choose the plan that fits your training goals. All plans include a 7-day free trial.
             </p>
+            <div className="mt-6 max-w-2xl mx-auto bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+              <p className="text-sm text-blue-800 dark:text-blue-300">
+                <strong>Student Discount:</strong> Sign up with a valid UK university email (.ac.uk) to access the £25/month student tier. Non-students are welcome at our Standard and Premium tiers.
+              </p>
+            </div>
           </motion.div>
 
           <motion.div
@@ -535,6 +556,8 @@ export default function LandingPage() {
                   className={`h-full relative ${
                     plan.popular
                       ? "border-primary shadow-lg shadow-primary/10 scale-105"
+                      : plan.studentOnly
+                      ? "border-blue-500/50"
                       : "hover:border-primary/50"
                   } transition-all duration-300 hover:shadow-lg`}
                 >
@@ -542,6 +565,13 @@ export default function LandingPage() {
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                       <Badge className="bg-gradient-to-r from-primary to-blue-600 text-white px-4">
                         Most Popular
+                      </Badge>
+                    </div>
+                  )}
+                  {plan.studentOnly && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                      <Badge className="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-4">
+                        Students Only
                       </Badge>
                     </div>
                   )}

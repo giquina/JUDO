@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import Navigation from "@/components/Navigation";
 import PageTransition from "@/components/PageTransition";
+import { useAuth } from "@/lib/auth";
+import { AlertCircle } from "lucide-react";
 
 // Mock data - will be replaced with Convex queries
 const mockMembers = [
@@ -36,8 +38,33 @@ const BELT_COLORS: Record<string, string> = {
 };
 
 export default function AdminDashboard() {
+  const { isSuperAdmin } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTab, setSelectedTab] = useState<"members" | "payments">("members");
+
+  // Check permissions - only super admin can access
+  if (!isSuperAdmin) {
+    return (
+      <PageTransition>
+        <div className="min-h-screen bg-background">
+          <Navigation />
+          <main className="container mx-auto p-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <AlertCircle className="w-5 h-5 text-destructive" />
+                  Access Denied
+                </CardTitle>
+                <CardDescription>
+                  This page is only accessible to Super Administrators.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </main>
+        </div>
+      </PageTransition>
+    );
+  }
 
   const filteredMembers = mockMembers.filter(
     (m) =>
@@ -235,6 +262,16 @@ export default function AdminDashboard() {
           <Button variant="outline">Export Payments CSV</Button>
           <Button variant="outline">Generate Report</Button>
         </div>
+
+        {/* Note about permissions */}
+        <Card className="bg-muted/50">
+          <CardContent className="pt-6">
+            <p className="text-sm text-muted-foreground">
+              <strong>Super Admin Role:</strong> You have full system access including member management, payment information,
+              QR check-in functionality, announcements, events, and admin management. You can perform all actions in the system.
+            </p>
+          </CardContent>
+        </Card>
       </main>
       </div>
     </PageTransition>

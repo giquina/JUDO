@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useTheme } from "./ThemeProvider";
+import { useAuth } from "@/lib/auth";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
 import {
   LayoutDashboard,
   Users,
@@ -14,35 +18,105 @@ import {
   X,
   ChevronRight,
   User,
+  DollarSign,
+  MessageSquare,
 } from "lucide-react";
 
-const navItems = [
-  {
-    path: "/member",
-    label: "Dashboard",
-    icon: LayoutDashboard,
-    description: "View your training progress"
-  },
-  {
-    path: "/coach",
-    label: "Coach",
-    icon: Users,
-    description: "Manage students and classes"
-  },
-  {
-    path: "/admin",
-    label: "Admin",
-    icon: Settings,
-    description: "System administration"
-  },
-];
+interface NavItem {
+  path: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+  description: string;
+  requiresRole?: string[];
+  requiresPermission?: string;
+}
 
 export default function Navigation() {
   const location = useLocation();
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
+  const { role, hasPermission, user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  // Define navigation items based on roles
+  const allNavItems: NavItem[] = [
+    {
+      path: "/member",
+      label: "Dashboard",
+      icon: LayoutDashboard,
+      description: "View your training progress",
+      requiresRole: ["member", "coach", "treasurer", "content_manager", "super_admin"]
+    },
+    {
+      path: "/chat",
+      label: "Chat",
+      icon: MessageSquare,
+      description: "Group messages and discussions",
+      requiresRole: ["member", "coach", "treasurer", "content_manager", "super_admin"]
+    },
+    {
+      path: "/coach",
+      label: "Coach",
+      icon: Users,
+      description: "Manage students and classes",
+      requiresRole: ["coach", "super_admin"],
+      requiresPermission: "check_in_members"
+    },
+    {
+      path: "/treasurer",
+      label: "Treasurer",
+      icon: DollarSign,
+      description: "Financial management",
+      requiresRole: ["treasurer", "super_admin"],
+      requiresPermission: "view_payments"
+    },
+    {
+      path: "/content",
+      label: "Content",
+      icon: MessageSquare,
+      description: "Announcements & events",
+      requiresRole: ["content_manager", "super_admin"],
+      requiresPermission: "post_announcements"
+    },
+    {
+      path: "/admin",
+      label: "Admin",
+      icon: Settings,
+      description: "System administration",
+      requiresRole: ["super_admin"],
+      requiresPermission: "manage_admins"
+    },
+  ];
+
+  // Filter navigation items based on user role and permissions
+  const navItems = allNavItems.filter(item => {
+    if (!role) return false;
+
+    // Check if user has required role
+    if (item.requiresRole && !item.requiresRole.includes(role)) {
+      return false;
+    }
+
+    // Check if user has required permission
+    if (item.requiresPermission && !hasPermission(item.requiresPermission as any)) {
+      return false;
+    }
+
+    return true;
+  });
+
+  // Get current member for unread count
+  const currentMember = useQuery(
+    api.functions.members.getByUserId,
+    user?.userId ? { userId: user.userId } : "skip"
+  );
+
+  // Get unread message count
+  const unreadCount = useQuery(
+    api.functions.messages.getUnreadCount,
+    currentMember?._id ? { memberId: currentMember._id } : "skip"
+  );
 
   // Track scroll position for header styling
   useEffect(() => {
@@ -150,6 +224,14 @@ export default function Navigation() {
                         <span className="relative z-10 flex items-center gap-2">
                           <Icon className="w-4 h-4" />
                           <span className="font-medium">{item.label}</span>
+                          {item.path === "/chat" && unreadCount && unreadCount > 0 && (
+                            <Badge
+                              variant="destructive"
+                              className="h-5 min-w-5 px-1.5 text-xs flex items-center justify-center"
+                            >
+                              {unreadCount > 9 ? "9+" : unreadCount}
+                            </Badge>
+                          )}
                         </span>
                       </Button>
                     </motion.div>
@@ -198,8 +280,10 @@ export default function Navigation() {
                     <User className="w-4 h-4 text-primary-foreground" />
                   </div>
                   <div className="hidden lg:flex flex-col">
-                    <span className="text-sm font-medium leading-tight">User</span>
-                    <span className="text-[10px] text-muted-foreground">Member</span>
+                    <span className="text-sm font-medium leading-tight">{user?.name || "User"}</span>
+                    <span className="text-[10px] text-muted-foreground capitalize">
+                      {role?.replace("_", " ") || "Member"}
+                    </span>
                   </div>
                 </motion.div>
 
@@ -279,8 +363,10 @@ export default function Navigation() {
                     <User className="w-6 h-6 text-primary-foreground" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold">User</p>
-                    <p className="text-sm text-muted-foreground">Member Account</p>
+                    <p className="font-semibold">{user?.name || "User"}</p>
+                    <p className="text-sm text-muted-foreground capitalize">
+                      {role?.replace("_", " ") || "Member"} Account
+                    </p>
                   </div>
                 </div>
 
@@ -314,7 +400,17 @@ export default function Navigation() {
                               <Icon className="w-5 h-5" />
                             </div>
                             <div className="flex-1">
-                              <p className="font-medium">{item.label}</p>
+                              <div className="flex items-center gap-2">
+                                <p className="font-medium">{item.label}</p>
+                                {item.path === "/chat" && unreadCount && unreadCount > 0 && (
+                                  <Badge
+                                    variant="destructive"
+                                    className="h-5 min-w-5 px-1.5 text-xs flex items-center justify-center"
+                                  >
+                                    {unreadCount > 9 ? "9+" : unreadCount}
+                                  </Badge>
+                                )}
+                              </div>
                               <p
                                 className={`text-xs ${
                                   isActive

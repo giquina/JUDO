@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import Navigation from "@/components/Navigation";
 import QRCodeGenerator from "@/components/QRCodeGenerator";
 import PageTransition from "@/components/PageTransition";
+import { useAuth } from "@/lib/auth";
+import { AlertCircle } from "lucide-react";
 
 // Mock data - will be replaced with Convex queries
 const mockClasses = [
@@ -59,9 +61,34 @@ const BELT_COLORS: Record<string, string> = {
 };
 
 export default function CoachDashboard() {
+  const { hasPermission } = useAuth();
   const [selectedClass, setSelectedClass] = useState<string | null>(null);
   const [showQR, setShowQR] = useState(false);
   const [attendance, setAttendance] = useState(mockAttendance);
+
+  // Check permissions - must have check_in_members permission
+  if (!hasPermission("check_in_members")) {
+    return (
+      <PageTransition>
+        <div className="min-h-screen bg-background">
+          <Navigation />
+          <main className="container mx-auto p-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <AlertCircle className="w-5 h-5 text-destructive" />
+                  Access Denied
+                </CardTitle>
+                <CardDescription>
+                  You don't have permission to access the coach dashboard. This page requires QR check-in permissions.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </main>
+        </div>
+      </PageTransition>
+    );
+  }
 
   const todayClass = mockClasses[0]; // For demo, show first class
   const currentClass = mockClasses.find(c => c._id === selectedClass);

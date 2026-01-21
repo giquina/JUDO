@@ -1,10 +1,11 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../lib/auth";
+import type { UserRole } from "../lib/auth";
 import { Spinner } from "./ui/spinner";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  allowedRoles?: ("member" | "coach" | "admin")[];
+  allowedRoles?: UserRole[];
 }
 
 export default function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
@@ -22,11 +23,21 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
     return <Navigate to="/login" replace />;
   }
 
-  if (allowedRoles && role && !allowedRoles.includes(role as any)) {
+  if (allowedRoles && role && !allowedRoles.includes(role)) {
     // Redirect to appropriate dashboard based on role
-    if (role === "admin") return <Navigate to="/admin" replace />;
-    if (role === "coach") return <Navigate to="/coach" replace />;
-    return <Navigate to="/member" replace />;
+    switch (role) {
+      case "super_admin":
+        return <Navigate to="/admin" replace />;
+      case "treasurer":
+        return <Navigate to="/treasurer" replace />;
+      case "content_manager":
+        return <Navigate to="/content" replace />;
+      case "coach":
+        return <Navigate to="/coach" replace />;
+      case "member":
+      default:
+        return <Navigate to="/member" replace />;
+    }
   }
 
   return <>{children}</>;

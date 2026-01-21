@@ -1,5 +1,10 @@
 import { query, mutation } from "../_generated/server";
 import { v } from "convex/values";
+import {
+  isUniversityEmail,
+  extractEmailDomain,
+  getEligibleTiers,
+} from "./emailVerification";
 
 // Get all members
 export const getAll = query({
@@ -40,6 +45,10 @@ export const create = mutation({
   },
   handler: async (ctx, args) => {
     const now = Date.now();
+
+    // Check if email is from a university
+    const eligibility = getEligibleTiers(args.email);
+
     return await ctx.db.insert("members", {
       userId: args.userId,
       email: args.email,
@@ -49,6 +58,9 @@ export const create = mutation({
       totalSessions: 0,
       subscriptionStatus: "inactive",
       subscriptionTier: "none",
+      isStudent: eligibility.isStudent,
+      emailVerified: true, // Email is verified through magic link
+      verifiedDomain: eligibility.verifiedDomain || undefined,
       createdAt: now,
       updatedAt: now,
     });
@@ -93,5 +105,46 @@ export const getActiveCount = query({
       .withIndex("by_subscriptionStatus", (q) => q.eq("subscriptionStatus", "active"))
       .collect();
     return members.length;
+  },
+});
+
+// Check tier eligibility for a given email
+export const checkTierEligibility = query({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    return getEligibleTiers(args.email);
+  },
+});
+
+// Validate tier eligibility before subscription
+export const validateSubscriptionTier = mutation({
+  args: {
+    memberId: v.id("members"),
+    requestedTier: v.union(
+      v.literal("student"),
+      v.literal("standard"),
+      v.literal("premium")
+    ),
+  },
+  handler: async (ctx, args) => {
+    const member = await ctx.db.get(args.memberId);
+    if (!member) {
+      throw new Error("Member not found");
+    }
+
+    // Check if student tier is requested but user is not a student
+    if (args.requestedTier === "student" && !member.isStudent) {
+      throw new Error(
+        "Student tier requires a valid university email address. Please use your university email to sign up."
+      );
+    }
+
+    // All other tiers are available to everyone
+    return {
+      allowed: true,
+      tier: args.requestedTier,
+      isStudent: member.isStudent,
+      verifiedDomain: member.verifiedDomain,
+    };
   },
 });
