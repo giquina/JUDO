@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import Navigation from "@/components/Navigation";
 import PageTransition from "@/components/PageTransition";
+import { DemoBanner } from "@/components/DemoBanner";
 
 // Mock data - will be replaced with Convex queries
 const mockMembers = [
@@ -58,6 +59,7 @@ export default function AdminDashboard() {
     <PageTransition>
       <div className="min-h-screen bg-background">
         <Navigation />
+        <DemoBanner />
       <main className="container mx-auto p-4 space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>

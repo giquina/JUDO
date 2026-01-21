@@ -81,13 +81,6 @@ export default function LoginPage() {
     setEmail("");
   };
 
-  // Demo: Simulate clicking the magic link
-  const handleDemoSignIn = () => {
-    // Call the confirmSignIn function exposed on window
-    (window as unknown as { confirmJudoSignIn: (email: string) => void }).confirmJudoSignIn(email);
-    toast.success(`Signed in as ${email}`);
-  };
-
   return (
     <PageTransition>
       <motion.div
@@ -137,14 +130,6 @@ export default function LoginPage() {
                           Click the link in the email to sign in. The link will expire in 24 hours.
                         </p>
                       </div>
-
-                      {/* Demo button - remove in production */}
-                      <Button
-                        onClick={handleDemoSignIn}
-                        className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
-                      >
-                        ✨ Demo: Click to Sign In
-                      </Button>
 
                       <div className="space-y-2">
                         <p className="text-xs text-muted-foreground">

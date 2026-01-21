@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import Navigation from "@/components/Navigation";
 import CheckInQR from "@/components/CheckInQR";
 import PageTransition from "@/components/PageTransition";
+import { DemoBanner } from "@/components/DemoBanner";
 import { Calendar, Clock, Trophy, CheckCircle2, XCircle, Dumbbell } from "lucide-react";
 
 // Mock data - will be replaced with Convex queries
@@ -138,6 +139,7 @@ export default function MemberDashboard() {
     <PageTransition>
       <div className="min-h-screen bg-background">
         <Navigation />
+        <DemoBanner />
         <main className="container mx-auto p-4 space-y-6">
           {/* Welcome Header */}
           <motion.div
