@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from "framer-motion";
 import {
@@ -7,7 +7,12 @@ import {
   QrCode,
   Trophy,
   User,
+  Users,
+  CreditCard,
+  BarChart3,
+  Settings,
 } from "lucide-react";
+import { useAuth } from "@/lib/auth";
 
 interface NavItem {
   path: string;
@@ -16,12 +21,29 @@ interface NavItem {
   isCenter?: boolean;
 }
 
-const navItems: NavItem[] = [
+// Navigation items for different user roles
+const memberNavItems: NavItem[] = [
   { path: "/member", label: "Home", icon: Home },
   { path: "/member/classes", label: "Keiko", icon: Calendar },
   { path: "/member/checkin", label: "Check-in", icon: QrCode, isCenter: true },
   { path: "/member/progress", label: "Progress", icon: Trophy },
   { path: "/member/profile", label: "Profile", icon: User },
+];
+
+const coachNavItems: NavItem[] = [
+  { path: "/coach", label: "Home", icon: Home },
+  { path: "/coach/classes", label: "Keiko", icon: Calendar },
+  { path: "/coach/attendance", label: "Attendance", icon: QrCode, isCenter: true },
+  { path: "/coach/members", label: "Judoka", icon: Users },
+  { path: "/coach/profile", label: "Profile", icon: User },
+];
+
+const adminNavItems: NavItem[] = [
+  { path: "/admin", label: "Home", icon: Home },
+  { path: "/admin/members", label: "Judoka", icon: Users },
+  { path: "/admin/payments", label: "Payments", icon: CreditCard, isCenter: true },
+  { path: "/admin/analytics", label: "Analytics", icon: BarChart3 },
+  { path: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
 // Custom hook for scroll direction detection
@@ -274,8 +296,33 @@ function NavItemButton({
 
 export default function MobileNavigation() {
   const location = useLocation();
+  const { role } = useAuth();
   const { scrollDirection, isAtTop } = useScrollDirection();
   const [isVisible, setIsVisible] = useState(true);
+
+  // Select navigation items based on user role
+  const navItems = useMemo(() => {
+    switch (role) {
+      case "admin":
+        return adminNavItems;
+      case "coach":
+        return coachNavItems;
+      default:
+        return memberNavItems;
+    }
+  }, [role]);
+
+  // Get the base path for the current role
+  const basePath = useMemo(() => {
+    switch (role) {
+      case "admin":
+        return "/admin";
+      case "coach":
+        return "/coach";
+      default:
+        return "/member";
+    }
+  }, [role]);
 
   // Handle visibility based on scroll
   useEffect(() => {
@@ -288,8 +335,9 @@ export default function MobileNavigation() {
 
   // Check if current path matches nav item (handle nested routes)
   const isActivePath = (itemPath: string) => {
-    if (itemPath === "/member") {
-      return location.pathname === "/member";
+    // For home paths, require exact match
+    if (itemPath === basePath) {
+      return location.pathname === basePath;
     }
     return location.pathname.startsWith(itemPath);
   };

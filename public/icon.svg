@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="#7c3aed"/>
+
+  <!-- Judo gi (uniform) silhouette -->
+  <g fill="#ffffff">
+    <!-- Gi body -->
+    <path d="M256 120 L180 160 L170 320 L200 380 L256 400 L312 380 L342 320 L332 160 Z"/>
+
+    <!-- Left lapel -->
+    <path d="M256 120 L200 160 L220 280 L256 240 Z" fill="#e5e5e5"/>
+
+    <!-- Right lapel -->
+    <path d="M256 120 L312 160 L292 280 L256 240 Z" fill="#e5e5e5"/>
+
+    <!-- Belt (obi) -->
+    <rect x="175" y="270" width="162" height="24" rx="4" fill="#1a1a1a"/>
+
+    <!-- Belt knot -->
+    <ellipse cx="256" cy="282" rx="18" ry="12" fill="#1a1a1a"/>
+
+    <!-- Belt tails -->
+    <path d="M240 290 L220 340 L230 345 L256 300" fill="#1a1a1a"/>
+    <path d="M272 290 L292 340 L282 345 L256 300" fill="#1a1a1a"/>
+
+    <!-- Collar detail lines -->
+    <line x1="220" y1="160" x2="232" y2="230" stroke="#7c3aed" stroke-width="3"/>
+    <line x1="292" y1="160" x2="280" y2="230" stroke="#7c3aed" stroke-width="3"/>
+  </g>
+
+  <!-- Japanese character hint - stylized circular emblem -->
+  <circle cx="256" cy="200" r="20" fill="none" stroke="#7c3aed" stroke-width="3"/>
+</svg>

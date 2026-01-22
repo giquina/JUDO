@@ -8,6 +8,7 @@ import Navigation from "@/components/Navigation";
 import MobileNavigation from "@/components/MobileNavigation";
 import CheckInQR from "@/components/CheckInQR";
 import PageTransition from "@/components/PageTransition";
+import BeltJourney from "@/components/BeltJourney";
 import { Calendar, Clock, Trophy, CheckCircle2, XCircle, Dumbbell, Flame, Star, Zap, Target } from "lucide-react";
 
 // Mock data - will be replaced with Convex queries
@@ -468,6 +469,23 @@ export default function MemberDashboard() {
               </motion.div>
             )}
           </AnimatePresence>
+
+          {/* Belt Journey Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+              <CardContent className="py-6">
+                <BeltJourney
+                  currentBelt={mockMember.beltRank}
+                  totalSessions={mockMember.totalSessions}
+                  daysSincePromotion={45}
+                />
+              </CardContent>
+            </Card>
+          </motion.div>
 
           {/* Check-in Success Message */}
           <AnimatePresence>

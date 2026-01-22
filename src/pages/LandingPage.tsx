@@ -12,6 +12,7 @@ import {
   Sparkles, Activity, Target
 } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
+import JudoGlossary from "@/components/JudoGlossary";
 
 // Animation variants - optimized for mobile (reduced motion)
 const fadeInUp = {
@@ -914,6 +915,53 @@ export default function LandingPage() {
           </motion.div>
         </div>
       </section>
+
+      {/* Section Divider */}
+      <div className="section-divider" />
+
+      {/* Learn Judo Terms Section */}
+      <section className="py-24 md:py-32 relative overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 bg-muted/30" />
+        <div className="absolute top-0 left-0 w-96 h-96 bg-purple-600/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-600/5 rounded-full blur-3xl" />
+
+        <div className="container mx-auto px-4 relative">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeInUp}
+            className="text-center mb-12"
+          >
+            <Badge variant="outline" className="mb-4 px-4 py-1">
+              <Sparkles className="w-3 h-3 mr-1" /> Education
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
+              Learn the{" "}
+              <span className="bg-gradient-to-r from-violet-600 via-purple-500 to-blue-600 bg-clip-text text-transparent">
+                Language of Judo
+              </span>
+            </h2>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+              Master authentic Japanese terminology used in dojos worldwide
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={scaleIn}
+            className="max-w-5xl mx-auto"
+          >
+            <JudoGlossary maxHeight="500px" />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Section Divider */}
+      <div className="section-divider" />
 
       {/* CTA Section */}
       <section className="py-24 md:py-32 relative overflow-hidden">
