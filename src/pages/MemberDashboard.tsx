@@ -467,14 +467,17 @@ export default function MemberDashboard() {
                 loading="lazy"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/80 dark:from-background dark:via-background/98 dark:to-background/90" />
+              {/* Enhanced overlay for better text contrast */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30 dark:from-black/80 dark:via-black/60 dark:to-black/40" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
             </div>
 
             {/* Content */}
             <div className="relative p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex-1">
                 <motion.h1
-                  className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent"
+                  className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+                  style={{ textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.2 }}
@@ -488,7 +491,7 @@ export default function MemberDashboard() {
                   transition={{ delay: 0.4 }}
                 >
                   <MotivationalIcon type={motivational.emoji} />
-                  <p className="text-muted-foreground text-lg">{motivational.message}</p>
+                  <p className="text-white/90 text-lg drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.7)' }}>{motivational.message}</p>
                 </motion.div>
               </div>
 

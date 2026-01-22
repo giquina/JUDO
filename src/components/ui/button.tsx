@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
+import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { Spinner } from "./spinner"
 
@@ -35,17 +36,40 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
   isLoading?: boolean
+  disableAnimation?: boolean
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, isLoading = false, children, disabled, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button"
+  ({ className, variant, size, asChild = false, isLoading = false, disableAnimation = false, children, disabled, ...props }, ref) => {
+    if (asChild) {
+      return (
+        <Slot
+          className={cn(buttonVariants({ variant, size, className }))}
+          ref={ref}
+          {...props}
+        >
+          {children}
+        </Slot>
+      )
+    }
+
+    const isDisabled = disabled || isLoading
+
     return (
-      <Comp
+      <motion.button
         className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        disabled={disabled || isLoading}
-        {...props}
+        ref={ref as React.Ref<HTMLButtonElement>}
+        disabled={isDisabled}
+        whileHover={!isDisabled && !disableAnimation ? {
+          scale: 1.03,
+          y: -2,
+          transition: { duration: 0.2, ease: "easeOut" }
+        } : undefined}
+        whileTap={!isDisabled && !disableAnimation ? {
+          scale: 0.97,
+          transition: { duration: 0.1 }
+        } : undefined}
+        {...(props as React.ComponentPropsWithoutRef<typeof motion.button>)}
       >
         {isLoading ? (
           <>
@@ -55,7 +79,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ) : (
           children
         )}
-      </Comp>
+      </motion.button>
     )
   }
 )

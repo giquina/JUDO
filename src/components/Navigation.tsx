@@ -297,22 +297,32 @@ export default function Navigation() {
                         transition={{ delay: index * 0.05 }}
                       >
                         <Link to={item.path}>
-                          <div
+                          <motion.div
                             className={`flex items-center gap-3 p-3 rounded-xl transition-all ${
                               isActive
                                 ? "bg-primary text-primary-foreground"
                                 : "hover:bg-muted"
                             }`}
+                            whileHover={!isActive ? {
+                              x: 4,
+                              transition: { duration: 0.2, ease: "easeOut" }
+                            } : undefined}
+                            whileTap={{ scale: 0.98 }}
                           >
-                            <div
+                            <motion.div
                               className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                                 isActive
                                   ? "bg-primary-foreground/20"
                                   : "bg-muted"
                               }`}
+                              whileHover={!isActive ? {
+                                scale: 1.1,
+                                rotate: 5,
+                                transition: { duration: 0.2 }
+                              } : undefined}
                             >
                               <Icon className="w-5 h-5" />
-                            </div>
+                            </motion.div>
                             <div className="flex-1">
                               <p className="font-medium">{item.label}</p>
                               <p
@@ -325,14 +335,19 @@ export default function Navigation() {
                                 {item.description}
                               </p>
                             </div>
-                            <ChevronRight
-                              className={`w-5 h-5 ${
-                                isActive
-                                  ? "text-primary-foreground/70"
-                                  : "text-muted-foreground"
-                              }`}
-                            />
-                          </div>
+                            <motion.div
+                              whileHover={{ x: 4 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <ChevronRight
+                                className={`w-5 h-5 ${
+                                  isActive
+                                    ? "text-primary-foreground/70"
+                                    : "text-muted-foreground"
+                                }`}
+                              />
+                            </motion.div>
+                          </motion.div>
                         </Link>
                       </motion.div>
                     );
@@ -348,20 +363,32 @@ export default function Navigation() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: navItems.length * 0.05 }}
                 >
-                  <button
+                  <motion.button
                     onClick={handleLogout}
                     className="w-full flex items-center gap-3 p-3 rounded-xl text-destructive hover:bg-destructive/10 transition-all"
+                    whileHover={{
+                      x: 4,
+                      transition: { duration: 0.2, ease: "easeOut" }
+                    }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    <div className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center">
+                    <motion.div
+                      className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center"
+                      whileHover={{
+                        scale: 1.1,
+                        rotate: -5,
+                        transition: { duration: 0.2 }
+                      }}
+                    >
                       <LogOut className="w-5 h-5" />
-                    </div>
+                    </motion.div>
                     <div className="flex-1 text-left">
                       <p className="font-medium">Logout</p>
                       <p className="text-xs text-muted-foreground">
                         Sign out of your account
                       </p>
                     </div>
-                  </button>
+                  </motion.button>
                 </motion.div>
               </div>
             </motion.div>
