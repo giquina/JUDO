@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Navigation from "@/components/Navigation";
+import MobileNavigation from "@/components/MobileNavigation";
 import CheckInQR from "@/components/CheckInQR";
 import PageTransition from "@/components/PageTransition";
 import { Calendar, Clock, Trophy, CheckCircle2, XCircle, Dumbbell, Flame, Star, Zap, Target } from "lucide-react";
@@ -405,7 +406,7 @@ export default function MemberDashboard() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                Welcome back, {mockMember.name.split(" ")[0]}!
+                Welcome back, Judoka {mockMember.name.split(" ")[0]}!
               </motion.h1>
               <motion.div
                 className="flex items-center gap-2 mt-2"
@@ -517,34 +518,34 @@ export default function MemberDashboard() {
               <StreakFlames streak={mockMember.currentStreak} />
             </StatCard>
 
-            {/* Next Class Card */}
+            {/* Next Keiko Card */}
             <StatCard
               icon={Calendar}
               iconColor="text-blue-500"
               gradient="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-200 dark:border-blue-800"
-              title="Next Class"
+              title="Next Keiko"
               value="Monday 7pm"
               subtitle="Fundamentals"
             />
 
-            {/* Sessions This Month Card */}
+            {/* Keiko This Month Card */}
             <StatCard
               icon={Dumbbell}
               iconColor="text-green-500"
               gradient="bg-gradient-to-br from-green-500/10 to-green-600/5 border-green-200 dark:border-green-800"
-              title="Sessions This Month"
+              title="Keiko This Month"
               value={sessionsThisMonth}
               subtitle={`of ${maxSessions} included`}
             >
               <ProgressRing progress={sessionProgress} size={60} strokeWidth={6} />
             </StatCard>
 
-            {/* Total Sessions Card */}
+            {/* Total Keiko Card */}
             <StatCard
               icon={Trophy}
               iconColor="text-purple-500"
               gradient="bg-gradient-to-br from-purple-500/10 to-purple-600/5 border-purple-200 dark:border-purple-800"
-              title="Total Sessions"
+              title="Total Keiko"
               value={mockMember.totalSessions}
               subtitle="lifetime"
             />
@@ -621,9 +622,9 @@ export default function MemberDashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Clock className="h-5 w-5 text-primary" />
-                  Upcoming Classes
+                  Upcoming Keiko Sessions
                 </CardTitle>
-                <CardDescription>Your weekly schedule</CardDescription>
+                <CardDescription>Your weekly keiko schedule</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3 max-h-[400px] overflow-y-auto overscroll-contain">
@@ -755,6 +756,9 @@ export default function MemberDashboard() {
             </Card>
           </motion.div>
         </main>
+
+        {/* Mobile Bottom Navigation */}
+        <MobileNavigation />
       </div>
     </PageTransition>
   );

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import Navigation from "@/components/Navigation";
+import MobileNavigation from "@/components/MobileNavigation";
 import QRCodeGenerator from "@/components/QRCodeGenerator";
 import PageTransition from "@/components/PageTransition";
 import {
@@ -456,9 +457,9 @@ export default function CoachDashboard() {
           >
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
-                Coach Dashboard
+                Sensei Dashboard
               </h1>
-              <p className="text-sm sm:text-base text-muted-foreground mt-1">Manage attendance and track your classes</p>
+              <p className="text-sm sm:text-base text-muted-foreground mt-1">Manage attendance and track your keiko sessions</p>
             </div>
             <div className="flex items-center gap-3">
               <LiveIndicator />
@@ -479,7 +480,7 @@ export default function CoachDashboard() {
               icon={Calendar}
               iconColor="text-blue-500"
               gradient="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-200 dark:border-blue-800"
-              title="Today's Classes"
+              title="Today's Keiko"
               value={1}
               subtitle="Monday Evening"
             />
@@ -490,7 +491,7 @@ export default function CoachDashboard() {
               gradient="bg-gradient-to-br from-green-500/10 to-green-600/5 border-green-200 dark:border-green-800"
               title="Checked In"
               value={`${attendedCount}/${attendance.length}`}
-              subtitle="members present"
+              subtitle="judoka present"
             >
               <motion.div
                 className="text-3xl"
@@ -536,9 +537,9 @@ export default function CoachDashboard() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Calendar className="h-5 w-5 text-primary" />
-                    Select Class
+                    Select Keiko Session
                   </CardTitle>
-                  <CardDescription>Choose a class to manage attendance</CardDescription>
+                  <CardDescription>Choose a keiko session to manage attendance</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {mockClasses.map((cls, index) => (
@@ -599,8 +600,8 @@ export default function CoachDashboard() {
                         >
                           <QrCode className="h-16 w-16 mx-auto text-muted-foreground/50" />
                         </motion.div>
-                        <p className="text-muted-foreground font-medium">Select a class to display QR code</p>
-                        <p className="text-sm text-muted-foreground mt-2">Members can scan to check in</p>
+                        <p className="text-muted-foreground font-medium">Select a keiko session to display QR code</p>
+                        <p className="text-sm text-muted-foreground mt-2">Judoka can scan to check in</p>
                       </div>
                     </Card>
                   </motion.div>
@@ -621,13 +622,13 @@ export default function CoachDashboard() {
                   <div>
                     <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
                       <Users className="h-5 w-5 text-primary" />
-                      Attendance
+                      Your Judoka
                       <Badge variant="secondary" className="ml-2">
                         {attendedCount} present
                       </Badge>
                     </CardTitle>
                     <CardDescription className="text-sm">
-                      Tap a member to toggle their attendance status
+                      Tap a judoka to toggle their attendance status
                     </CardDescription>
                   </div>
                   <div className="flex items-center gap-2">
@@ -661,7 +662,7 @@ export default function CoachDashboard() {
                   <div className="relative flex-1 max-w-sm">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
-                      placeholder="Search members..."
+                      placeholder="Search judoka..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="pl-9"
@@ -727,7 +728,7 @@ export default function CoachDashboard() {
                         className="text-center py-12"
                       >
                         <Users className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
-                        <p className="text-muted-foreground">No members match your search</p>
+                        <p className="text-muted-foreground">No judoka match your search</p>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -757,6 +758,9 @@ export default function CoachDashboard() {
             </motion.div>
           </motion.div>
         </main>
+
+        {/* Mobile Bottom Navigation */}
+        <MobileNavigation />
       </div>
     </PageTransition>
   );

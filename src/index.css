@@ -61,6 +61,38 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Japanese font for glossary */
+.font-japanese {
+  font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic Pro', 'Yu Gothic', 'Meiryo', sans-serif;
+}
+
+/* Glossary card animation */
+.glossary-card-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.glossary-card-shine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--primary) / 0.1),
+    transparent
+  );
+  transform: skewX(-25deg);
+  transition: left 0.5s ease;
+}
+
+.glossary-card-shine:hover::before {
+  left: 150%;
+}
+
 /* Improved scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

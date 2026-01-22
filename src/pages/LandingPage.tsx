@@ -97,7 +97,7 @@ const features = [
   {
     icon: QrCode,
     title: "QR Check-in",
-    description: "Scan & Go attendance tracking. Members check in instantly with their unique QR code.",
+    description: "Scan & Go attendance tracking. Judoka check in instantly with their unique QR code.",
     gradient: "from-blue-500 to-cyan-500"
   },
   {
@@ -108,14 +108,14 @@ const features = [
   },
   {
     icon: Calendar,
-    title: "Class Schedule",
-    description: "Never miss a training session. View upcoming classes and book your spot.",
+    title: "Keiko Schedule",
+    description: "Never miss a keiko session. View upcoming sessions and book your spot.",
     gradient: "from-green-500 to-emerald-500"
   },
   {
     icon: Users,
-    title: "Coach Dashboard",
-    description: "Real-time attendance management. Coaches see who's training at a glance.",
+    title: "Sensei Dashboard",
+    description: "Real-time attendance management. Sensei see who's training at a glance.",
     gradient: "from-purple-500 to-violet-500"
   },
   {
@@ -157,9 +157,9 @@ const pricingPlans = [
     features: [
       "12 sessions per month",
       "All Student features",
-      "Priority class booking",
+      "Priority keiko booking",
       "Belt grading access",
-      "Coach feedback",
+      "Sensei feedback",
       "Competition entry"
     ],
     cta: "Get Started",
@@ -193,7 +193,7 @@ const testimonials = [
     rating: 5
   },
   {
-    quote: "As a coach, having real-time attendance data has transformed how I manage classes. I can see patterns and adjust training intensity based on who's present.",
+    quote: "As a sensei, having real-time attendance data has transformed how I manage keiko sessions. I can see patterns and adjust training intensity based on who's present.",
     name: "Sarah Mitchell",
     belt: "Black Belt 2nd Dan",
     rating: 5
@@ -210,11 +210,11 @@ const testimonials = [
 const faqs = [
   {
     question: "How does QR check-in work?",
-    answer: "Each member receives a unique QR code in their profile. When you arrive at the dojo, simply show your QR code to the scanner at reception. Your attendance is instantly recorded, and coaches can see you've arrived. It takes less than 2 seconds!"
+    answer: "Each judoka receives a unique QR code in their profile. When you arrive at the dojo, simply show your QR code to the scanner at reception. Your attendance is instantly recorded, and your sensei can see you've arrived. It takes less than 2 seconds!"
   },
   {
     question: "Can I freeze my membership?",
-    answer: "Yes! Life happens, and we understand. You can freeze your membership for up to 30 days per year through your member dashboard. Simply go to Settings > Membership > Freeze. Your sessions will be preserved for when you return."
+    answer: "Yes! Life happens, and we understand. You can freeze your membership for up to 30 days per year through your judoka dashboard. Simply go to Settings > Membership > Freeze. Your sessions will be preserved for when you return."
   },
   {
     question: "What payment methods do you accept?",
@@ -222,7 +222,7 @@ const faqs = [
   },
   {
     question: "Is there a free trial?",
-    answer: "Absolutely! New members get a 7-day free trial with full access to all features. No credit card required to start. Come try a class and experience the app before committing to a membership."
+    answer: "Absolutely! New judoka get a 7-day free trial with full access to all features. No credit card required to start. Come try a keiko session and experience the app before committing to a membership."
   }
 ];
 
@@ -275,7 +275,7 @@ export default function LandingPage() {
                 🥋
               </motion.span>
               <span className="font-bold text-xl bg-gradient-to-r from-violet-600 via-blue-500 to-blue-600 bg-clip-text text-transparent">
-                Judo Club
+                Judo Dojo
               </span>
             </Link>
 
@@ -531,8 +531,8 @@ export default function LandingPage() {
               className="grid grid-cols-3 gap-4 sm:gap-6 md:gap-8 max-w-3xl mx-auto px-4"
             >
               {[
-                { value: "100+", label: "Active Members", icon: Users },
-                { value: "3", label: "Expert Coaches", icon: Award },
+                { value: "100+", label: "Active Judoka", icon: Users },
+                { value: "3", label: "Expert Sensei", icon: Award },
                 { value: "500+", label: "Monthly Check-ins", icon: Activity },
               ].map((stat, index) => (
                 <motion.div
@@ -784,7 +784,7 @@ export default function LandingPage() {
               </span>
             </h2>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              See what our members and coaches have to say about their experience.
+              See what our judoka and sensei have to say about their experience.
             </p>
           </motion.div>
 
@@ -859,7 +859,7 @@ export default function LandingPage() {
               </span>
             </h2>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              Everything you need to know about Judo Club Manager.
+              Everything you need to know about Judo Dojo Manager.
             </p>
           </motion.div>
 
@@ -959,7 +959,7 @@ export default function LandingPage() {
               </span>
             </h2>
             <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-xl mx-auto">
-              Join hundreds of martial arts clubs already using Judo Club Manager to streamline their operations.
+              Join hundreds of martial arts clubs already using Judo Dojo Manager to streamline their operations.
             </p>
             <motion.div
               whileHover={{ scale: 1.05 }}
@@ -997,7 +997,7 @@ export default function LandingPage() {
                   🥋
                 </motion.span>
                 <span className="font-bold text-2xl bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
-                  Judo Club
+                  Judo Dojo
                 </span>
               </Link>
               <p className="text-muted-foreground max-w-sm leading-relaxed mb-6">
@@ -1055,7 +1055,7 @@ export default function LandingPage() {
 
           <div className="border-t mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground">
-              © 2026 Judo Club Manager. All rights reserved.
+              © 2026 Judo Dojo Manager. All rights reserved.
             </p>
             <p className="text-sm text-muted-foreground flex items-center gap-1">
               Made with <span className="text-red-500">♥</span> for martial artists

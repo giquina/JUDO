@@ -25,9 +25,9 @@ const navItems = [
   },
   {
     path: "/coach",
-    label: "Coach",
+    label: "Sensei",
     icon: Users,
-    description: "Manage students and classes"
+    description: "Manage judoka and keiko sessions"
   },
   {
     path: "/admin",
@@ -107,7 +107,7 @@ export default function Navigation() {
               </motion.div>
               <div className="hidden sm:flex flex-col">
                 <span className="font-bold text-lg leading-tight tracking-tight group-hover:text-primary transition-colors">
-                  Judo Club
+                  Judo Dojo
                 </span>
                 <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">
                   Management

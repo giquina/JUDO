@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import Navigation from "@/components/Navigation";
+import MobileNavigation from "@/components/MobileNavigation";
 import PageTransition from "@/components/PageTransition";
 import {
   Users,
@@ -522,7 +523,7 @@ export default function AdminDashboard() {
   const avgAttendance = 18;
 
   const handleExportMembers = () => {
-    toast.success("Exporting members to CSV...");
+    toast.success("Exporting judoka to CSV...");
   };
 
   const handleExportPayments = () => {
@@ -550,14 +551,14 @@ export default function AdminDashboard() {
           >
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-                Admin Dashboard
+                Dojo Admin Dashboard
               </h1>
-              <p className="text-sm sm:text-base text-muted-foreground mt-1">Manage members, payments, and club analytics</p>
+              <p className="text-sm sm:text-base text-muted-foreground mt-1">Manage dojo members, payments, and analytics</p>
             </div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button className="bg-gradient-to-r from-primary to-purple-600 min-h-[44px] w-full sm:w-auto touch-manipulation">
                 <UserPlus className="h-4 w-4 mr-2" />
-                Add Member
+                Add Judoka
               </Button>
             </motion.div>
           </motion.div>
@@ -573,7 +574,7 @@ export default function AdminDashboard() {
               icon={Users}
               iconColor="text-blue-500"
               gradient="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-200 dark:border-blue-800"
-              title="Total Members"
+              title="Dojo Members"
               value={mockMembers.length}
               subtitle={`${newMembersThisMonth} new this month`}
               trend={{ value: 12, isPositive: true }}
@@ -624,7 +625,7 @@ export default function AdminDashboard() {
             className="flex items-center gap-3 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible sm:flex-wrap"
           >
             <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Quick Actions:</span>
-            <QuickActionButton icon={Download} label="Export Members" onClick={handleExportMembers} />
+            <QuickActionButton icon={Download} label="Export Judoka" onClick={handleExportMembers} />
             <QuickActionButton icon={FileSpreadsheet} label="Export Payments" onClick={handleExportPayments} />
             <QuickActionButton icon={Mail} label="Email All" onClick={handleEmailAll} />
             <QuickActionButton icon={BarChart3} label="Report" onClick={handleGenerateReport} />
@@ -680,7 +681,7 @@ export default function AdminDashboard() {
                       <div>
                         <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
                           <Users className="h-5 w-5 text-primary" />
-                          Members
+                          Dojo Members
                           <Badge variant="secondary">{filteredMembers.length}</Badge>
                         </CardTitle>
                         <CardDescription className="text-sm">
@@ -690,7 +691,7 @@ export default function AdminDashboard() {
                       <div className="relative w-full sm:w-72">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
-                          placeholder="Search members..."
+                          placeholder="Search judoka..."
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                           className="pl-9 min-h-[44px] text-base"
@@ -759,7 +760,7 @@ export default function AdminDashboard() {
                           className="text-center py-12"
                         >
                           <Users className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
-                          <p className="text-muted-foreground">No members found</p>
+                          <p className="text-muted-foreground">No dojo members found</p>
                         </motion.div>
                       )}
                     </div>
@@ -804,6 +805,9 @@ export default function AdminDashboard() {
             )}
           </AnimatePresence>
         </main>
+
+        {/* Mobile Bottom Navigation */}
+        <MobileNavigation />
       </div>
     </PageTransition>
   );
