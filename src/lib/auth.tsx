@@ -22,7 +22,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // DEV MODE: Set to true to auto-login as admin (skip login during development)
-const DEV_MODE = true;
+const DEV_MODE = false;
 const DEV_USER_ROLE: "member" | "coach" | "admin" = "admin"; // Change this to test different roles
 
 // Mock users for demo - will be replaced with Convex queries
