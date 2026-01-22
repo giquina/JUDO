@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <defs>
+    <radialGradient id="bg192" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </radialGradient>
+    <radialGradient id="glow192" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.15)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Rounded background -->
+  <rect width="192" height="192" rx="35" fill="url(#bg192)"/>
+  <rect width="192" height="192" rx="35" fill="url(#glow192)"/>
+
+  <g transform="scale(0.375)">
+    <!-- Gi body -->
+    <path d="M256 100 L165 150 L155 340 L195 400 L256 420 L317 400 L357 340 L347 150 Z" fill="#ffffff"/>
+
+    <!-- Left lapel -->
+    <path d="M256 100 L195 155 L215 280 L256 235 Z" fill="#e8e8e8"/>
+
+    <!-- Right lapel -->
+    <path d="M256 100 L317 155 L297 280 L256 235 Z" fill="#e8e8e8"/>
+
+    <!-- Lapel stitching -->
+    <line x1="205" y1="160" x2="222" y2="265" stroke="#d4d4d4" stroke-width="2"/>
+    <line x1="307" y1="160" x2="290" y2="265" stroke="#d4d4d4" stroke-width="2"/>
+
+    <!-- Belt -->
+    <rect x="160" y="275" width="192" height="30" rx="6" fill="#1a1a1a"/>
+    <ellipse cx="256" cy="290" rx="22" ry="15" fill="#1a1a1a"/>
+
+    <!-- Belt tails -->
+    <path d="M240 300 L210 365 L225 370 L256 310 Z" fill="#1a1a1a"/>
+    <path d="M272 300 L302 365 L287 370 L256 310 Z" fill="#1a1a1a"/>
+
+    <!-- Belt highlight -->
+    <line x1="170" y1="285" x2="235" y2="285" stroke="#333" stroke-width="1"/>
+    <line x1="277" y1="285" x2="342" y2="285" stroke="#333" stroke-width="1"/>
+
+    <!-- Collar lines -->
+    <path d="M220 145 Q230 200 244 220" stroke="#7c3aed" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M292 145 Q282 200 268 220" stroke="#7c3aed" stroke-width="4" fill="none" stroke-linecap="round"/>
+
+    <!-- Emblem -->
+    <circle cx="256" cy="190" r="18" stroke="rgba(124,58,237,0.6)" stroke-width="3" fill="none"/>
+    <circle cx="256" cy="190" r="6" fill="rgba(124,58,237,0.4)"/>
+  </g>
+</svg>

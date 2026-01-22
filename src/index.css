@@ -700,3 +700,210 @@ body {
   outline: none;
   box-shadow: 0 0 0 3px hsl(var(--primary) / 0.3);
 }
+
+/* ================================
+   MARTIAL ARTS IMAGERY STYLES
+   ================================ */
+
+/* Realistic belt styling */
+.belt-realistic {
+  position: relative;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.3) 0%,
+    transparent 20%,
+    transparent 80%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+}
+
+.belt-realistic::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.05) 2px,
+    rgba(0, 0, 0, 0.05) 4px
+  );
+  pointer-events: none;
+}
+
+/* Belt stripe decoration */
+.belt-stripe {
+  position: relative;
+}
+
+.belt-stripe::before {
+  content: '';
+  position: absolute;
+  right: 8px;
+  top: 2px;
+  bottom: 2px;
+  width: 3px;
+  background: inherit;
+  filter: brightness(0.7);
+  border-radius: 2px;
+}
+
+/* Dojo image overlay */
+.dojo-image-overlay {
+  position: relative;
+}
+
+.dojo-image-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--background)) 0%,
+    hsl(var(--background) / 0.9) 30%,
+    hsl(var(--background) / 0.7) 70%,
+    hsl(var(--background) / 0.5) 100%
+  );
+}
+
+.dark .dojo-image-overlay::before {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--background)) 0%,
+    hsl(var(--background) / 0.95) 30%,
+    hsl(var(--background) / 0.85) 70%,
+    hsl(var(--background) / 0.7) 100%
+  );
+}
+
+/* Tatami mat texture */
+.tatami-texture {
+  background-image:
+    linear-gradient(90deg, transparent 49%, hsl(var(--primary) / 0.03) 50%, transparent 51%),
+    linear-gradient(0deg, transparent 49%, hsl(var(--primary) / 0.03) 50%, transparent 51%);
+  background-size: 60px 30px;
+}
+
+/* Japanese-inspired decorative border */
+.judo-border {
+  position: relative;
+  border: 2px solid transparent;
+  background:
+    linear-gradient(hsl(var(--card)), hsl(var(--card))) padding-box,
+    linear-gradient(135deg, hsl(var(--primary) / 0.3), hsl(var(--primary) / 0.1), hsl(var(--primary) / 0.3)) border-box;
+  border-radius: var(--radius);
+}
+
+/* Martial arts card hover effect */
+.martial-arts-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.martial-arts-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    hsl(var(--primary)),
+    hsl(221 83% 53%),
+    hsl(var(--primary))
+  );
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.martial-arts-card:hover::before {
+  transform: scaleX(1);
+}
+
+/* Belt rank indicator dots */
+.belt-rank-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.belt-rank-dots .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.belt-rank-dots .dot.active {
+  transform: scale(1.2);
+  box-shadow: 0 0 8px currentColor;
+}
+
+/* Subtle motion blur for action images */
+.action-image {
+  position: relative;
+}
+
+.action-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 40%,
+    hsl(var(--background) / 0.1) 50%,
+    transparent 60%
+  );
+  animation: shimmer-action 3s ease-in-out infinite;
+}
+
+@keyframes shimmer-action {
+  0%, 100% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+}
+
+/* Responsive image container with aspect ratio */
+.martial-arts-image-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+}
+
+.martial-arts-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.martial-arts-image-container:hover img {
+  transform: scale(1.05);
+}
+
+/* Decorative corner flourish */
+.corner-flourish::before,
+.corner-flourish::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid hsl(var(--primary) / 0.2);
+  pointer-events: none;
+}
+
+.corner-flourish::before {
+  top: -1px;
+  left: -1px;
+  border-right: none;
+  border-bottom: none;
+  border-top-left-radius: 4px;
+}
+
+.corner-flourish::after {
+  bottom: -1px;
+  right: -1px;
+  border-left: none;
+  border-top: none;
+  border-bottom-right-radius: 4px;
+}

@@ -554,13 +554,15 @@ function MobileBeltItem({
 }
 
 /**
- * Large belt badge for current belt display
+ * Large belt badge for current belt display - realistic style
  */
 function BeltBadgeLarge({ belt, isCurrent }: { belt: BeltDisplay; isCurrent?: boolean }) {
+  const isLightBelt = belt.color === "white" || belt.color === "yellow";
+
   return (
     <motion.div
-      whileHover={{ scale: 1.05, rotate: 5 }}
-      className="relative"
+      whileHover={{ scale: 1.05, rotateY: 10 }}
+      className="relative perspective-1000"
     >
       {/* Outer glow */}
       {isCurrent && (
@@ -575,40 +577,81 @@ function BeltBadgeLarge({ belt, isCurrent }: { belt: BeltDisplay; isCurrent?: bo
         />
       )}
 
-      {/* Belt badge */}
-      <div
-        className="relative w-24 h-24 rounded-2xl flex flex-col items-center justify-center shadow-xl"
-        style={{
-          background: `linear-gradient(135deg, ${belt.gradientFrom}, ${belt.gradientTo})`,
-          border: belt.color === "white" ? "3px solid #D4D4D4" : "none",
-        }}
-      >
-        {/* Shine effect */}
+      {/* Realistic belt shape */}
+      <div className="relative">
+        {/* Belt main body */}
         <div
-          className="absolute inset-0 rounded-2xl opacity-40"
+          className="relative w-36 h-12 rounded-sm shadow-xl overflow-hidden"
           style={{
-            background: `linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 50%, rgba(0,0,0,0.1) 100%)`,
+            background: `linear-gradient(180deg, ${belt.gradientFrom} 0%, ${belt.gradientTo} 100%)`,
+            border: belt.color === "white" ? "2px solid #D4D4D4" : "none",
           }}
-        />
+        >
+          {/* Belt texture - horizontal lines */}
+          <div className="absolute inset-0 opacity-20">
+            {[...Array(12)].map((_, i) => (
+              <div key={i} className="h-px bg-black/30" style={{ marginTop: i === 0 ? 0 : 4 }} />
+            ))}
+          </div>
 
-        <span
-          className={`relative text-lg font-bold ${
-            belt.color === "white" || belt.color === "yellow"
-              ? "text-gray-800"
-              : "text-white"
-          }`}
-        >
-          {belt.name}
-        </span>
-        <span
-          className={`relative text-xs ${
-            belt.color === "white" || belt.color === "yellow"
-              ? "text-gray-600"
-              : "text-white/80"
-          }`}
-        >
-          {belt.grade}
-        </span>
+          {/* Vertical weave pattern */}
+          <div className="absolute inset-0 opacity-10">
+            {[...Array(20)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute top-0 bottom-0 w-px bg-black/20"
+                style={{ left: `${i * 5}%` }}
+              />
+            ))}
+          </div>
+
+          {/* Belt stripe */}
+          <div
+            className="absolute right-3 top-1.5 bottom-1.5 w-1.5 rounded-full"
+            style={{ background: belt.gradientTo, filter: "brightness(0.7)" }}
+          />
+
+          {/* Shine effect */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-black/10" />
+
+          {/* Belt text */}
+          <div className={`absolute inset-0 flex flex-col items-center justify-center ${isLightBelt ? "text-gray-800" : "text-white"}`}>
+            <span className="font-bold text-base tracking-wide drop-shadow-sm">
+              {belt.name}
+            </span>
+            <span className={`text-[10px] ${isLightBelt ? "text-gray-600" : "text-white/80"}`}>
+              {belt.grade}
+            </span>
+          </div>
+        </div>
+
+        {/* Belt knot */}
+        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center">
+          <div
+            className="w-6 h-6 rounded-full shadow-lg"
+            style={{
+              background: `linear-gradient(135deg, ${belt.gradientFrom}, ${belt.gradientTo})`,
+              border: belt.color === "white" ? "2px solid #D4D4D4" : "2px solid rgba(255,255,255,0.2)",
+            }}
+          />
+          {/* Belt tails */}
+          <div className="flex gap-1 -mt-1">
+            <div
+              className="w-2 h-8 rounded-b-sm shadow-md"
+              style={{
+                background: `linear-gradient(180deg, ${belt.gradientFrom}, ${belt.gradientTo})`,
+                transform: "rotate(-8deg)",
+              }}
+            />
+            <div
+              className="w-2 h-10 rounded-b-sm shadow-md"
+              style={{
+                background: `linear-gradient(180deg, ${belt.gradientFrom}, ${belt.gradientTo})`,
+                transform: "rotate(8deg)",
+              }}
+            />
+          </div>
+        </div>
       </div>
     </motion.div>
   );

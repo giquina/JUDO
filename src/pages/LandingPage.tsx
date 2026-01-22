@@ -93,43 +93,49 @@ const BeltBadge = ({ belt }: { belt: string }) => {
   );
 };
 
-// Features data
+// Features data with Unsplash images
 const features = [
   {
     icon: QrCode,
     title: "QR Check-in",
     description: "Scan & Go attendance tracking. Judoka check in instantly with their unique QR code.",
-    gradient: "from-blue-500 to-cyan-500"
+    gradient: "from-blue-500 to-cyan-500",
+    image: "https://images.unsplash.com/photo-1564415315949-7a0c4c73aab4?w=400&q=80"
   },
   {
     icon: Trophy,
     title: "Progress Tracking",
     description: "Belt progression and session history. Track your journey from white to black belt.",
-    gradient: "from-yellow-500 to-orange-500"
+    gradient: "from-yellow-500 to-orange-500",
+    image: "https://images.unsplash.com/photo-1603204077779-bed963ea7d0e?w=400&q=80"
   },
   {
     icon: Calendar,
     title: "Keiko Schedule",
     description: "Never miss a keiko session. View upcoming sessions and book your spot.",
-    gradient: "from-green-500 to-emerald-500"
+    gradient: "from-green-500 to-emerald-500",
+    image: "https://images.unsplash.com/photo-1555597673-b21d5c935865?w=400&q=80"
   },
   {
     icon: Users,
     title: "Sensei Dashboard",
     description: "Real-time attendance management. Sensei see who's training at a glance.",
-    gradient: "from-purple-500 to-violet-500"
+    gradient: "from-purple-500 to-violet-500",
+    image: "https://images.unsplash.com/photo-1591117207239-788bf8de6c3b?w=400&q=80"
   },
   {
     icon: Shield,
     title: "Payment Integration",
     description: "Seamless Stripe subscriptions. Secure, automated membership payments.",
-    gradient: "from-pink-500 to-rose-500"
+    gradient: "from-pink-500 to-rose-500",
+    image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&q=80"
   },
   {
     icon: Zap,
     title: "Mobile First",
     description: "Works on any device. Train anywhere, track everywhere.",
-    gradient: "from-indigo-500 to-blue-500"
+    gradient: "from-indigo-500 to-blue-500",
+    image: "https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=400&q=80"
   }
 ];
 
@@ -394,15 +400,31 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section ref={heroRef} className="relative overflow-hidden min-h-[90vh] flex items-center">
+        {/* Background Judo Image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.unsplash.com/photo-1555597673-b21d5c935865?w=1920&q=80"
+            srcSet="https://images.unsplash.com/photo-1555597673-b21d5c935865?w=640&q=80 640w,
+                    https://images.unsplash.com/photo-1555597673-b21d5c935865?w=1024&q=80 1024w,
+                    https://images.unsplash.com/photo-1555597673-b21d5c935865?w=1920&q=80 1920w"
+            sizes="100vw"
+            alt="Judo practitioners training in a dojo"
+            className="w-full h-full object-cover"
+            fetchPriority="high"
+          />
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/80 to-background" />
+        </div>
+
         {/* Gradient Mesh Background */}
-        <div className="gradient-mesh absolute inset-0" />
+        <div className="gradient-mesh absolute inset-0 z-[1]" />
 
         {/* Gradient Orbs */}
-        <div className="gradient-orb gradient-orb-1" />
-        <div className="gradient-orb gradient-orb-2" />
+        <div className="gradient-orb gradient-orb-1 z-[1]" />
+        <div className="gradient-orb gradient-orb-2 z-[1]" />
 
         {/* Floating Particles / Bokeh Effect */}
-        <div className="particles">
+        <div className="particles z-[2]">
           {particles.map((particle) => (
             <FloatingParticle
               key={particle.id}
@@ -416,7 +438,7 @@ export default function LandingPage() {
 
         <motion.div
           style={{ y: heroY, opacity: heroOpacity }}
-          className="container mx-auto px-4 py-20 md:py-32 relative"
+          className="container mx-auto px-4 py-20 md:py-32 relative z-[3]"
         >
           <div className="max-w-4xl mx-auto text-center">
             {/* Floating badges with shimmer */}
@@ -618,8 +640,18 @@ export default function LandingPage() {
           >
             {features.map((feature, index) => (
               <motion.div key={index} variants={scaleIn}>
-                <Card className="feature-card h-full group">
-                  <CardHeader className="pb-4">
+                <Card className="feature-card h-full group relative overflow-hidden">
+                  {/* Background image with overlay */}
+                  <div className="absolute inset-0 z-0">
+                    <img
+                      src={feature.image}
+                      alt={`${feature.title} background`}
+                      loading="lazy"
+                      className="w-full h-full object-cover opacity-10 group-hover:opacity-20 transition-opacity duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-br from-background via-background/95 to-background/90" />
+                  </div>
+                  <CardHeader className="pb-4 relative z-10">
                     <motion.div
                       whileHover={{ scale: 1.1, rotate: 5 }}
                       transition={{ type: "spring" as const, stiffness: 400 }}
@@ -631,7 +663,7 @@ export default function LandingPage() {
                       {feature.title}
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="relative z-10">
                     <CardDescription className="text-base leading-relaxed">
                       {feature.description}
                     </CardDescription>
@@ -763,11 +795,20 @@ export default function LandingPage() {
 
       {/* Testimonials Section */}
       <section className="py-24 md:py-32 relative overflow-hidden">
+        {/* Background Dojo Image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1920&q=80"
+            alt="Traditional dojo interior"
+            loading="lazy"
+            className="w-full h-full object-cover opacity-5 dark:opacity-10"
+          />
+        </div>
         {/* Background */}
-        <div className="absolute inset-0 bg-muted/30" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute inset-0 bg-muted/30 z-[1]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl z-[1]" />
 
-        <div className="container mx-auto px-4 relative">
+        <div className="container mx-auto px-4 relative z-[2]">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -965,12 +1006,21 @@ export default function LandingPage() {
 
       {/* CTA Section */}
       <section className="py-24 md:py-32 relative overflow-hidden">
+        {/* Background Judo Action Image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.unsplash.com/photo-1564415315949-7a0c4c73aab4?w=1920&q=80"
+            alt="Martial arts action"
+            loading="lazy"
+            className="w-full h-full object-cover opacity-5 dark:opacity-8"
+          />
+        </div>
         {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-blue-600/10" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-blue-600/10 z-[1]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent z-[1]" />
 
         {/* Floating particles */}
-        <div className="particles">
+        <div className="particles z-[2]">
           {particles.slice(0, 8).map((particle) => (
             <FloatingParticle
               key={particle.id}
@@ -982,7 +1032,7 @@ export default function LandingPage() {
           ))}
         </div>
 
-        <div className="container mx-auto px-4 relative">
+        <div className="container mx-auto px-4 relative z-[3]">
           <motion.div
             initial="hidden"
             whileInView="visible"

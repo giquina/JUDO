@@ -38,16 +38,6 @@ const mockRecentAttendance = [
   { date: "2026-01-08", className: "Wednesday Intermediate", status: "attended" },
 ];
 
-const BELT_COLORS: Record<string, string> = {
-  white: "bg-gray-100 text-gray-800 border-gray-300",
-  yellow: "bg-yellow-100 text-yellow-800 border-yellow-300",
-  orange: "bg-orange-100 text-orange-800 border-orange-300",
-  green: "bg-green-100 text-green-800 border-green-300",
-  blue: "bg-blue-600 text-white border-blue-700",
-  brown: "bg-amber-800 text-white border-amber-900",
-  black: "bg-gray-900 text-white border-gray-950",
-};
-
 // Motivational messages based on streak and attendance
 const getMotivationalMessage = (streak: number, totalSessions: number): { message: string; emoji: string } => {
   if (streak >= 8) return { message: "Unstoppable! You're on fire!", emoji: "fire" };
@@ -316,6 +306,72 @@ function CheckInSuccess({ className }: { className: string }) {
   );
 }
 
+// Realistic belt display component with texture
+function RealisticBeltBadge({ beltRank }: { beltRank: string }) {
+  const beltStyles: Record<string, { bg: string; stripe: string; shadow: string }> = {
+    white: { bg: "bg-gradient-to-b from-gray-50 via-white to-gray-100", stripe: "bg-gray-200", shadow: "shadow-gray-300" },
+    yellow: { bg: "bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500", stripe: "bg-yellow-600", shadow: "shadow-yellow-400" },
+    orange: { bg: "bg-gradient-to-b from-orange-400 via-orange-500 to-orange-600", stripe: "bg-orange-700", shadow: "shadow-orange-400" },
+    green: { bg: "bg-gradient-to-b from-green-500 via-green-600 to-green-700", stripe: "bg-green-800", shadow: "shadow-green-500" },
+    blue: { bg: "bg-gradient-to-b from-blue-500 via-blue-600 to-blue-700", stripe: "bg-blue-800", shadow: "shadow-blue-500" },
+    brown: { bg: "bg-gradient-to-b from-amber-700 via-amber-800 to-amber-900", stripe: "bg-amber-950", shadow: "shadow-amber-600" },
+    black: { bg: "bg-gradient-to-b from-gray-700 via-gray-800 to-gray-900", stripe: "bg-black", shadow: "shadow-gray-600" },
+  };
+
+  const style = beltStyles[beltRank] || beltStyles.white;
+  const isLightBelt = beltRank === "white" || beltRank === "yellow";
+
+  return (
+    <motion.div
+      whileHover={{ scale: 1.05, rotateY: 10 }}
+      whileTap={{ scale: 0.95 }}
+      className="relative"
+    >
+      {/* Belt shape */}
+      <div className={`relative w-32 h-8 rounded-sm ${style.bg} shadow-lg ${style.shadow} overflow-hidden`}>
+        {/* Belt texture lines */}
+        <div className="absolute inset-0 opacity-20">
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className="h-px bg-black/20 my-1" />
+          ))}
+        </div>
+        {/* Belt stripe */}
+        <div className={`absolute right-4 top-1 bottom-1 w-1 ${style.stripe} rounded-full`} />
+        {/* Shine effect */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 opacity-50" />
+        {/* Belt text */}
+        <div className={`absolute inset-0 flex items-center justify-center font-bold text-sm tracking-wide ${isLightBelt ? "text-gray-800" : "text-white"}`}>
+          {beltRank.charAt(0).toUpperCase() + beltRank.slice(1)} Belt
+        </div>
+      </div>
+      {/* Belt knot */}
+      <div className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-4 ${style.bg} rounded-full shadow-md border-2 border-white/20`} />
+    </motion.div>
+  );
+}
+
+// Dojo background pattern component
+function DojoBackgroundPattern() {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Tatami mat pattern */}
+      <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.04]">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="tatami" x="0" y="0" width="60" height="30" patternUnits="userSpaceOnUse">
+              <rect width="60" height="30" fill="none" stroke="currentColor" strokeWidth="1"/>
+              <line x1="30" y1="0" x2="30" y2="30" stroke="currentColor" strokeWidth="0.5"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#tatami)" className="text-primary"/>
+        </svg>
+      </div>
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background" />
+    </div>
+  );
+}
+
 export default function MemberDashboard() {
   const [showScanner, setShowScanner] = useState(false);
   const [checkInStatus, setCheckInStatus] = useState<"idle" | "success" | "error">("idle");
@@ -390,44 +446,61 @@ export default function MemberDashboard() {
         {showFullSuccess && <CheckInSuccess className={checkedInClass} />}
       </AnimatePresence>
 
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background relative">
+        {/* Dojo background pattern */}
+        <DojoBackgroundPattern />
+
         <Navigation />
-        <main className="container mx-auto p-4 space-y-6">
-          {/* Welcome Header with Confetti for First Visit */}
+        <main className="container mx-auto p-4 space-y-6 relative z-10">
+          {/* Welcome Header with Dojo Image */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+            className="relative overflow-hidden rounded-2xl"
           >
-            <div>
-              <motion.h1
-                className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                Welcome back, Judoka {mockMember.name.split(" ")[0]}!
-              </motion.h1>
+            {/* Background Image */}
+            <div className="absolute inset-0">
+              <img
+                src="https://images.unsplash.com/photo-1555597673-b21d5c935865?w=1200&q=70"
+                alt="Judo training session"
+                loading="lazy"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/80 dark:from-background dark:via-background/98 dark:to-background/90" />
+            </div>
+
+            {/* Content */}
+            <div className="relative p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex-1">
+                <motion.h1
+                  className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  Welcome back, Judoka {mockMember.name.split(" ")[0]}!
+                </motion.h1>
+                <motion.div
+                  className="flex items-center gap-2 mt-2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <MotivationalIcon type={motivational.emoji} />
+                  <p className="text-muted-foreground text-lg">{motivational.message}</p>
+                </motion.div>
+              </div>
+
+              {/* Realistic Belt Badge */}
               <motion.div
-                className="flex items-center gap-2 mt-2"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
               >
-                <MotivationalIcon type={motivational.emoji} />
-                <p className="text-muted-foreground text-lg">{motivational.message}</p>
+                <RealisticBeltBadge beltRank={mockMember.beltRank} />
               </motion.div>
             </div>
-            <motion.div
-              whileHover={{ scale: 1.05, rotate: [0, -5, 5, 0] }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <Badge className={`${BELT_COLORS[mockMember.beltRank]} text-lg px-4 py-2 shadow-md`}>
-                {mockMember.beltRank.charAt(0).toUpperCase() + mockMember.beltRank.slice(1)} Belt
-              </Badge>
-            </motion.div>
           </motion.div>
 
           {/* First Visit Welcome Message */}
@@ -630,20 +703,32 @@ export default function MemberDashboard() {
             )}
           </motion.div>
 
-          {/* Upcoming Classes */}
+          {/* Upcoming Classes with visual enhancement */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
           >
-            <Card className="hover:shadow-lg transition-shadow duration-300">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-primary" />
-                  Upcoming Keiko Sessions
-                </CardTitle>
-                <CardDescription>Your weekly keiko schedule</CardDescription>
-              </CardHeader>
+            <Card className="hover:shadow-lg transition-shadow duration-300 overflow-hidden">
+              <div className="relative">
+                {/* Small decorative martial arts image */}
+                <div className="absolute top-0 right-0 w-32 h-32 opacity-10 overflow-hidden">
+                  <img
+                    src="https://images.unsplash.com/photo-1564415315949-7a0c4c73aab4?w=200&q=60"
+                    alt=""
+                    loading="lazy"
+                    className="w-full h-full object-cover"
+                    aria-hidden="true"
+                  />
+                </div>
+                <CardHeader className="relative">
+                  <CardTitle className="flex items-center gap-2">
+                    <Clock className="h-5 w-5 text-primary" />
+                    Upcoming Keiko Sessions
+                  </CardTitle>
+                  <CardDescription>Your weekly keiko schedule</CardDescription>
+                </CardHeader>
+              </div>
               <CardContent>
                 <div className="space-y-3 max-h-[400px] overflow-y-auto overscroll-contain">
                   {mockUpcomingClasses.map((cls, index) => (

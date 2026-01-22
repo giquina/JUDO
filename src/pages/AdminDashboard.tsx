@@ -460,6 +460,28 @@ function PaymentItem({ payment, index }: { payment: typeof mockRecentPayments[0]
   );
 }
 
+// Dojo background pattern component for admin
+function DojoBackgroundPattern() {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Tatami mat pattern */}
+      <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.04]">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="tatami-admin" x="0" y="0" width="60" height="30" patternUnits="userSpaceOnUse">
+              <rect width="60" height="30" fill="none" stroke="currentColor" strokeWidth="1"/>
+              <line x1="30" y1="0" x2="30" y2="30" stroke="currentColor" strokeWidth="0.5"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#tatami-admin)" className="text-primary"/>
+        </svg>
+      </div>
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background" />
+    </div>
+  );
+}
+
 export default function AdminDashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTab, setSelectedTab] = useState<"members" | "payments">("members");
@@ -540,27 +562,43 @@ export default function AdminDashboard() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background relative">
+        {/* Dojo background pattern */}
+        <DojoBackgroundPattern />
+
         <Navigation />
-        <main className="container mx-auto p-4 space-y-6">
-          {/* Header */}
+        <main className="container mx-auto p-4 space-y-6 relative z-10">
+          {/* Header with Background Image */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+            className="relative overflow-hidden rounded-2xl"
           >
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-                Dojo Admin Dashboard
-              </h1>
-              <p className="text-sm sm:text-base text-muted-foreground mt-1">Manage dojo members, payments, and analytics</p>
+            {/* Background Image */}
+            <div className="absolute inset-0">
+              <img
+                src="https://images.unsplash.com/photo-1555597673-b21d5c935865?w=1200&q=70"
+                alt="Judo dojo"
+                loading="lazy"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/80 dark:from-background dark:via-background/98 dark:to-background/90" />
             </div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button className="bg-gradient-to-r from-primary to-purple-600 min-h-[44px] w-full sm:w-auto touch-manipulation">
-                <UserPlus className="h-4 w-4 mr-2" />
-                Add Judoka
-              </Button>
-            </motion.div>
+
+            <div className="relative p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+                  Dojo Admin Dashboard
+                </h1>
+                <p className="text-sm sm:text-base text-muted-foreground mt-1">Manage dojo members, payments, and analytics</p>
+              </div>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button className="bg-gradient-to-r from-primary to-purple-600 min-h-[44px] w-full sm:w-auto touch-manipulation">
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  Add Judoka
+                </Button>
+              </motion.div>
+            </div>
           </motion.div>
 
           {/* KPI Cards - 1 col mobile, 2 cols tablet, 4 cols desktop */}

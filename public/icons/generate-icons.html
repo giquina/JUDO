@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Judo Dojo PWA Icon Generator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #a78bfa;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #9ca3af;
+            margin-bottom: 40px;
+        }
+
+        .icons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .icon-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .icon-card h2 {
+            color: #c4b5fd;
+            margin-bottom: 20px;
+        }
+
+        .canvas-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            background: #0f0f1a;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        canvas {
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(124, 58, 237, 0.3);
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        .info {
+            background: rgba(124, 58, 237, 0.15);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+            border: 1px solid rgba(124, 58, 237, 0.3);
+        }
+
+        .info h3 {
+            color: #a78bfa;
+            margin-top: 0;
+        }
+
+        .info ul {
+            color: #d1d5db;
+            line-height: 1.8;
+        }
+
+        .info code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            color: #a78bfa;
+        }
+
+        .preview-small {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: flex-end;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+        }
+
+        .preview-item {
+            text-align: center;
+        }
+
+        .preview-item span {
+            display: block;
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Judo Dojo PWA Icon Generator</h1>
+        <p class="subtitle">Generate PNG icons for Progressive Web App installation</p>
+
+        <div class="icons-grid">
+            <div class="icon-card">
+                <h2>192x192 Icon</h2>
+                <div class="canvas-wrapper">
+                    <canvas id="canvas192" width="192" height="192"></canvas>
+                </div>
+                <button class="download-btn" onclick="downloadIcon(192)">Download PNG</button>
+            </div>
+
+            <div class="icon-card">
+                <h2>512x512 Icon</h2>
+                <div class="canvas-wrapper">
+                    <canvas id="canvas512" width="512" height="512"></canvas>
+                </div>
+                <button class="download-btn" onclick="downloadIcon(512)">Download PNG</button>
+            </div>
+        </div>
+
+        <div class="icon-card">
+            <h2>Size Previews</h2>
+            <p style="color: #9ca3af; margin-bottom: 20px;">How the icon will appear at various sizes</p>
+            <div class="preview-small">
+                <div class="preview-item">
+                    <canvas id="canvas16" width="16" height="16"></canvas>
+                    <span>16px</span>
+                </div>
+                <div class="preview-item">
+                    <canvas id="canvas32" width="32" height="32"></canvas>
+                    <span>32px</span>
+                </div>
+                <div class="preview-item">
+                    <canvas id="canvas48" width="48" height="48"></canvas>
+                    <span>48px</span>
+                </div>
+                <div class="preview-item">
+                    <canvas id="canvas64" width="64" height="64"></canvas>
+                    <span>64px</span>
+                </div>
+                <div class="preview-item">
+                    <canvas id="canvas128" width="128" height="128"></canvas>
+                    <span>128px</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="info">
+            <h3>Instructions</h3>
+            <ul>
+                <li>Click the <strong>Download PNG</strong> buttons to save each icon</li>
+                <li>Save the 192x192 icon as <code>icon-192.png</code> in the <code>public/</code> folder</li>
+                <li>Save the 512x512 icon as <code>icon-512.png</code> in the <code>public/</code> folder</li>
+                <li>The icons feature a stylized judo gi with violet theme (#7c3aed)</li>
+                <li>Icons are optimized for PWA installation on mobile and desktop</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Draw the Judo Dojo icon on a canvas
+        function drawIcon(ctx, size) {
+            const scale = size / 512;
+
+            // Background gradient
+            const gradient = ctx.createRadialGradient(
+                size * 0.3, size * 0.3, 0,
+                size * 0.5, size * 0.5, size * 0.6
+            );
+            gradient.addColorStop(0, '#8b5cf6');
+            gradient.addColorStop(1, '#7c3aed');
+
+            // Draw rounded background
+            const radius = size * 0.18;
+            ctx.beginPath();
+            ctx.roundRect(0, 0, size, size, radius);
+            ctx.fillStyle = gradient;
+            ctx.fill();
+
+            // Add subtle inner glow
+            const innerGlow = ctx.createRadialGradient(
+                size * 0.5, size * 0.4, 0,
+                size * 0.5, size * 0.5, size * 0.5
+            );
+            innerGlow.addColorStop(0, 'rgba(255, 255, 255, 0.15)');
+            innerGlow.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            ctx.fillStyle = innerGlow;
+            ctx.fill();
+
+            ctx.save();
+            ctx.scale(scale, scale);
+
+            // Gi body - main shape
+            ctx.beginPath();
+            ctx.moveTo(256, 100);  // Top center (collar)
+            ctx.lineTo(165, 150);  // Left shoulder
+            ctx.lineTo(155, 340);  // Left bottom
+            ctx.lineTo(195, 400);  // Left hem
+            ctx.lineTo(256, 420);  // Center bottom
+            ctx.lineTo(317, 400);  // Right hem
+            ctx.lineTo(357, 340);  // Right bottom
+            ctx.lineTo(347, 150);  // Right shoulder
+            ctx.closePath();
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+
+            // Add subtle shadow to gi
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+            ctx.shadowBlur = 15 * scale;
+            ctx.shadowOffsetY = 5 * scale;
+
+            // Left lapel
+            ctx.beginPath();
+            ctx.moveTo(256, 100);
+            ctx.lineTo(195, 155);
+            ctx.lineTo(215, 280);
+            ctx.lineTo(256, 235);
+            ctx.closePath();
+            ctx.fillStyle = '#e8e8e8';
+            ctx.shadowColor = 'transparent';
+            ctx.fill();
+
+            // Right lapel
+            ctx.beginPath();
+            ctx.moveTo(256, 100);
+            ctx.lineTo(317, 155);
+            ctx.lineTo(297, 280);
+            ctx.lineTo(256, 235);
+            ctx.closePath();
+            ctx.fillStyle = '#e8e8e8';
+            ctx.fill();
+
+            // Lapel edge lines (stitching detail)
+            ctx.strokeStyle = '#d4d4d4';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(205, 160);
+            ctx.lineTo(222, 265);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(307, 160);
+            ctx.lineTo(290, 265);
+            ctx.stroke();
+
+            // Belt (obi) - main band
+            ctx.fillStyle = '#1a1a1a';
+            ctx.beginPath();
+            ctx.roundRect(160, 275, 192, 30, 6);
+            ctx.fill();
+
+            // Belt knot center
+            ctx.beginPath();
+            ctx.ellipse(256, 290, 22, 15, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Left belt tail
+            ctx.beginPath();
+            ctx.moveTo(240, 300);
+            ctx.lineTo(210, 365);
+            ctx.lineTo(225, 370);
+            ctx.lineTo(256, 310);
+            ctx.closePath();
+            ctx.fill();
+
+            // Right belt tail
+            ctx.beginPath();
+            ctx.moveTo(272, 300);
+            ctx.lineTo(302, 365);
+            ctx.lineTo(287, 370);
+            ctx.lineTo(256, 310);
+            ctx.closePath();
+            ctx.fill();
+
+            // Belt highlight
+            ctx.strokeStyle = '#333333';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(170, 285);
+            ctx.lineTo(235, 285);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(277, 285);
+            ctx.lineTo(342, 285);
+            ctx.stroke();
+
+            // V-neck collar detail - deeper lines
+            ctx.strokeStyle = '#7c3aed';
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'round';
+
+            // Left collar line
+            ctx.beginPath();
+            ctx.moveTo(220, 145);
+            ctx.quadraticCurveTo(230, 200, 244, 220);
+            ctx.stroke();
+
+            // Right collar line
+            ctx.beginPath();
+            ctx.moveTo(292, 145);
+            ctx.quadraticCurveTo(282, 200, 268, 220);
+            ctx.stroke();
+
+            // Small emblem circle (representing dojo emblem)
+            ctx.strokeStyle = 'rgba(124, 58, 237, 0.6)';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(256, 190, 18, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Inner dot
+            ctx.fillStyle = 'rgba(124, 58, 237, 0.4)';
+            ctx.beginPath();
+            ctx.arc(256, 190, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        // Download icon as PNG
+        function downloadIcon(size) {
+            const canvas = document.getElementById('canvas' + size);
+            const link = document.createElement('a');
+            link.download = `icon-${size}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Initialize all canvases
+        function initCanvases() {
+            const sizes = [16, 32, 48, 64, 128, 192, 512];
+
+            sizes.forEach(size => {
+                const canvas = document.getElementById('canvas' + size);
+                if (canvas) {
+                    const ctx = canvas.getContext('2d');
+                    drawIcon(ctx, size);
+                }
+            });
+        }
+
+        // Run on load
+        window.onload = initCanvases;
+    </script>
+</body>
+</html>

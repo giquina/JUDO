@@ -43,7 +43,7 @@ function FloatingShape({ delay, duration, size, color, startX, startY }: {
   );
 }
 
-// Animated background component
+// Animated background component with judo imagery
 function AnimatedBackground() {
   const shapes = useMemo(() => [
     { delay: 0, duration: 20, size: 300, color: "bg-primary", startX: 10, startY: 20 },
@@ -55,6 +55,16 @@ function AnimatedBackground() {
 
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      {/* Subtle judo background image */}
+      <div className="absolute inset-0">
+        <img
+          src="https://images.unsplash.com/photo-1555597673-b21d5c935865?w=1920&q=60"
+          alt=""
+          loading="lazy"
+          className="w-full h-full object-cover opacity-5 dark:opacity-[0.03]"
+          aria-hidden="true"
+        />
+      </div>
       {shapes.map((shape, i) => (
         <FloatingShape key={i} {...shape} />
       ))}

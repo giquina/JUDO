@@ -383,6 +383,28 @@ function LiveIndicator() {
   );
 }
 
+// Dojo background pattern component for coach
+function DojoBackgroundPattern() {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Tatami mat pattern */}
+      <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.04]">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="tatami-coach" x="0" y="0" width="60" height="30" patternUnits="userSpaceOnUse">
+              <rect width="60" height="30" fill="none" stroke="currentColor" strokeWidth="1"/>
+              <line x1="30" y1="0" x2="30" y2="30" stroke="currentColor" strokeWidth="0.5"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#tatami-coach)" className="text-primary"/>
+        </svg>
+      </div>
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background" />
+    </div>
+  );
+}
+
 export default function CoachDashboard() {
   const [selectedClass, setSelectedClass] = useState<string | null>(null);
   const [showQR, setShowQR] = useState(false);
@@ -446,26 +468,42 @@ export default function CoachDashboard() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background relative">
+        {/* Dojo background pattern */}
+        <DojoBackgroundPattern />
+
         <Navigation />
-        <main className="container mx-auto p-4 space-y-6">
-          {/* Header */}
+        <main className="container mx-auto p-4 space-y-6 relative z-10">
+          {/* Header with Background Image */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+            className="relative overflow-hidden rounded-2xl"
           >
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
-                Sensei Dashboard
-              </h1>
-              <p className="text-sm sm:text-base text-muted-foreground mt-1">Manage attendance and track your keiko sessions</p>
+            {/* Background Image */}
+            <div className="absolute inset-0">
+              <img
+                src="https://images.unsplash.com/photo-1564415315949-7a0c4c73aab4?w=1200&q=70"
+                alt="Martial arts training"
+                loading="lazy"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/80 dark:from-background dark:via-background/98 dark:to-background/90" />
             </div>
-            <div className="flex items-center gap-3">
-              <LiveIndicator />
-              <Badge variant="outline" className="text-sm sm:text-lg px-3 sm:px-4 py-1.5 sm:py-2">
-                {new Date().toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })}
-              </Badge>
+
+            <div className="relative p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
+                  Sensei Dashboard
+                </h1>
+                <p className="text-sm sm:text-base text-muted-foreground mt-1">Manage attendance and track your keiko sessions</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <LiveIndicator />
+                <Badge variant="outline" className="text-sm sm:text-lg px-3 sm:px-4 py-1.5 sm:py-2 bg-background/80 backdrop-blur-sm">
+                  {new Date().toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })}
+                </Badge>
+              </div>
             </div>
           </motion.div>
 
