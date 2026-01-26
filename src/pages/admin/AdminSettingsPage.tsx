@@ -113,6 +113,42 @@ const mockNotificationSettings = {
   weeklyReport: true,
 };
 
+// Validation helpers
+function validateEmail(email: string): { isValid: boolean; message?: string } {
+  if (!email) {
+    return { isValid: false, message: "Email is required" };
+  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return { isValid: false, message: "Please enter a valid email format" };
+  }
+  return { isValid: true };
+}
+
+function validatePhone(phone: string): { isValid: boolean; message?: string } {
+  if (!phone) {
+    return { isValid: false, message: "Phone is required" };
+  }
+  // UK phone validation - allows various formats
+  const phoneRegex = /^(\+44|0)\s?\d{2,4}\s?\d{3,4}\s?\d{3,4}$/;
+  if (!phoneRegex.test(phone.replace(/\s/g, '').replace(/^(\+44|0)/, '+44'))) {
+    return { isValid: false, message: "Please enter a valid UK phone number" };
+  }
+  return { isValid: true };
+}
+
+function validateUrl(url: string): { isValid: boolean; message?: string } {
+  if (!url) {
+    return { isValid: true }; // URL is optional
+  }
+  try {
+    new URL(url);
+    return { isValid: true };
+  } catch {
+    return { isValid: false, message: "Please enter a valid URL" };
+  }
+}
+
 // Animation variants
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -231,10 +267,68 @@ function ToggleSwitch({
 function ClubInfoSection() {
   const [clubInfo, setClubInfo] = useState(mockClubInfo);
   const [isEditing, setIsEditing] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  const validateField = (field: string, value: string) => {
+    let validation: { isValid: boolean; message?: string } = { isValid: true };
+
+    switch (field) {
+      case "email":
+        validation = validateEmail(value);
+        break;
+      case "phone":
+        validation = validatePhone(value);
+        break;
+      case "website":
+        validation = validateUrl(value);
+        break;
+    }
+
+    setErrors(prev => ({
+      ...prev,
+      [field]: validation.message || ""
+    }));
+
+    return validation.isValid;
+  };
+
+  const handleFieldChange = (field: keyof ClubInfo, value: string) => {
+    setClubInfo({ ...clubInfo, [field]: value });
+    if (touched[field]) {
+      validateField(field, value);
+    }
+  };
+
+  const handleFieldBlur = (field: string) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    validateField(field, clubInfo[field as keyof ClubInfo]);
+  };
 
   const handleSave = () => {
+    // Validate all fields
+    const emailValid = validateField("email", clubInfo.email);
+    const phoneValid = validateField("phone", clubInfo.phone);
+    const websiteValid = validateField("website", clubInfo.website);
+
+    setTouched({ email: true, phone: true, website: true });
+
+    if (!emailValid || !phoneValid || !websiteValid) {
+      toast.error("Please fix the validation errors before saving");
+      return;
+    }
+
     toast.success("Club information updated successfully!");
     setIsEditing(false);
+    setTouched({});
+    setErrors({});
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setClubInfo(mockClubInfo);
+    setTouched({});
+    setErrors({});
   };
 
   return (
@@ -245,7 +339,7 @@ function ClubInfoSection() {
       action={
         isEditing ? (
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => setIsEditing(false)}>
+            <Button variant="outline" size="sm" onClick={handleCancel}>
               <X className="h-4 w-4 mr-1" />
               Cancel
             </Button>
@@ -267,7 +361,7 @@ function ClubInfoSection() {
           <label className="text-sm font-medium mb-1 block">Club Name</label>
           <Input
             value={clubInfo.name}
-            onChange={(e) => setClubInfo({ ...clubInfo, name: e.target.value })}
+            onChange={(e) => handleFieldChange("name", e.target.value)}
             disabled={!isEditing}
           />
         </div>
@@ -275,7 +369,7 @@ function ClubInfoSection() {
           <label className="text-sm font-medium mb-1 block">Founded Year</label>
           <Input
             value={clubInfo.foundedYear}
-            onChange={(e) => setClubInfo({ ...clubInfo, foundedYear: e.target.value })}
+            onChange={(e) => handleFieldChange("foundedYear", e.target.value)}
             disabled={!isEditing}
           />
         </div>
@@ -283,7 +377,7 @@ function ClubInfoSection() {
           <label className="text-sm font-medium mb-1 block">Address</label>
           <Input
             value={clubInfo.address}
-            onChange={(e) => setClubInfo({ ...clubInfo, address: e.target.value })}
+            onChange={(e) => handleFieldChange("address", e.target.value)}
             disabled={!isEditing}
           />
         </div>
@@ -291,7 +385,7 @@ function ClubInfoSection() {
           <label className="text-sm font-medium mb-1 block">City</label>
           <Input
             value={clubInfo.city}
-            onChange={(e) => setClubInfo({ ...clubInfo, city: e.target.value })}
+            onChange={(e) => handleFieldChange("city", e.target.value)}
             disabled={!isEditing}
           />
         </div>
@@ -299,45 +393,66 @@ function ClubInfoSection() {
           <label className="text-sm font-medium mb-1 block">Postcode</label>
           <Input
             value={clubInfo.postcode}
-            onChange={(e) => setClubInfo({ ...clubInfo, postcode: e.target.value })}
+            onChange={(e) => handleFieldChange("postcode", e.target.value)}
             disabled={!isEditing}
           />
         </div>
         <div>
           <label className="text-sm font-medium mb-1 block">Phone</label>
-          <div className="relative">
-            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              value={clubInfo.phone}
-              onChange={(e) => setClubInfo({ ...clubInfo, phone: e.target.value })}
-              disabled={!isEditing}
-              className="pl-9"
-            />
+          <div className="space-y-1">
+            <div className="relative">
+              <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                value={clubInfo.phone}
+                onChange={(e) => handleFieldChange("phone", e.target.value)}
+                onBlur={() => handleFieldBlur("phone")}
+                disabled={!isEditing}
+                className={`pl-9 ${touched.phone && errors.phone ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                aria-invalid={touched.phone && !!errors.phone}
+              />
+            </div>
+            {touched.phone && errors.phone && (
+              <p className="text-xs text-red-500">{errors.phone}</p>
+            )}
           </div>
         </div>
         <div>
           <label className="text-sm font-medium mb-1 block">Email</label>
-          <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="email"
-              value={clubInfo.email}
-              onChange={(e) => setClubInfo({ ...clubInfo, email: e.target.value })}
-              disabled={!isEditing}
-              className="pl-9"
-            />
+          <div className="space-y-1">
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="email"
+                value={clubInfo.email}
+                onChange={(e) => handleFieldChange("email", e.target.value)}
+                onBlur={() => handleFieldBlur("email")}
+                disabled={!isEditing}
+                className={`pl-9 ${touched.email && errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                aria-invalid={touched.email && !!errors.email}
+              />
+            </div>
+            {touched.email && errors.email && (
+              <p className="text-xs text-red-500">{errors.email}</p>
+            )}
           </div>
         </div>
         <div className="sm:col-span-2">
           <label className="text-sm font-medium mb-1 block">Website</label>
-          <div className="relative">
-            <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              value={clubInfo.website}
-              onChange={(e) => setClubInfo({ ...clubInfo, website: e.target.value })}
-              disabled={!isEditing}
-              className="pl-9"
-            />
+          <div className="space-y-1">
+            <div className="relative">
+              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                value={clubInfo.website}
+                onChange={(e) => handleFieldChange("website", e.target.value)}
+                onBlur={() => handleFieldBlur("website")}
+                disabled={!isEditing}
+                className={`pl-9 ${touched.website && errors.website ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                aria-invalid={touched.website && !!errors.website}
+              />
+            </div>
+            {touched.website && errors.website && (
+              <p className="text-xs text-red-500">{errors.website}</p>
+            )}
           </div>
         </div>
       </div>
@@ -462,11 +577,11 @@ function SubscriptionPricingSection() {
 }
 
 // Admin Users Section
-function AdminUsersSection() {
+function AdminUsersSection({ now }: { now: number }) {
   const [users] = useState(mockAdminUsers);
 
   const getTimeAgo = (timestamp: number) => {
-    const hours = Math.floor((Date.now() - timestamp) / (60 * 60 * 1000));
+    const hours = Math.floor((now - timestamp) / (60 * 60 * 1000));
     if (hours < 1) return "Just now";
     if (hours < 24) return `${hours}h ago`;
     const days = Math.floor(hours / 24);
@@ -695,6 +810,9 @@ function DangerZoneSection() {
 }
 
 export default function AdminSettingsPage() {
+  // Use useState with lazy initializer for stable timestamp (React Compiler safe)
+  const [now] = useState(() => Date.now());
+
   return (
     <PageTransition>
       <div className="min-h-screen bg-background relative">
@@ -738,7 +856,7 @@ export default function AdminSettingsPage() {
             <ClubInfoSection />
             <ClassScheduleSection />
             <SubscriptionPricingSection />
-            <AdminUsersSection />
+            <AdminUsersSection now={now} />
             <NotificationSettingsSection />
             <DangerZoneSection />
           </motion.div>

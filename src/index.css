@@ -136,6 +136,18 @@ body {
   outline-offset: 2px;
 }
 
+/* Enhanced focus-visible styles for interactive elements */
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px hsl(var(--ring) / 0.2);
+}
+
 /* Gradient text utility */
 .text-gradient {
   background: linear-gradient(135deg, hsl(var(--primary)) 0%, #3b82f6 100%);
@@ -917,4 +929,63 @@ body {
   border-left: none;
   border-top: none;
   border-bottom-right-radius: 4px;
+}
+
+/* ================================
+   REDUCED MOTION ACCESSIBILITY
+   ================================ */
+
+/* Global reduced motion preference fallback
+   Disables animations for users who have enabled "prefers-reduced-motion"
+   in their operating system accessibility settings */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Disable specific animations */
+  .animate-shimmer,
+  .float-slow,
+  .float-medium,
+  .float-fast,
+  .pulse-button,
+  .gi-glow,
+  .particle,
+  .glossary-card-shine::before,
+  .btn-premium::before,
+  .pricing-card-popular::before,
+  .badge-shimmer::after,
+  .gradient-text-animate,
+  .avatar-gradient,
+  .animated-underline::after,
+  .action-image::after {
+    animation: none !important;
+  }
+
+  /* Disable hover transforms */
+  .card-hover:hover,
+  .feature-card:hover,
+  .pricing-card:hover,
+  .pricing-card-popular:hover,
+  .testimonial-card:hover,
+  .martial-arts-card:hover,
+  .martial-arts-image-container:hover img {
+    transform: none !important;
+  }
+
+  /* Disable scroll-triggered fade */
+  .scroll-fade {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Disable smooth scroll behavior */
+  html {
+    scroll-behavior: auto !important;
+  }
 }

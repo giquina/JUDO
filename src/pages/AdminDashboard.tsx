@@ -5,6 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Pagination } from "@/components/ui/pagination";
 import Navigation from "@/components/Navigation";
 import MobileNavigation from "@/components/MobileNavigation";
@@ -310,8 +316,8 @@ function QuickActionButton({
 }
 
 // Member row component
-function MemberRow({ member, index }: { member: typeof mockMembers[0]; index: number }) {
-  const daysSinceAttendance = Math.floor((Date.now() - member.lastAttended) / (24 * 60 * 60 * 1000));
+function MemberRow({ member, index, now }: { member: typeof mockMembers[0]; index: number; now: number }) {
+  const daysSinceAttendance = Math.floor((now - member.lastAttended) / (24 * 60 * 60 * 1000));
   const isAtRisk = daysSinceAttendance > 14;
 
   return (
@@ -340,15 +346,31 @@ function MemberRow({ member, index }: { member: typeof mockMembers[0]; index: nu
         </div>
       </td>
       <td className="py-3">
-        <Badge className={BELT_COLORS[member.beltRank]}>
-          {member.beltRank}
-        </Badge>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Badge className={BELT_COLORS[member.beltRank]}>
+              {member.beltRank}
+            </Badge>
+          </TooltipTrigger>
+          <TooltipContent>Current belt rank</TooltipContent>
+        </Tooltip>
       </td>
       <td className="py-3">
         <div className="flex items-center gap-2">
-          <Badge className={STATUS_COLORS[member.subscriptionStatus]}>
-            {member.subscriptionStatus}
-          </Badge>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Badge className={STATUS_COLORS[member.subscriptionStatus]}>
+                {member.subscriptionStatus}
+              </Badge>
+            </TooltipTrigger>
+            <TooltipContent>
+              {member.subscriptionStatus === "active"
+                ? "Member has an active subscription"
+                : member.subscriptionStatus === "inactive"
+                ? "Subscription expired or cancelled"
+                : "Subscription pending approval"}
+            </TooltipContent>
+          </Tooltip>
           <span className="text-sm text-muted-foreground capitalize">
             ({member.subscriptionTier})
           </span>
@@ -375,13 +397,18 @@ function MemberRow({ member, index }: { member: typeof mockMembers[0]; index: nu
             ? "Yesterday"
             : `${daysSinceAttendance} days ago`}
           {isAtRisk && (
-            <motion.span
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="ml-2 text-xs text-red-500"
-            >
-              At risk
-            </motion.span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="ml-2 text-xs text-red-500 cursor-help"
+                >
+                  At risk
+                </motion.span>
+              </TooltipTrigger>
+              <TooltipContent>No attendance in 14+ days</TooltipContent>
+            </Tooltip>
           )}
         </div>
       </td>
@@ -479,6 +506,9 @@ export default function AdminDashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
+  // Use useState with lazy initializer for stable timestamp (React Compiler safe)
+  const [now] = useState(() => Date.now());
+
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -495,7 +525,7 @@ export default function AdminDashboard() {
   };
 
   const { paginatedMembers, totalFilteredMembers } = useMemo(() => {
-    let members = mockMembers.filter(
+    const members = mockMembers.filter(
       (m) =>
         m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         m.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -509,14 +539,16 @@ export default function AdminDashboard() {
         case "name":
           comparison = a.name.localeCompare(b.name);
           break;
-        case "beltRank":
+        case "beltRank": {
           const beltOrder = ["white", "yellow", "orange", "green", "blue", "brown", "black"];
           comparison = beltOrder.indexOf(a.beltRank) - beltOrder.indexOf(b.beltRank);
           break;
-        case "subscriptionTier":
+        }
+        case "subscriptionTier": {
           const tierOrder = ["student", "standard", "premium"];
           comparison = tierOrder.indexOf(a.subscriptionTier) - tierOrder.indexOf(b.subscriptionTier);
           break;
+        }
         case "totalSessions":
           comparison = a.totalSessions - b.totalSessions;
           break;
@@ -544,7 +576,7 @@ export default function AdminDashboard() {
     }, 0);
 
   const activeMembers = mockMembers.filter((m) => m.subscriptionStatus === "active").length;
-  const newMembersThisMonth = mockMembers.filter(m => m.joinDate > Date.now() - 30 * 24 * 60 * 60 * 1000).length;
+  const newMembersThisMonth = mockMembers.filter(m => m.joinDate > now - 30 * 24 * 60 * 60 * 1000).length;
   const avgAttendance = 18;
 
   const handleExportMembers = () => {
@@ -564,6 +596,7 @@ export default function AdminDashboard() {
   };
 
   return (
+    <TooltipProvider>
     <PageTransition>
       <div className="min-h-screen bg-background relative">
         {/* Dojo background pattern */}
@@ -794,7 +827,7 @@ export default function AdminDashboard() {
                         </thead>
                         <tbody>
                           {paginatedMembers.map((member, index) => (
-                            <MemberRow key={member._id} member={member} index={index} />
+                            <MemberRow key={member._id} member={member} index={index} now={now} />
                           ))}
                         </tbody>
                       </table>
@@ -867,5 +900,6 @@ export default function AdminDashboard() {
         <MobileNavigation />
       </div>
     </PageTransition>
+    </TooltipProvider>
   );
 }

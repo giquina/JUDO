@@ -22,7 +22,7 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
     return <Navigate to="/login" replace />;
   }
 
-  if (allowedRoles && role && !allowedRoles.includes(role as any)) {
+  if (allowedRoles && role && !allowedRoles.includes(role as "member" | "coach" | "admin")) {
     // Redirect to appropriate dashboard based on role
     if (role === "admin") return <Navigate to="/admin" replace />;
     if (role === "coach") return <Navigate to="/coach" replace />;

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import { Skeleton, CardSkeleton, TableRowSkeleton } from "@/components/ui/skeleton";
@@ -132,6 +133,11 @@ export function TableSkeleton({ rows = 5, columns = 5 }: { rows?: number; column
 
 // Chart placeholder skeleton
 export function ChartSkeleton() {
+  // Generate random heights once using useState with lazy initializer
+  const [barHeights] = useState(() =>
+    [...Array(7)].map(() => 30 + Math.random() * 70)
+  );
+
   return (
     <div className="rounded-lg border bg-card p-6 space-y-4">
       <div className="flex items-center justify-between">
@@ -139,11 +145,11 @@ export function ChartSkeleton() {
         <Skeleton className="h-8 w-24" />
       </div>
       <div className="h-48 flex items-end gap-2">
-        {[...Array(7)].map((_, i) => (
+        {barHeights.map((height, i) => (
           <Skeleton
             key={i}
             className="flex-1 rounded-t"
-            style={{ height: `${30 + Math.random() * 70}%` }}
+            style={{ height: `${height}%` }}
           />
         ))}
       </div>

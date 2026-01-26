@@ -227,12 +227,14 @@ function SortableHeader({
 function MemberCard({
   member,
   onViewDetails,
+  now,
 }: {
   member: typeof mockMembers[0];
   onViewDetails: () => void;
+  now: number;
 }) {
   const daysSinceAttendance = Math.floor(
-    (Date.now() - member.lastAttended) / (24 * 60 * 60 * 1000)
+    (now - member.lastAttended) / (24 * 60 * 60 * 1000)
   );
   const isAtRisk = daysSinceAttendance > 14;
   const isActive = daysSinceAttendance <= 7;
@@ -390,6 +392,9 @@ export default function CoachMembersPage() {
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const [showFilters, setShowFilters] = useState(false);
 
+  // Use useState with lazy initializer for stable timestamp (React Compiler safe)
+  const [now] = useState(() => Date.now());
+
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -400,7 +405,7 @@ export default function CoachMembersPage() {
   };
 
   const filteredMembers = useMemo(() => {
-    let filtered = mockMembers.filter((member) => {
+    const filtered = mockMembers.filter((member) => {
       const matchesSearch =
         member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         member.email.toLowerCase().includes(searchQuery.toLowerCase());
@@ -438,10 +443,10 @@ export default function CoachMembersPage() {
     mockMembers.reduce((sum, m) => sum + m.attendanceRate, 0) / mockMembers.length
   );
   const atRiskCount = mockMembers.filter(
-    (m) => (Date.now() - m.lastAttended) / (24 * 60 * 60 * 1000) > 14
+    (m) => (now - m.lastAttended) / (24 * 60 * 60 * 1000) > 14
   ).length;
   const activeCount = mockMembers.filter(
-    (m) => (Date.now() - m.lastAttended) / (24 * 60 * 60 * 1000) <= 7
+    (m) => (now - m.lastAttended) / (24 * 60 * 60 * 1000) <= 7
   ).length;
 
   const handleViewDetails = (memberId: string) => {
@@ -662,6 +667,7 @@ export default function CoachMembersPage() {
                 key={member._id}
                 member={member}
                 onViewDetails={() => handleViewDetails(member._id)}
+                now={now}
               />
             ))}
           </motion.div>

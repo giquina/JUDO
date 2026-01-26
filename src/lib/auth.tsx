@@ -1,32 +1,20 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
-
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  beltRank: string;
-  subscriptionStatus: string;
-}
-
-interface AuthContextType {
-  user: User | null;
-  role: string | null;
-  isLoading: boolean;
-  isAuthenticated: boolean;
-  signIn: (email: string) => Promise<{ success: boolean; error?: string }>;
-  signOut: () => Promise<void>;
-  pendingEmail: string | null;
-}
+import type {
+  User,
+  UserRole,
+  AuthContextType,
+  MockUserData,
+} from "@/types/auth";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // DEV MODE: Set to true to auto-login as admin (skip login during development)
 const DEV_MODE = false;
-const DEV_USER_ROLE: "member" | "coach" | "admin" = "admin"; // Change this to test different roles
+const DEV_USER_ROLE: UserRole = "admin"; // Change this to test different roles
 
 // Mock users for demo - will be replaced with Convex queries
-const MOCK_USERS: Record<string, { user: User; role: string }> = {
+const MOCK_USERS: Record<string, MockUserData> = {
   "a.chen@bbk.ac.uk": {
     user: { _id: "1", name: "Alice Chen", email: "a.chen@bbk.ac.uk", beltRank: "blue", subscriptionStatus: "active" },
     role: "member"
@@ -43,7 +31,7 @@ const MOCK_USERS: Record<string, { user: User; role: string }> = {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [role, setRole] = useState<string | null>(null);
+  const [role, setRole] = useState<UserRole | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [pendingEmail, setPendingEmail] = useState<string | null>(null);
 
@@ -58,10 +46,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       };
       const devEmail = devEmails[DEV_USER_ROLE];
       if (MOCK_USERS[devEmail]) {
-        setUser(MOCK_USERS[devEmail].user);
-        setRole(MOCK_USERS[devEmail].role);
+        queueMicrotask(() => {
+          setUser(MOCK_USERS[devEmail].user);
+          setRole(MOCK_USERS[devEmail].role);
+          setIsLoading(false);
+        });
+      } else {
+        queueMicrotask(() => setIsLoading(false));
       }
-      setIsLoading(false);
       return;
     }
 
@@ -69,19 +61,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (savedEmail) {
       const normalizedEmail = savedEmail.toLowerCase();
       if (MOCK_USERS[normalizedEmail]) {
-        setUser(MOCK_USERS[normalizedEmail].user);
-        setRole(MOCK_USERS[normalizedEmail].role);
+        queueMicrotask(() => {
+          setUser(MOCK_USERS[normalizedEmail].user);
+          setRole(MOCK_USERS[normalizedEmail].role);
+        });
       } else {
         // Restore session for any previously logged-in user
         const savedUser = localStorage.getItem("judo_auth_user");
-        const savedRole = localStorage.getItem("judo_auth_role");
+        const savedRole = localStorage.getItem("judo_auth_role") as UserRole | null;
         if (savedUser && savedRole) {
-          setUser(JSON.parse(savedUser));
-          setRole(savedRole);
+          queueMicrotask(() => {
+            setUser(JSON.parse(savedUser));
+            setRole(savedRole);
+          });
         }
       }
     }
-    setIsLoading(false);
+    queueMicrotask(() => setIsLoading(false));
   }, []);
 
   const isAuthenticated = !!user;
@@ -109,7 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const confirmSignIn = (email: string) => {
     const normalizedEmail = email.toLowerCase();
     let newUser: User;
-    let newRole: string;
+    let newRole: UserRole;
 
     if (MOCK_USERS[normalizedEmail]) {
       newUser = MOCK_USERS[normalizedEmail].user;

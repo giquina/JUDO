@@ -99,7 +99,9 @@ export function useNetworkStatus() {
     // Check connection quality if available
     const connection = (navigator as Navigator & { connection?: { effectiveType: string } }).connection;
     if (connection) {
-      setIsSlowConnection(connection.effectiveType === "slow-2g" || connection.effectiveType === "2g");
+      queueMicrotask(() => {
+        setIsSlowConnection(connection.effectiveType === "slow-2g" || connection.effectiveType === "2g");
+      });
     }
 
     return () => {

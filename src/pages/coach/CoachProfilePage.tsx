@@ -76,6 +76,32 @@ const BELT_COLORS: Record<string, string> = {
   black: "bg-gray-900 text-white",
 };
 
+// Validation helpers
+function validateEmail(email: string): { isValid: boolean; message?: string } {
+  if (!email) {
+    return { isValid: false, message: "Email is required" };
+  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return { isValid: false, message: "Please enter a valid email format" };
+  }
+  return { isValid: true };
+}
+
+function validatePhone(phone: string): { isValid: boolean; message?: string } {
+  if (!phone) {
+    return { isValid: false, message: "Phone is required" };
+  }
+  // UK phone validation - allows various formats
+  const phoneRegex = /^(\+44|0)\s?\d{2,4}\s?\d{3,4}\s?\d{3,4}$/;
+  if (!phoneRegex.test(phone.replace(/\s/g, '').replace(/^(\+44|0)/, '+44'))) {
+    return { isValid: false, message: "Please enter a valid UK phone number" };
+  }
+  return { isValid: true };
+}
+
+type ValidationFieldType = "email" | "phone" | "text";
+
 // Animation variants
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -158,31 +184,78 @@ function NotificationToggle({
   );
 }
 
-// Editable field component
+// Editable field component with validation
 function EditableField({
   label,
   value,
   icon: Icon,
   onSave,
+  fieldType = "text",
 }: {
   label: string;
   value: string;
   icon: typeof User;
   onSave: (newValue: string) => void;
+  fieldType?: ValidationFieldType;
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(value);
+  const [error, setError] = useState<string>("");
+  const [touched, setTouched] = useState(false);
+
+  const validate = (val: string): boolean => {
+    let validation: { isValid: boolean; message?: string } = { isValid: true };
+
+    switch (fieldType) {
+      case "email":
+        validation = validateEmail(val);
+        break;
+      case "phone":
+        validation = validatePhone(val);
+        break;
+      default:
+        if (!val.trim()) {
+          validation = { isValid: false, message: `${label} is required` };
+        }
+    }
+
+    setError(validation.message || "");
+    return validation.isValid;
+  };
+
+  const handleChange = (val: string) => {
+    setEditValue(val);
+    if (touched) {
+      validate(val);
+    }
+  };
+
+  const handleBlur = () => {
+    setTouched(true);
+    validate(editValue);
+  };
 
   const handleSave = () => {
+    setTouched(true);
+    if (!validate(editValue)) {
+      toast.error(error || `Please enter a valid ${label.toLowerCase()}`);
+      return;
+    }
     onSave(editValue);
     setIsEditing(false);
+    setTouched(false);
+    setError("");
     toast.success(`${label} updated successfully`);
   };
 
   const handleCancel = () => {
     setEditValue(value);
     setIsEditing(false);
+    setTouched(false);
+    setError("");
   };
+
+  const hasError = touched && error;
 
   return (
     <div className="flex items-center justify-between p-3 rounded-lg border">
@@ -198,20 +271,33 @@ function EditableField({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="flex items-center gap-2 mt-1"
+                className="space-y-1 mt-1"
               >
-                <Input
-                  value={editValue}
-                  onChange={(e) => setEditValue(e.target.value)}
-                  className="h-8 text-sm"
-                  autoFocus
-                />
-                <Button size="sm" variant="ghost" onClick={handleSave} className="h-8 w-8 p-0">
-                  <Check className="h-4 w-4 text-green-600" />
-                </Button>
-                <Button size="sm" variant="ghost" onClick={handleCancel} className="h-8 w-8 p-0">
-                  <X className="h-4 w-4 text-red-600" />
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={editValue}
+                    onChange={(e) => handleChange(e.target.value)}
+                    onBlur={handleBlur}
+                    className={`h-8 text-sm ${hasError ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                    aria-invalid={hasError ? "true" : "false"}
+                    autoFocus
+                  />
+                  <Button size="sm" variant="ghost" onClick={handleSave} className="h-8 w-8 p-0">
+                    <Check className="h-4 w-4 text-green-600" />
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={handleCancel} className="h-8 w-8 p-0">
+                    <X className="h-4 w-4 text-red-600" />
+                  </Button>
+                </div>
+                {hasError && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-xs text-red-500"
+                  >
+                    {error}
+                  </motion.p>
+                )}
               </motion.div>
             ) : (
               <motion.p
@@ -276,6 +362,9 @@ export default function CoachProfilePage() {
   const { theme, setTheme } = useTheme();
   const [notifications, setNotifications] = useState(mockNotificationSettings);
   const [coach, setCoach] = useState(mockCoach);
+
+  // Use useState with lazy initializer for stable timestamp (React Compiler safe)
+  const [now] = useState(() => Date.now());
 
   const toggleNotification = (key: keyof typeof notifications) => {
     setNotifications((prev) => ({
@@ -390,7 +479,7 @@ export default function CoachProfilePage() {
             <StatCard
               icon={Clock}
               label="Years Teaching"
-              value={Math.floor((Date.now() - coach.joinDate) / (365 * 24 * 60 * 60 * 1000))}
+              value={Math.floor((now - coach.joinDate) / (365 * 24 * 60 * 60 * 1000))}
               gradient="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border-orange-200 dark:border-orange-800"
             />
           </motion.div>
@@ -418,18 +507,21 @@ export default function CoachProfilePage() {
                     value={coach.name}
                     icon={User}
                     onSave={(value) => setCoach((prev) => ({ ...prev, name: value }))}
+                    fieldType="text"
                   />
                   <EditableField
                     label="Email"
                     value={coach.email}
                     icon={Mail}
                     onSave={(value) => setCoach((prev) => ({ ...prev, email: value }))}
+                    fieldType="email"
                   />
                   <EditableField
                     label="Phone"
                     value={coach.phone}
                     icon={Smartphone}
                     onSave={(value) => setCoach((prev) => ({ ...prev, phone: value }))}
+                    fieldType="phone"
                   />
                 </CardContent>
               </Card>

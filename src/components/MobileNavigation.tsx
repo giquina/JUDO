@@ -141,6 +141,8 @@ function NavItemButton({
         to={item.path}
         className="relative -mt-6 z-10"
         onClick={handleTap}
+        aria-label={item.label}
+        aria-current={isActive ? "page" : undefined}
       >
         <motion.div
           className="relative"
@@ -220,6 +222,8 @@ function NavItemButton({
       to={item.path}
       className="relative flex flex-col items-center justify-center py-2 px-3 min-w-[60px] overflow-hidden"
       onClick={handleTap}
+      aria-label={item.label}
+      aria-current={isActive ? "page" : undefined}
     >
       <motion.div
         className="relative"
@@ -326,11 +330,13 @@ export default function MobileNavigation() {
 
   // Handle visibility based on scroll
   useEffect(() => {
-    if (isAtTop) {
-      setIsVisible(true);
-    } else {
-      setIsVisible(scrollDirection === "up");
-    }
+    queueMicrotask(() => {
+      if (isAtTop) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(scrollDirection === "up");
+      }
+    });
   }, [scrollDirection, isAtTop]);
 
   // Check if current path matches nav item (handle nested routes)
@@ -353,6 +359,8 @@ export default function MobileNavigation() {
         initial={{ y: 0 }}
         animate={{ y: isVisible ? 0 : 100 }}
         transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        role="navigation"
+        aria-label="Main navigation"
       >
         {/* Background with blur and gradient */}
         <div className="absolute inset-0 bg-background/80 backdrop-blur-xl border-t border-border/50" />

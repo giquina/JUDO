@@ -356,12 +356,15 @@ export default function AdminPaymentsPage() {
     dateRange: "",
   });
 
+  // Use useState with lazy initializer for stable timestamp (React Compiler safe)
+  const [now] = useState(() => Date.now());
+
   const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
   const filteredPayments = useMemo(() => {
-    let payments = mockPayments.filter((p) => {
+    const payments = mockPayments.filter((p) => {
       const matchesSearch =
         p.memberName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.memberEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -369,7 +372,7 @@ export default function AdminPaymentsPage() {
         p.transactionId.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesStatus = !filters.status || p.status === filters.status;
       const matchesType = !filters.type || p.type === filters.type;
-      const matchesDate = !filters.dateRange || p.date > Date.now() - parseInt(filters.dateRange) * 24 * 60 * 60 * 1000;
+      const matchesDate = !filters.dateRange || p.date > now - parseInt(filters.dateRange) * 24 * 60 * 60 * 1000;
 
       return matchesSearch && matchesStatus && matchesType && matchesDate;
     });
@@ -394,19 +397,19 @@ export default function AdminPaymentsPage() {
     });
 
     return payments;
-  }, [searchQuery, sortField, sortDirection, filters]);
+  }, [searchQuery, sortField, sortDirection, filters, now]);
 
   // Calculate stats
   const totalRevenue = mockPayments
     .filter((p) => p.status === "completed")
     .reduce((sum, p) => sum + p.amount, 0);
   const monthlyRevenue = mockPayments
-    .filter((p) => p.status === "completed" && p.date > Date.now() - 30 * 24 * 60 * 60 * 1000)
+    .filter((p) => p.status === "completed" && p.date > now - 30 * 24 * 60 * 60 * 1000)
     .reduce((sum, p) => sum + p.amount, 0);
   const pendingCount = mockPayments.filter((p) => p.status === "pending").length;
   const failedCount = mockPayments.filter((p) => p.status === "failed").length;
   const subscriptionRevenue = mockPayments
-    .filter((p) => p.status === "completed" && p.type === "subscription" && p.date > Date.now() - 30 * 24 * 60 * 60 * 1000)
+    .filter((p) => p.status === "completed" && p.type === "subscription" && p.date > now - 30 * 24 * 60 * 60 * 1000)
     .reduce((sum, p) => sum + p.amount, 0);
 
   const handleExportPayments = () => {

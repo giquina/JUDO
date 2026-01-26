@@ -11,6 +11,8 @@ import CoachSidebar from "@/components/CoachSidebar";
 import QRCodeGenerator from "@/components/QRCodeGenerator";
 import PageTransition from "@/components/PageTransition";
 import DashboardWrapper from "@/components/DashboardWrapper";
+import DojoBackgroundPattern from "@/components/backgrounds/DojoPattern";
+import { BELT_COLORS, LEVEL_COLORS } from "@/lib/constants";
 import {
   Users,
   CheckCircle2,
@@ -72,22 +74,6 @@ const mockAttendance = [
   { memberId: "7", name: "Lucy Taylor", beltRank: "white", status: "absent", checkInTime: null },
   { memberId: "8", name: "Yuki Tanaka", beltRank: "black", status: "attended", checkInTime: Date.now() - 3200000 },
 ];
-
-const BELT_COLORS: Record<string, string> = {
-  white: "bg-gray-100 text-gray-800 border-gray-200",
-  yellow: "bg-yellow-100 text-yellow-800 border-yellow-200",
-  orange: "bg-orange-100 text-orange-800 border-orange-200",
-  green: "bg-green-100 text-green-800 border-green-200",
-  blue: "bg-blue-600 text-white border-blue-700",
-  brown: "bg-amber-800 text-white border-amber-900",
-  black: "bg-gray-900 text-white border-gray-950",
-};
-
-const LEVEL_COLORS: Record<string, string> = {
-  beginner: "bg-green-100 text-green-800 border-green-200",
-  intermediate: "bg-blue-100 text-blue-800 border-blue-200",
-  advanced: "bg-purple-100 text-purple-800 border-purple-200",
-};
 
 // Animation variants
 const containerVariants = {
@@ -385,28 +371,6 @@ function LiveIndicator() {
   );
 }
 
-// Dojo background pattern component for coach
-function DojoBackgroundPattern() {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Tatami mat pattern */}
-      <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.04]">
-        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="tatami-coach" x="0" y="0" width="60" height="30" patternUnits="userSpaceOnUse">
-              <rect width="60" height="30" fill="none" stroke="currentColor" strokeWidth="1"/>
-              <line x1="30" y1="0" x2="30" y2="30" stroke="currentColor" strokeWidth="0.5"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#tatami-coach)" className="text-primary"/>
-        </svg>
-      </div>
-      {/* Subtle gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background" />
-    </div>
-  );
-}
-
 export default function CoachDashboard() {
   const [selectedClass, setSelectedClass] = useState<string | null>(null);
   const [showQR, setShowQR] = useState(false);
@@ -472,7 +436,7 @@ export default function CoachDashboard() {
     <PageTransition>
       <div className="min-h-screen bg-background relative">
         {/* Dojo background pattern */}
-        <DojoBackgroundPattern />
+        <DojoBackgroundPattern patternId="tatami-coach" />
 
         <CoachSidebar />
         <Navigation />

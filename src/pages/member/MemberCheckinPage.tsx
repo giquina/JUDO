@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -116,14 +116,18 @@ export default function MemberCheckinPage() {
   const [todayClasses, setTodayClasses] = useState(mockTodayClasses);
   const [qrExpiry, setQrExpiry] = useState(300); // 5 minutes in seconds
 
+  // Use ref to track if initial QR generation has happened
+  const hasInitialized = useRef(false);
+
   // Generate QR code with member data
-  const generateQRCode = async () => {
+  const generateQRCode = useCallback(async () => {
+    const now = Date.now();
     const qrData = JSON.stringify({
       memberId: mockMember.memberId,
       name: mockMember.name,
       email: mockMember.email,
-      timestamp: Date.now(),
-      validUntil: Date.now() + 5 * 60 * 1000, // Valid for 5 minutes
+      timestamp: now,
+      validUntil: now + 5 * 60 * 1000, // Valid for 5 minutes
     });
 
     try {
@@ -142,19 +146,26 @@ export default function MemberCheckinPage() {
       console.error("Error generating QR code:", err);
       toast.error("Failed to generate QR code");
     }
-  };
-
-  // Generate QR code on mount
-  useEffect(() => {
-    generateQRCode();
   }, []);
+
+  // Generate QR code on mount (using queueMicrotask to avoid synchronous setState in effect)
+  useEffect(() => {
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
+      queueMicrotask(() => {
+        generateQRCode();
+      });
+    }
+  }, [generateQRCode]);
 
   // QR code expiry countdown
   useEffect(() => {
     const timer = setInterval(() => {
       setQrExpiry((prev) => {
         if (prev <= 1) {
-          generateQRCode();
+          queueMicrotask(() => {
+            generateQRCode();
+          });
           return 300;
         }
         return prev - 1;
@@ -162,7 +173,7 @@ export default function MemberCheckinPage() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [generateQRCode]);
 
   const handleRefreshQR = async () => {
     setIsRefreshing(true);

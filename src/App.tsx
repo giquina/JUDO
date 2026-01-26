@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "./components/ThemeProvider";
 import ErrorBoundary from "./components/ErrorBoundary";
+import RouteErrorBoundary from "./components/RouteErrorBoundary";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NetworkStatus from "./components/NetworkStatus";
 import CommandPalette from "./components/CommandPalette";
@@ -80,90 +81,132 @@ function App() {
     <ErrorBoundary>
       <ThemeProvider defaultTheme="system" storageKey="judo-theme">
         <BrowserRouter>
+          {/* Skip to content link for keyboard/screen reader users */}
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          >
+            Skip to main content
+          </a>
           <CommandPalette />
           <Suspense fallback={<PageLoader />}>
+            <main id="main-content">
             <Routes>
               <Route path="/" element={<HomeRedirect />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/pricing" element={<PricingPage />} />
               <Route path="/subscription/success" element={<SubscriptionSuccess />} />
+              {/* Member Routes */}
               <Route path="/member" element={
                 <ProtectedRoute allowedRoles={["member", "coach", "admin"]}>
-                  <MemberDashboard />
+                  <RouteErrorBoundary sectionName="Member Dashboard">
+                    <MemberDashboard />
+                  </RouteErrorBoundary>
                 </ProtectedRoute>
               } />
               <Route path="/member/classes" element={
                 <ProtectedRoute allowedRoles={["member", "coach", "admin"]}>
-                  <MemberClassesPage />
+                  <RouteErrorBoundary sectionName="Member Classes">
+                    <MemberClassesPage />
+                  </RouteErrorBoundary>
                 </ProtectedRoute>
               } />
               <Route path="/member/checkin" element={
                 <ProtectedRoute allowedRoles={["member", "coach", "admin"]}>
-                  <MemberCheckinPage />
+                  <RouteErrorBoundary sectionName="Member Check-in">
+                    <MemberCheckinPage />
+                  </RouteErrorBoundary>
                 </ProtectedRoute>
               } />
               <Route path="/member/progress" element={
                 <ProtectedRoute allowedRoles={["member", "coach", "admin"]}>
-                  <MemberProgressPage />
+                  <RouteErrorBoundary sectionName="Member Progress">
+                    <MemberProgressPage />
+                  </RouteErrorBoundary>
                 </ProtectedRoute>
               } />
               <Route path="/member/profile" element={
                 <ProtectedRoute allowedRoles={["member", "coach", "admin"]}>
-                  <MemberProfilePage />
+                  <RouteErrorBoundary sectionName="Member Profile">
+                    <MemberProfilePage />
+                  </RouteErrorBoundary>
                 </ProtectedRoute>
               } />
+              {/* Coach Routes */}
               <Route path="/coach" element={
                 <ProtectedRoute allowedRoles={["coach", "admin"]}>
-                  <CoachDashboard />
+                  <RouteErrorBoundary sectionName="Coach Dashboard">
+                    <CoachDashboard />
+                  </RouteErrorBoundary>
                 </ProtectedRoute>
               } />
               <Route path="/coach/classes" element={
                 <ProtectedRoute allowedRoles={["coach", "admin"]}>
-                  <CoachClassesPage />
+                  <RouteErrorBoundary sectionName="Coach Classes">
+                    <CoachClassesPage />
+                  </RouteErrorBoundary>
                 </ProtectedRoute>
               } />
               <Route path="/coach/attendance" element={
                 <ProtectedRoute allowedRoles={["coach", "admin"]}>
-                  <CoachAttendancePage />
+                  <RouteErrorBoundary sectionName="Coach Attendance">
+                    <CoachAttendancePage />
+                  </RouteErrorBoundary>
                 </ProtectedRoute>
               } />
               <Route path="/coach/members" element={
                 <ProtectedRoute allowedRoles={["coach", "admin"]}>
-                  <CoachMembersPage />
+                  <RouteErrorBoundary sectionName="Coach Members">
+                    <CoachMembersPage />
+                  </RouteErrorBoundary>
                 </ProtectedRoute>
               } />
               <Route path="/coach/profile" element={
                 <ProtectedRoute allowedRoles={["coach", "admin"]}>
-                  <CoachProfilePage />
+                  <RouteErrorBoundary sectionName="Coach Profile">
+                    <CoachProfilePage />
+                  </RouteErrorBoundary>
                 </ProtectedRoute>
               } />
+              {/* Admin Routes */}
               <Route path="/admin" element={
                 <ProtectedRoute allowedRoles={["admin"]}>
-                  <AdminDashboard />
+                  <RouteErrorBoundary sectionName="Admin Dashboard">
+                    <AdminDashboard />
+                  </RouteErrorBoundary>
                 </ProtectedRoute>
               } />
               <Route path="/admin/members" element={
                 <ProtectedRoute allowedRoles={["admin"]}>
-                  <AdminMembersPage />
+                  <RouteErrorBoundary sectionName="Admin Members">
+                    <AdminMembersPage />
+                  </RouteErrorBoundary>
                 </ProtectedRoute>
               } />
               <Route path="/admin/payments" element={
                 <ProtectedRoute allowedRoles={["admin"]}>
-                  <AdminPaymentsPage />
+                  <RouteErrorBoundary sectionName="Admin Payments">
+                    <AdminPaymentsPage />
+                  </RouteErrorBoundary>
                 </ProtectedRoute>
               } />
               <Route path="/admin/analytics" element={
                 <ProtectedRoute allowedRoles={["admin"]}>
-                  <AdminAnalyticsPage />
+                  <RouteErrorBoundary sectionName="Admin Analytics">
+                    <AdminAnalyticsPage />
+                  </RouteErrorBoundary>
                 </ProtectedRoute>
               } />
               <Route path="/admin/settings" element={
                 <ProtectedRoute allowedRoles={["admin"]}>
-                  <AdminSettingsPage />
+                  <RouteErrorBoundary sectionName="Admin Settings">
+                    <AdminSettingsPage />
+                  </RouteErrorBoundary>
                 </ProtectedRoute>
               } />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            </main>
           </Suspense>
         </BrowserRouter>
         <Toaster richColors position="top-center" />

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -11,6 +11,8 @@ import CheckInQR from "@/components/CheckInQR";
 import PageTransition from "@/components/PageTransition";
 import BeltJourney from "@/components/BeltJourney";
 import DashboardWrapper from "@/components/DashboardWrapper";
+import DojoBackgroundPattern from "@/components/backgrounds/DojoPattern";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { Calendar, Clock, Trophy, CheckCircle2, XCircle, Dumbbell, Flame, Star, Zap, Target } from "lucide-react";
 
 // Mock data - will be replaced with Convex queries
@@ -75,28 +77,42 @@ const itemVariants = {
   },
 };
 
+// Motivational icon component - moved outside to avoid recreation during render
+function MotivationalIcon({ type }: { type: string }) {
+  switch (type) {
+    case "fire": return <Flame className="h-5 w-5 text-orange-500" />;
+    case "star": return <Star className="h-5 w-5 text-yellow-500" />;
+    case "zap": return <Zap className="h-5 w-5 text-blue-500" />;
+    case "trophy": return <Trophy className="h-5 w-5 text-amber-500" />;
+    default: return <Target className="h-5 w-5 text-green-500" />;
+  }
+}
+
 // Confetti particle component
 function ConfettiParticle({ delay, color }: { delay: number; color: string }) {
-  const randomX = Math.random() * 100;
-  const randomRotation = Math.random() * 360;
-  const randomDuration = 2 + Math.random() * 2;
+  // Use useState with lazy initializer for random values (React Compiler safe)
+  const [randomValues] = useState(() => ({
+    x: Math.random() * 100,
+    rotation: Math.random() * 360,
+    duration: 2 + Math.random() * 2,
+  }));
 
   return (
     <motion.div
       className="absolute w-3 h-3 rounded-sm"
       style={{
-        left: `${randomX}%`,
+        left: `${randomValues.x}%`,
         top: -20,
         backgroundColor: color,
       }}
       initial={{ y: -20, rotate: 0, opacity: 1 }}
       animate={{
         y: "100vh",
-        rotate: randomRotation + 720,
+        rotate: randomValues.rotation + 720,
         opacity: [1, 1, 0],
       }}
       transition={{
-        duration: randomDuration,
+        duration: randomValues.duration,
         delay,
         ease: "easeIn",
       }}
@@ -105,16 +121,19 @@ function ConfettiParticle({ delay, color }: { delay: number; color: string }) {
 }
 
 // Confetti celebration component
-function Confetti({ show }: { show: boolean }) {
+function Confetti({ show, disabled = false }: { show: boolean; disabled?: boolean }) {
   const colors = ["#FFD700", "#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7", "#DDA0DD", "#98D8C8"];
-  const particles = useMemo(() =>
+  // Use useState with lazy initializer for random values (React Compiler safe)
+  const [particles] = useState(() =>
     Array.from({ length: 50 }, (_, i) => ({
       id: i,
       delay: Math.random() * 0.5,
       color: colors[Math.floor(Math.random() * colors.length)],
-    })), []);
+    }))
+  );
 
-  if (!show) return null;
+  // Don't show confetti if disabled (e.g., for reduced motion preference)
+  if (!show || disabled) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-50">
@@ -352,28 +371,6 @@ function RealisticBeltBadge({ beltRank }: { beltRank: string }) {
   );
 }
 
-// Dojo background pattern component
-function DojoBackgroundPattern() {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Tatami mat pattern */}
-      <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.04]">
-        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="tatami" x="0" y="0" width="60" height="30" patternUnits="userSpaceOnUse">
-              <rect width="60" height="30" fill="none" stroke="currentColor" strokeWidth="1"/>
-              <line x1="30" y1="0" x2="30" y2="30" stroke="currentColor" strokeWidth="0.5"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#tatami)" className="text-primary"/>
-        </svg>
-      </div>
-      {/* Subtle gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background" />
-    </div>
-  );
-}
-
 export default function MemberDashboard() {
   const [showScanner, setShowScanner] = useState(false);
   const [checkInStatus, setCheckInStatus] = useState<"idle" | "success" | "error">("idle");
@@ -382,13 +379,16 @@ export default function MemberDashboard() {
   const [isFirstVisit, setIsFirstVisit] = useState(false);
   const [checkedInClass, setCheckedInClass] = useState("");
   const [showFullSuccess, setShowFullSuccess] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   // Check for first visit to trigger confetti
   useEffect(() => {
     const hasVisited = localStorage.getItem("judo-member-visited");
     if (!hasVisited) {
-      setIsFirstVisit(true);
-      setShowConfetti(true);
+      queueMicrotask(() => {
+        setIsFirstVisit(true);
+        setShowConfetti(true);
+      });
       localStorage.setItem("judo-member-visited", "true");
       setTimeout(() => setShowConfetti(false), 4000);
     }
@@ -431,19 +431,9 @@ export default function MemberDashboard() {
 
   const motivational = getMotivationalMessage(mockMember.currentStreak, mockMember.totalSessions);
 
-  const MotivationalIcon = ({ type }: { type: string }) => {
-    switch (type) {
-      case "fire": return <Flame className="h-5 w-5 text-orange-500" />;
-      case "star": return <Star className="h-5 w-5 text-yellow-500" />;
-      case "zap": return <Zap className="h-5 w-5 text-blue-500" />;
-      case "trophy": return <Trophy className="h-5 w-5 text-amber-500" />;
-      default: return <Target className="h-5 w-5 text-green-500" />;
-    }
-  };
-
   return (
     <PageTransition>
-      <Confetti show={showConfetti} />
+      <Confetti show={showConfetti} disabled={prefersReducedMotion} />
       <AnimatePresence>
         {showFullSuccess && <CheckInSuccess className={checkedInClass} />}
       </AnimatePresence>

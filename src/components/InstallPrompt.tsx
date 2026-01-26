@@ -17,11 +17,11 @@ export default function InstallPrompt() {
   useEffect(() => {
     // Check if already installed
     const standalone = window.matchMedia("(display-mode: standalone)").matches;
-    setIsStandalone(standalone);
+    queueMicrotask(() => setIsStandalone(standalone));
 
     // Check if iOS
     const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    setIsIOS(iOS);
+    queueMicrotask(() => setIsIOS(iOS));
 
     // Listen for beforeinstallprompt event (Chrome, Edge, etc.)
     const handleBeforeInstall = (e: Event) => {

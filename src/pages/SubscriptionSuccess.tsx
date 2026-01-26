@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, PartyPopper, ArrowRight, Calendar, QrCode, Trophy } from "lucide-react";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 // Confetti particle type
 interface ConfettiParticle {
@@ -17,6 +18,8 @@ interface ConfettiParticle {
   velocityX: number;
   velocityY: number;
   rotationSpeed: number;
+  duration: number;
+  borderRadius: string;
 }
 
 // Confetti colors
@@ -52,6 +55,8 @@ function Confetti() {
         velocityX: (Math.random() - 0.5) * 3,
         velocityY: 2 + Math.random() * 3,
         rotationSpeed: (Math.random() - 0.5) * 10,
+        duration: 3 + Math.random() * 2,
+        borderRadius: Math.random() > 0.5 ? "50%" : "0%",
       });
     }
 
@@ -59,7 +64,9 @@ function Confetti() {
   }, []);
 
   useEffect(() => {
-    createParticles();
+    queueMicrotask(() => {
+      createParticles();
+    });
 
     // Clear particles after animation
     const timeout = setTimeout(() => {
@@ -87,12 +94,12 @@ function Confetti() {
             rotate: particle.rotation + particle.rotationSpeed * 100,
           }}
           transition={{
-            duration: 3 + Math.random() * 2,
+            duration: particle.duration,
             ease: "linear" as const,
           }}
           style={{
             backgroundColor: particle.color,
-            borderRadius: Math.random() > 0.5 ? "50%" : "0%",
+            borderRadius: particle.borderRadius,
           }}
         />
       ))}
@@ -145,6 +152,7 @@ export default function SubscriptionSuccess() {
   const [searchParams] = useSearchParams();
   const [showConfetti, setShowConfetti] = useState(true);
   const sessionId = searchParams.get("session_id");
+  const prefersReducedMotion = useReducedMotion();
 
   // Get plan name from URL or default
   const planParam = searchParams.get("plan");
@@ -161,8 +169,8 @@ export default function SubscriptionSuccess() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Confetti animation */}
-      {showConfetti && <Confetti />}
+      {/* Confetti animation - disabled for users who prefer reduced motion */}
+      {showConfetti && !prefersReducedMotion && <Confetti />}
 
       {/* Main content */}
       <div className="flex-1 flex items-center justify-center p-4">

@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from "react";
-import { Html5QrcodeScanner } from "html5-qrcode";
+import { useState, useEffect, useRef, useCallback } from "react";
+import type { Html5QrcodeScanner } from "html5-qrcode";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
 
 interface CheckInQRProps {
   onCheckIn: (classId: string) => void;
@@ -10,66 +11,92 @@ interface CheckInQRProps {
 
 export default function CheckInQR({ onCheckIn, isLoading }: CheckInQRProps) {
   const [isScanning, setIsScanning] = useState(false);
+  const [isLibraryLoading, setIsLibraryLoading] = useState(false);
   const [scanResult, setScanResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const scannerRef = useRef<Html5QrcodeScanner | null>(null);
 
-  useEffect(() => {
-    if (isScanning && !scannerRef.current) {
-      scannerRef.current = new Html5QrcodeScanner(
-        "qr-reader",
-        {
-          fps: 10,
-          qrbox: { width: 250, height: 250 },
-          aspectRatio: 1.0,
-        },
-        false
-      );
-
-      scannerRef.current.render(
-        (decodedText) => {
-          // Parse QR code data
-          try {
-            const data = JSON.parse(decodedText);
-            if (data.classId) {
-              setScanResult(data.classId);
-              onCheckIn(data.classId);
-              stopScanning();
-            }
-          } catch {
-            // If not JSON, treat as plain class ID
-            setScanResult(decodedText);
-            onCheckIn(decodedText);
-            stopScanning();
-          }
-        },
-        (errorMessage) => {
-          // Ignore scan errors (no QR detected yet)
-          console.log(errorMessage);
-        }
-      );
-    }
-
-    return () => {
-      if (scannerRef.current) {
-        scannerRef.current.clear().catch(console.error);
-        scannerRef.current = null;
-      }
-    };
-  }, [isScanning, onCheckIn]);
-
-  const startScanning = () => {
-    setError(null);
-    setScanResult(null);
-    setIsScanning(true);
-  };
-
-  const stopScanning = () => {
+  const stopScanning = useCallback(() => {
     if (scannerRef.current) {
       scannerRef.current.clear().catch(console.error);
       scannerRef.current = null;
     }
     setIsScanning(false);
+  }, []);
+
+  useEffect(() => {
+    if (!isScanning || scannerRef.current) return;
+
+    let mounted = true;
+
+    const initializeScanner = async () => {
+      try {
+        setIsLibraryLoading(true);
+
+        // Dynamically import the library only when scanner is activated
+        const { Html5QrcodeScanner } = await import("html5-qrcode");
+
+        if (!mounted) return;
+
+        setIsLibraryLoading(false);
+
+        scannerRef.current = new Html5QrcodeScanner(
+          "qr-reader",
+          {
+            fps: 10,
+            qrbox: { width: 250, height: 250 },
+            aspectRatio: 1.0,
+          },
+          false
+        );
+
+        scannerRef.current.render(
+          (decodedText) => {
+            // Parse QR code data
+            try {
+              const data = JSON.parse(decodedText);
+              if (data.classId) {
+                setScanResult(data.classId);
+                onCheckIn(data.classId);
+                stopScanning();
+              }
+            } catch {
+              // If not JSON, treat as plain class ID
+              setScanResult(decodedText);
+              onCheckIn(decodedText);
+              stopScanning();
+            }
+          },
+          (errorMessage) => {
+            // Ignore scan errors (no QR detected yet)
+            console.log(errorMessage);
+          }
+        );
+      } catch (err) {
+        if (mounted) {
+          setIsLibraryLoading(false);
+          setError("Failed to load QR scanner. Please try again.");
+          setIsScanning(false);
+          console.error("Failed to load html5-qrcode:", err);
+        }
+      }
+    };
+
+    initializeScanner();
+
+    return () => {
+      mounted = false;
+      if (scannerRef.current) {
+        scannerRef.current.clear().catch(console.error);
+        scannerRef.current = null;
+      }
+    };
+  }, [isScanning, onCheckIn, stopScanning]);
+
+  const startScanning = () => {
+    setError(null);
+    setScanResult(null);
+    setIsScanning(true);
   };
 
   return (
@@ -97,11 +124,19 @@ export default function CheckInQR({ onCheckIn, isLoading }: CheckInQRProps) {
           </div>
         ) : (
           <div className="space-y-4">
-            <div id="qr-reader" className="rounded-lg overflow-hidden" />
+            {isLibraryLoading ? (
+              <div className="flex flex-col items-center justify-center py-12 space-y-3">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                <p className="text-sm text-muted-foreground">Loading scanner...</p>
+              </div>
+            ) : (
+              <div id="qr-reader" className="rounded-lg overflow-hidden" />
+            )}
             <Button
               onClick={stopScanning}
               variant="outline"
               className="w-full"
+              disabled={isLibraryLoading}
             >
               Cancel
             </Button>

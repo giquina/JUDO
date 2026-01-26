@@ -211,7 +211,9 @@ export default function CommandPalette() {
 
   // Reset selection when search changes
   useEffect(() => {
-    setSelectedIndex(0);
+    queueMicrotask(() => {
+      setSelectedIndex(0);
+    });
   }, [search]);
 
   // Keyboard shortcut to open
@@ -258,8 +260,10 @@ export default function CommandPalette() {
 
   // Close on location change
   useEffect(() => {
-    setIsOpen(false);
-    setSearch("");
+    queueMicrotask(() => {
+      setIsOpen(false);
+      setSearch("");
+    });
   }, [location.pathname]);
 
   return (

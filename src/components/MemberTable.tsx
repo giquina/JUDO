@@ -89,9 +89,9 @@ function SortableHeader({
 }
 
 // Member row component with sticky first column
-function MemberRow({ member, index }: { member: Member; index: number }) {
+function MemberRow({ member, index, now }: { member: Member; index: number; now: number }) {
   const [showActions, setShowActions] = useState(false);
-  const daysSinceAttendance = Math.floor((Date.now() - member.lastAttended) / (24 * 60 * 60 * 1000));
+  const daysSinceAttendance = Math.floor((now - member.lastAttended) / (24 * 60 * 60 * 1000));
   const isAtRisk = daysSinceAttendance > 14;
 
   return (
@@ -223,6 +223,9 @@ export default function MemberTable({
   const [sortField, setSortField] = useState<SortField>("name");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
 
+  // Use useState with lazy initializer for stable timestamp (React Compiler safe)
+  const [now] = useState(() => Date.now());
+
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -233,7 +236,7 @@ export default function MemberTable({
   };
 
   const filteredMembers = useMemo(() => {
-    let filtered = members.filter(
+    const filtered = members.filter(
       (m) =>
         m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         m.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -247,14 +250,16 @@ export default function MemberTable({
         case "name":
           comparison = a.name.localeCompare(b.name);
           break;
-        case "beltRank":
+        case "beltRank": {
           const beltOrder = ["white", "yellow", "orange", "green", "blue", "brown", "black"];
           comparison = beltOrder.indexOf(a.beltRank) - beltOrder.indexOf(b.beltRank);
           break;
-        case "subscriptionTier":
+        }
+        case "subscriptionTier": {
           const tierOrder = ["student", "standard", "premium"];
           comparison = tierOrder.indexOf(a.subscriptionTier) - tierOrder.indexOf(b.subscriptionTier);
           break;
+        }
         case "totalSessions":
           comparison = a.totalSessions - b.totalSessions;
           break;
@@ -345,7 +350,7 @@ export default function MemberTable({
             </thead>
             <tbody>
               {filteredMembers.map((member, index) => (
-                <MemberRow key={member._id} member={member} index={index} />
+                <MemberRow key={member._id} member={member} index={index} now={now} />
               ))}
             </tbody>
           </table>

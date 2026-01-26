@@ -81,7 +81,7 @@ export default function CoachSidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+      <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto" aria-label="Coach navigation">
         {navItems.map((item) => {
           const isActive = isActivePath(item.path);
           const Icon = item.icon;
@@ -97,6 +97,8 @@ export default function CoachSidebar() {
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:bg-accent hover:text-foreground"
               )}
+              aria-label={item.label}
+              aria-current={isActive ? "page" : undefined}
             >
               {/* Active indicator bar */}
               {isActive && (

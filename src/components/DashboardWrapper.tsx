@@ -55,7 +55,7 @@ export default function DashboardWrapper({
       await onRefresh();
       toast.success("Refreshed!", { duration: 1500 });
       haptic("success");
-    } catch (error) {
+    } catch {
       toast.error("Failed to refresh");
       haptic("error");
     } finally {

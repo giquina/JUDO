@@ -8,7 +8,7 @@ export const seedDatabase = mutation({
     const oneMonthAgo = now - 30 * 24 * 60 * 60 * 1000;
 
     // Create sample admins (coaches)
-    const joeCoach = await ctx.db.insert("admins", {
+    await ctx.db.insert("admins", {
       userId: "coach-joe-doherty",
       role: "super_admin",
       name: "Joe Doherty",
@@ -23,7 +23,7 @@ export const seedDatabase = mutation({
       createdAt: now,
     });
 
-    const assistantCoach = await ctx.db.insert("admins", {
+    await ctx.db.insert("admins", {
       userId: "coach-sarah-mitchell",
       role: "coach",
       name: "Sarah Mitchell",
@@ -32,7 +32,7 @@ export const seedDatabase = mutation({
       createdAt: now,
     });
 
-    const treasurer = await ctx.db.insert("admins", {
+    await ctx.db.insert("admins", {
       userId: "treasurer-mike-chen",
       role: "treasurer",
       name: "Mike Chen",
@@ -42,7 +42,7 @@ export const seedDatabase = mutation({
     });
 
     // Create sample classes
-    const mondayClass = await ctx.db.insert("classes", {
+    await ctx.db.insert("classes", {
       name: "Monday Evening Fundamentals",
       dayOfWeek: "Monday",
       startTime: "19:00",
@@ -57,7 +57,7 @@ export const seedDatabase = mutation({
       updatedAt: now,
     });
 
-    const wednesdayClass = await ctx.db.insert("classes", {
+    await ctx.db.insert("classes", {
       name: "Wednesday Intermediate",
       dayOfWeek: "Wednesday",
       startTime: "19:00",
@@ -72,7 +72,7 @@ export const seedDatabase = mutation({
       updatedAt: now,
     });
 
-    const fridayClass = await ctx.db.insert("classes", {
+    await ctx.db.insert("classes", {
       name: "Friday Advanced",
       dayOfWeek: "Friday",
       startTime: "20:00",

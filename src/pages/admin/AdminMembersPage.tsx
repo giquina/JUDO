@@ -5,6 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 // Pagination component import - will use custom implementation
 import Navigation from "@/components/Navigation";
 import MobileNavigation from "@/components/MobileNavigation";
@@ -162,14 +168,15 @@ function SortableHeader({
 }
 
 // Member row component
-function MemberRow({ member, index, onEdit, onDelete, onView }: {
+function MemberRow({ member, index, onEdit, onDelete, onView, now }: {
   member: Member;
   index: number;
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
   onView: (id: string) => void;
+  now: number;
 }) {
-  const daysSinceAttendance = member.lastAttended ? Math.floor((Date.now() - member.lastAttended) / (24 * 60 * 60 * 1000)) : null;
+  const daysSinceAttendance = member.lastAttended ? Math.floor((now - member.lastAttended) / (24 * 60 * 60 * 1000)) : null;
   const isAtRisk = daysSinceAttendance !== null && daysSinceAttendance > 14;
 
   return (
@@ -200,15 +207,31 @@ function MemberRow({ member, index, onEdit, onDelete, onView }: {
         </div>
       </td>
       <td className="py-3 px-3">
-        <Badge className={BELT_COLORS[member.beltRank]}>
-          {member.beltRank}
-        </Badge>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Badge className={BELT_COLORS[member.beltRank]}>
+              {member.beltRank}
+            </Badge>
+          </TooltipTrigger>
+          <TooltipContent>Current belt rank</TooltipContent>
+        </Tooltip>
       </td>
       <td className="py-3 px-3">
         <div className="flex items-center gap-2">
-          <Badge className={STATUS_COLORS[member.subscriptionStatus]}>
-            {member.subscriptionStatus}
-          </Badge>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Badge className={STATUS_COLORS[member.subscriptionStatus]}>
+                {member.subscriptionStatus}
+              </Badge>
+            </TooltipTrigger>
+            <TooltipContent>
+              {member.subscriptionStatus === "active"
+                ? "Member has an active subscription"
+                : member.subscriptionStatus === "inactive"
+                ? "Subscription expired or cancelled"
+                : "Subscription pending approval"}
+            </TooltipContent>
+          </Tooltip>
           <span className="text-sm text-muted-foreground capitalize whitespace-nowrap">
             ({member.subscriptionTier})
           </span>
@@ -237,13 +260,18 @@ function MemberRow({ member, index, onEdit, onDelete, onView }: {
             ? "Yesterday"
             : `${daysSinceAttendance} days ago`}
           {isAtRisk && (
-            <motion.span
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="ml-2 text-xs text-red-500"
-            >
-              At risk
-            </motion.span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="ml-2 text-xs text-red-500 cursor-help"
+                >
+                  At risk
+                </motion.span>
+              </TooltipTrigger>
+              <TooltipContent>No attendance in 14+ days</TooltipContent>
+            </Tooltip>
           )}
         </div>
       </td>
@@ -532,6 +560,9 @@ export default function AdminMembersPage() {
     subscription: "",
   });
 
+  // Use useState with lazy initializer for stable timestamp (React Compiler safe)
+  const [now] = useState(() => Date.now());
+
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -547,7 +578,7 @@ export default function AdminMembersPage() {
   };
 
   const { paginatedMembers, totalFilteredMembers } = useMemo(() => {
-    let members = mockMembers.filter((m) => {
+    const members = mockMembers.filter((m) => {
       const matchesSearch =
         m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         m.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -568,10 +599,11 @@ export default function AdminMembersPage() {
         case "beltRank":
           comparison = BELT_ORDER.indexOf(a.beltRank) - BELT_ORDER.indexOf(b.beltRank);
           break;
-        case "subscriptionTier":
+        case "subscriptionTier": {
           const tierOrder = ["student", "standard", "premium"];
           comparison = tierOrder.indexOf(a.subscriptionTier) - tierOrder.indexOf(b.subscriptionTier);
           break;
+        }
         case "totalSessions":
           comparison = a.totalSessions - b.totalSessions;
           break;
@@ -621,11 +653,12 @@ export default function AdminMembersPage() {
   const activeCount = mockMembers.filter((m) => m.subscriptionStatus === "active").length;
   const pendingCount = mockMembers.filter((m) => m.subscriptionStatus === "pending").length;
   const atRiskCount = mockMembers.filter((m) => {
-    const days = m.lastAttended ? Math.floor((Date.now() - m.lastAttended) / (24 * 60 * 60 * 1000)) : 0;
+    const days = m.lastAttended ? Math.floor((now - m.lastAttended) / (24 * 60 * 60 * 1000)) : 0;
     return days > 14 && m.subscriptionStatus === "active";
   }).length;
 
   return (
+    <TooltipProvider>
     <PageTransition>
       <div className="min-h-screen bg-background relative">
         <DojoBackgroundPattern />
@@ -840,6 +873,7 @@ export default function AdminMembersPage() {
                         onView={handleView}
                         onEdit={handleEdit}
                         onDelete={handleDelete}
+                        now={now}
                       />
                     ))}
                   </tbody>
@@ -1005,5 +1039,6 @@ export default function AdminMembersPage() {
         <AddMemberModal isOpen={showAddModal} onClose={() => setShowAddModal(false)} />
       </div>
     </PageTransition>
+    </TooltipProvider>
   );
 }

@@ -428,8 +428,8 @@ export default function JudoGlossary({
   // Check if any filters are active
   const hasActiveFilters = searchQuery !== "" || selectedCategory !== null;
 
-  // Content component
-  const GlossaryContent = () => (
+  // Glossary content JSX (not a component to avoid React Compiler issues)
+  const glossaryContent = (
     <div className={cn("flex flex-col h-full", className)}>
       {/* Header */}
       <div className="flex-shrink-0 pb-4 border-b">
@@ -644,7 +644,7 @@ export default function JudoGlossary({
               )}
             >
               <div className="flex-1 overflow-hidden p-6">
-                <GlossaryContent />
+                {glossaryContent}
               </div>
             </motion.div>
           </>
@@ -657,7 +657,7 @@ export default function JudoGlossary({
   return (
     <Card className={cn("overflow-hidden", className)}>
       <CardContent className="p-6">
-        <GlossaryContent />
+        {glossaryContent}
       </CardContent>
     </Card>
   );

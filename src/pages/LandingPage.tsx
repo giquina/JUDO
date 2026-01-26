@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -36,7 +36,7 @@ const scaleIn = {
 };
 
 // Floating Particle Component
-const FloatingParticle = ({ delay = 0, size = 8, x = 0, y = 0 }: { delay?: number; size?: number; x?: number; y?: number }) => (
+const FloatingParticle = ({ delay = 0, size = 8, x = 0, y = 0, duration = 10 }: { delay?: number; size?: number; x?: number; y?: number; duration?: number }) => (
   <motion.div
     className="particle absolute rounded-full"
     style={{
@@ -52,7 +52,7 @@ const FloatingParticle = ({ delay = 0, size = 8, x = 0, y = 0 }: { delay?: numbe
       scale: [1, 1.2, 1],
     }}
     transition={{
-      duration: 8 + Math.random() * 4,
+      duration,
       delay,
       repeat: Infinity,
       ease: "easeInOut" as const,
@@ -60,7 +60,7 @@ const FloatingParticle = ({ delay = 0, size = 8, x = 0, y = 0 }: { delay?: numbe
   />
 );
 
-// Generate particles for bokeh effect
+// Generate particles for bokeh effect (computed once at module level)
 const generateParticles = (count: number) => {
   return Array.from({ length: count }, (_, i) => ({
     id: i,
@@ -68,8 +68,12 @@ const generateParticles = (count: number) => {
     size: 4 + Math.random() * 12,
     x: Math.random() * 100,
     y: Math.random() * 100,
+    duration: 8 + Math.random() * 4,
   }));
 };
+
+// Pre-generate particles at module level for stability
+const PARTICLES = generateParticles(20);
 
 // Belt rank badge component
 const BeltBadge = ({ belt }: { belt: string }) => {
@@ -238,8 +242,8 @@ export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  // Generate particles once
-  const particles = useMemo(() => generateParticles(15), []);
+  // Use pre-generated particles (generated at module level for stability)
+  const particles = PARTICLES.slice(0, 15);
 
   // Parallax scroll effect for hero
   const heroRef = useRef<HTMLElement>(null);
@@ -432,6 +436,7 @@ export default function LandingPage() {
               size={particle.size}
               x={particle.x}
               y={particle.y}
+              duration={particle.duration}
             />
           ))}
         </div>
@@ -1028,6 +1033,7 @@ export default function LandingPage() {
               size={particle.size * 0.8}
               x={particle.x}
               y={particle.y}
+              duration={particle.duration}
             />
           ))}
         </div>

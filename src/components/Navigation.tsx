@@ -36,7 +36,9 @@ export default function Navigation() {
 
   // Close mobile menu on route change
   useEffect(() => {
-    setMobileMenuOpen(false);
+    queueMicrotask(() => {
+      setMobileMenuOpen(false);
+    });
   }, [location.pathname]);
 
   // Prevent body scroll when mobile menu is open

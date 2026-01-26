@@ -100,6 +100,7 @@ function EmailInput({
   disabled,
   error,
   isTouched,
+  shouldShake,
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -107,15 +108,25 @@ function EmailInput({
   disabled: boolean;
   error?: string;
   isTouched: boolean;
+  shouldShake?: boolean;
 }) {
   const showError = isTouched && error;
   const showSuccess = isTouched && !error && value.length > 0;
 
+  // Shake animation keyframes
+  const shakeAnimation = {
+    x: [0, -10, 10, -10, 10, -5, 5, 0],
+  };
+
   return (
     <div className="space-y-2">
-      <div className="relative">
+      <motion.div
+        className="relative"
+        animate={shouldShake ? shakeAnimation : {}}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
+      >
         <motion.div
-          className="absolute left-3 top-1/2 -translate-y-1/2"
+          className="absolute left-3 top-1/2 -translate-y-1/2 z-10"
           animate={{ scale: value ? 1 : 0.9, opacity: value ? 1 : 0.5 }}
         >
           <Mail className="h-5 w-5 text-muted-foreground" />
@@ -128,9 +139,11 @@ function EmailInput({
           onBlur={onBlur}
           required
           disabled={disabled}
+          aria-invalid={showError ? "true" : "false"}
+          aria-describedby={showError ? "email-error" : undefined}
           className={`h-14 pl-11 pr-11 text-base transition-all duration-300 ${
             showError
-              ? "border-red-500 focus-visible:ring-red-500"
+              ? "border-red-500 focus-visible:ring-red-500 bg-red-50/50 dark:bg-red-950/20"
               : showSuccess
               ? "border-green-500 focus-visible:ring-green-500"
               : ""
@@ -158,10 +171,12 @@ function EmailInput({
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </motion.div>
       <AnimatePresence>
         {showError && (
           <motion.p
+            id="email-error"
+            role="alert"
             initial={{ opacity: 0, y: -10, height: 0 }}
             animate={{ opacity: 1, y: 0, height: "auto" }}
             exit={{ opacity: 0, y: -10, height: 0 }}
@@ -282,6 +297,7 @@ export default function LoginPage() {
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [emailTouched, setEmailTouched] = useState(false);
+  const [shouldShake, setShouldShake] = useState(false);
   const navigate = useNavigate();
   const { signIn, isAuthenticated, role, isLoading: authLoading } = useAuth();
 
@@ -322,6 +338,9 @@ export default function LoginPage() {
     setEmailTouched(true);
 
     if (!emailValidation.isValid) {
+      // Trigger shake animation
+      setShouldShake(true);
+      setTimeout(() => setShouldShake(false), 500);
       toast.error(emailValidation.message);
       return;
     }
@@ -528,6 +547,7 @@ export default function LoginPage() {
                         disabled={isLoading}
                         error={emailValidation.message}
                         isTouched={emailTouched}
+                        shouldShake={shouldShake}
                       />
 
                       <div className="flex items-center justify-between">
@@ -545,9 +565,23 @@ export default function LoginPage() {
                         </motion.p>
                       </div>
 
-                      <LoadingButton isLoading={isLoading} disabled={!emailValidation.isValid && emailTouched}>
+                      <LoadingButton isLoading={isLoading} disabled={emailTouched && !emailValidation.isValid}>
                         Continue with Email
                       </LoadingButton>
+
+                      {/* Validation hint when button is disabled */}
+                      <AnimatePresence>
+                        {emailTouched && !emailValidation.isValid && (
+                          <motion.p
+                            initial={{ opacity: 0, y: -5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -5 }}
+                            className="text-xs text-center text-muted-foreground"
+                          >
+                            Please enter a valid email to continue
+                          </motion.p>
+                        )}
+                      </AnimatePresence>
                     </form>
 
                     <motion.div

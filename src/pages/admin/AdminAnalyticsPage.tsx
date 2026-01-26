@@ -286,17 +286,23 @@ function LineChart({ data, title, valuePrefix = "", color = "#10b981", height = 
 // Pie/Donut Chart for belt distribution
 function BeltDistributionChart({ data }: { data: typeof mockBeltDistribution }) {
   const total = data.reduce((sum, item) => sum + item.count, 0);
-  let cumulativeAngle = 0;
+
+  // Pre-compute cumulative angles to avoid mutation during render
+  const anglesData = data.reduce<Array<{ item: typeof data[0]; startAngle: number; angle: number }>>((acc, item) => {
+    const prevEnd = acc.length > 0 ? acc[acc.length - 1].startAngle + acc[acc.length - 1].angle : 0;
+    acc.push({
+      item,
+      startAngle: prevEnd,
+      angle: (item.count / total) * 360,
+    });
+    return acc;
+  }, []);
 
   return (
     <div className="flex items-center gap-6">
       <div className="relative w-40 h-40">
         <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
-          {data.map((item, index) => {
-            const angle = (item.count / total) * 360;
-            const startAngle = cumulativeAngle;
-            cumulativeAngle += angle;
-
+          {anglesData.map(({ item, startAngle, angle }, index) => {
             const startRad = (startAngle * Math.PI) / 180;
             const endRad = ((startAngle + angle) * Math.PI) / 180;
             const largeArc = angle > 180 ? 1 : 0;
