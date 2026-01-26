@@ -9,6 +9,20 @@ Judo Club Manager for University of London at Birkbeck - a React/TypeScript web 
 **Live:** https://judo-club-app.vercel.app
 **Dashboard:** https://dashboard.convex.dev/t/muhammad-giquina/judo/scintillating-clam-299
 
+## Current Rating: 6.5/10 | Target: 9.0/10
+
+### Critical Issues (Fix First)
+1. **INP Performance** - 13s+ interaction delays on button clicks
+2. **Broken Pages** - Payments 404, Analytics redirect loop
+3. **Navigation Confusion** - 3 competing nav systems (top buttons, sidebar, bottom mobile)
+
+### Working Features
+- PWA with service worker
+- QR check-in system
+- Role-based dashboards (Member/Coach/Admin)
+- 12 sub-pages for all roles
+- Dark mode, animations, toast notifications
+
 ## Build & Development Commands
 
 ```bash
@@ -18,8 +32,6 @@ npm run lint         # ESLint
 npx convex dev       # Start Convex backend (requires separate terminal)
 npx convex deploy    # Deploy Convex to production
 ```
-
-**Build includes icon generation:** The build script runs `scripts/generate-icons.mjs` before TypeScript compilation.
 
 ## Architecture
 
@@ -37,31 +49,50 @@ StrictMode
 
 Currently uses mock authentication in `src/lib/auth.tsx`:
 ```typescript
-const DEV_MODE = true;  // Auto-login enabled
+const DEV_MODE = false;  // Disabled for testing
 const DEV_USER_ROLE: "member" | "coach" | "admin" = "admin";
 ```
 
-Test accounts (when DEV_MODE=false):
+Test accounts:
 - `a.chen@bbk.ac.uk` - Member
 - `coach@bbk.ac.uk` - Coach
 - `admin@bbk.ac.uk` - Admin
 
-**To test different roles:** Edit `DEV_USER_ROLE` in `src/lib/auth.tsx`
+### Route Structure
 
-### Route Protection
+**Public Routes:**
+- `/` - Landing page (redirects if authenticated)
+- `/login` - Login page
+- `/pricing` - Subscription pricing
 
-`ProtectedRoute` component enforces role-based access:
-- `/member` - member, coach, admin
-- `/coach` - coach, admin only
-- `/admin` - admin only
+**Member Routes** (member, coach, admin):
+- `/member` - Dashboard
+- `/member/classes` - Class schedule
+- `/member/checkin` - QR check-in
+- `/member/progress` - Belt progress
+- `/member/profile` - Profile settings
+
+**Coach Routes** (coach, admin):
+- `/coach` - Dashboard
+- `/coach/classes` - Manage classes
+- `/coach/attendance` - Track attendance
+- `/coach/members` - View members
+- `/coach/profile` - Profile settings
+
+**Admin Routes** (admin only):
+- `/admin` - Dashboard with KPIs
+- `/admin/members` - Member management
+- `/admin/payments` - Payment tracking
+- `/admin/analytics` - Club analytics
+- `/admin/settings` - System settings
 
 ### Code Splitting
 
-All page components are lazy-loaded via `React.lazy()` in `App.tsx`.
+All 20 page components are lazy-loaded via `React.lazy()` in `App.tsx`.
 
 ### Convex Schema (convex/schema.ts)
 
-Four main tables with indexes:
+Five tables with indexes:
 - **members** - userId, beltRank, subscriptionStatus/Tier
 - **classes** - dayOfWeek, coachId, level, capacity
 - **attendance** - memberId, classId, checkInTime, status
@@ -83,23 +114,13 @@ PWA enabled via `vite-plugin-pwa` with:
 - Font caching (CacheFirst)
 - Custom icons in `public/`
 
-## Current State
-
-**Working:** UI/UX, animations, toast notifications, loading states, error handling, dark mode, QR check-in, role-based dashboards
-
-**Mock/Incomplete:**
-- Auth uses mock data (Convex auth with magic links not connected)
-- Components use local state instead of Convex queries
-- Stripe integration not connected
-- Push notifications not implemented
-
 ## Common Tasks
 
 ### Add a new page
 1. Create `src/pages/[Name]Page.tsx` (export default)
 2. Add lazy import in `App.tsx`
 3. Add Route with `ProtectedRoute` wrapper if needed
-4. Add to Navigation component if applicable
+4. Add to MobileNavigation component if applicable
 
 ### Add Convex function
 1. Create/edit `convex/functions/[domain].ts`
@@ -107,5 +128,42 @@ PWA enabled via `vite-plugin-pwa` with:
 3. Use `useQuery`/`useMutation` hooks in React components
 4. Handle loading states with existing `Spinner` or `skeleton` components
 
+### Switch test user role
+Edit `src/lib/auth.tsx`:
+```typescript
+const DEV_MODE = true;
+const DEV_USER_ROLE = "member" | "coach" | "admin"
+```
+
 ### Environment Variables
 - `VITE_CONVEX_URL` - Convex deployment URL (required)
+
+## File Structure
+
+```
+src/
+├── components/
+│   ├── ui/                 # Shadcn UI components
+│   ├── MobileNavigation.tsx # Bottom nav (role-specific)
+│   └── ProtectedRoute.tsx   # Route access control
+├── pages/
+│   ├── LandingPage.tsx
+│   ├── LoginPage.tsx
+│   ├── MemberDashboard.tsx
+│   ├── CoachDashboard.tsx
+│   ├── AdminDashboard.tsx
+│   ├── member/             # 4 member sub-pages
+│   ├── coach/              # 4 coach sub-pages
+│   └── admin/              # 4 admin sub-pages
+├── lib/
+│   └── auth.tsx            # Auth provider + DEV_MODE
+└── App.tsx                 # Router + lazy imports
+convex/
+├── schema.ts               # Database schema
+└── functions/              # Queries/mutations
+```
+
+## See Also
+
+- `TODO.md` - Prioritized task list with design feedback
+- `SUGGESTIONS.md` - Feature suggestions with impact ratings

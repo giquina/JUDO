@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Navigation from "@/components/Navigation";
 import MobileNavigation from "@/components/MobileNavigation";
+import MemberSidebar from "@/components/MemberSidebar";
 import CheckInQR from "@/components/CheckInQR";
 import PageTransition from "@/components/PageTransition";
 import BeltJourney from "@/components/BeltJourney";
@@ -451,7 +452,8 @@ export default function MemberDashboard() {
         <DojoBackgroundPattern />
 
         <Navigation />
-        <main className="container mx-auto p-4 space-y-6 relative z-10">
+        <MemberSidebar />
+        <main className="container mx-auto p-4 space-y-6 relative z-10 md:ml-64">
           {/* Welcome Header with Dojo Image */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}

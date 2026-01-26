@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import Navigation from "@/components/Navigation";
 import MobileNavigation from "@/components/MobileNavigation";
 import PageTransition from "@/components/PageTransition";
+import AdminSidebar from "@/components/AdminSidebar";
 import {
   Users,
   TrendingUp,
@@ -392,8 +393,9 @@ export default function AdminAnalyticsPage() {
       <div className="min-h-screen bg-background relative">
         <DojoBackgroundPattern />
         <Navigation />
-
-        <main className="container mx-auto p-4 space-y-6 relative z-10">
+        <div className="flex">
+          <AdminSidebar />
+          <main className="flex-1 md:ml-64 container mx-auto p-4 space-y-6 relative z-10">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -602,6 +604,7 @@ export default function AdminAnalyticsPage() {
             </motion.div>
           </motion.div>
         </main>
+        </div>
 
         <MobileNavigation />
       </div>

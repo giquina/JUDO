@@ -5,9 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Pagination } from "@/components/ui/pagination";
 import Navigation from "@/components/Navigation";
 import MobileNavigation from "@/components/MobileNavigation";
 import PageTransition from "@/components/PageTransition";
+import AdminSidebar from "@/components/AdminSidebar";
 import {
   Users,
   CreditCard,
@@ -308,7 +310,6 @@ function QuickActionButton({
 
 // Member row component
 function MemberRow({ member, index }: { member: typeof mockMembers[0]; index: number }) {
-  const [showActions, setShowActions] = useState(false);
   const daysSinceAttendance = Math.floor((Date.now() - member.lastAttended) / (24 * 60 * 60 * 1000));
   const isAtRisk = daysSinceAttendance > 14;
 
@@ -318,8 +319,6 @@ function MemberRow({ member, index }: { member: typeof mockMembers[0]; index: nu
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: index * 0.03 }}
       className={`border-b hover:bg-muted/50 transition-colors ${isAtRisk ? "bg-red-50/30 dark:bg-red-950/10" : ""}`}
-      onMouseEnter={() => setShowActions(true)}
-      onMouseLeave={() => setShowActions(false)}
     >
       <td className="py-3">
         <div className="flex items-center gap-3">
@@ -386,30 +385,19 @@ function MemberRow({ member, index }: { member: typeof mockMembers[0]; index: nu
         </div>
       </td>
       <td className="py-3">
-        <AnimatePresence>
-          {showActions ? (
-            <motion.div
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 10 }}
-              className="flex items-center gap-1"
-            >
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                <Eye className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                <Edit className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </motion.div>
-          ) : (
-            <Button variant="ghost" size="sm">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          )}
-        </AnimatePresence>
+        <div className="flex items-center gap-1">
+          <Button variant="outline" size="sm" className="h-7 px-2">
+            <Eye className="h-3 w-3 mr-1" />
+            View
+          </Button>
+          <Button variant="outline" size="sm" className="h-7 px-2">
+            <Edit className="h-3 w-3 mr-1" />
+            Edit
+          </Button>
+          <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </div>
       </td>
     </motion.tr>
   );
@@ -487,6 +475,8 @@ export default function AdminDashboard() {
   const [selectedTab, setSelectedTab] = useState<"members" | "payments">("members");
   const [sortField, setSortField] = useState<SortField>("name");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -497,7 +487,13 @@ export default function AdminDashboard() {
     }
   };
 
-  const filteredMembers = useMemo(() => {
+  // Reset to page 1 when search changes
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+  };
+
+  const { paginatedMembers, totalFilteredMembers } = useMemo(() => {
     let members = mockMembers.filter(
       (m) =>
         m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -530,8 +526,14 @@ export default function AdminDashboard() {
       return sortDirection === "asc" ? comparison : -comparison;
     });
 
-    return members;
-  }, [mockMembers, searchQuery, sortField, sortDirection]);
+    const totalFilteredMembers = members.length;
+
+    // Apply pagination
+    const startIndex = (currentPage - 1) * pageSize;
+    const paginatedMembers = members.slice(startIndex, startIndex + pageSize);
+
+    return { paginatedMembers, totalFilteredMembers };
+  }, [searchQuery, sortField, sortDirection, currentPage, pageSize]);
 
   const totalRevenue = mockMembers
     .filter((m) => m.subscriptionStatus === "active")
@@ -567,7 +569,9 @@ export default function AdminDashboard() {
         <DojoBackgroundPattern />
 
         <Navigation />
-        <main className="container mx-auto p-4 space-y-6 relative z-10">
+        <div className="flex">
+          <AdminSidebar />
+          <main className="flex-1 md:ml-64 container mx-auto p-4 space-y-6 relative z-10">
           {/* Header with Background Image */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -722,7 +726,7 @@ export default function AdminDashboard() {
                         <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
                           <Users className="h-5 w-5 text-primary" />
                           Dojo Members
-                          <Badge variant="secondary">{filteredMembers.length}</Badge>
+                          <Badge variant="secondary">{totalFilteredMembers}</Badge>
                         </CardTitle>
                         <CardDescription className="text-sm">
                           Tap column headers to sort
@@ -733,7 +737,7 @@ export default function AdminDashboard() {
                         <Input
                           placeholder="Search judoka..."
                           value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
+                          onChange={(e) => handleSearchChange(e.target.value)}
                           className="pl-9 min-h-[44px] text-base"
                         />
                       </div>
@@ -788,12 +792,12 @@ export default function AdminDashboard() {
                           </tr>
                         </thead>
                         <tbody>
-                          {filteredMembers.map((member, index) => (
+                          {paginatedMembers.map((member, index) => (
                             <MemberRow key={member._id} member={member} index={index} />
                           ))}
                         </tbody>
                       </table>
-                      {filteredMembers.length === 0 && (
+                      {totalFilteredMembers === 0 && (
                         <motion.div
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
@@ -804,6 +808,17 @@ export default function AdminDashboard() {
                         </motion.div>
                       )}
                     </div>
+                    {/* Pagination */}
+                    {totalFilteredMembers > 0 && (
+                      <Pagination
+                        currentPage={currentPage}
+                        totalItems={totalFilteredMembers}
+                        pageSize={pageSize}
+                        onPageChange={setCurrentPage}
+                        onPageSizeChange={setPageSize}
+                        itemLabel="judoka"
+                      />
+                    )}
                   </CardContent>
                 </Card>
               </motion.div>
@@ -845,6 +860,7 @@ export default function AdminDashboard() {
             )}
           </AnimatePresence>
         </main>
+        </div>
 
         {/* Mobile Bottom Navigation */}
         <MobileNavigation />

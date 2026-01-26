@@ -5,9 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+// Pagination component import - will use custom implementation
 import Navigation from "@/components/Navigation";
 import MobileNavigation from "@/components/MobileNavigation";
 import PageTransition from "@/components/PageTransition";
+import AdminSidebar from "@/components/AdminSidebar";
 import {
   Users,
   Search,
@@ -16,10 +18,13 @@ import {
   Filter,
   ChevronUp,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
   Eye,
   Edit,
   Trash2,
-  MoreHorizontal,
   Mail,
   X,
   Check,
@@ -163,7 +168,6 @@ function MemberRow({ member, index, onEdit, onDelete, onView }: {
   onDelete: (id: string) => void;
   onView: (id: string) => void;
 }) {
-  const [showActions, setShowActions] = useState(false);
   const daysSinceAttendance = member.lastAttended ? Math.floor((Date.now() - member.lastAttended) / (24 * 60 * 60 * 1000)) : null;
   const isAtRisk = daysSinceAttendance !== null && daysSinceAttendance > 14;
 
@@ -173,8 +177,6 @@ function MemberRow({ member, index, onEdit, onDelete, onView }: {
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: index * 0.02 }}
       className={`border-b hover:bg-muted/50 transition-colors ${isAtRisk ? "bg-red-50/30 dark:bg-red-950/10" : ""}`}
-      onMouseEnter={() => setShowActions(true)}
-      onMouseLeave={() => setShowActions(false)}
     >
       <td className="py-3 px-3">
         <div className="flex items-center gap-3">
@@ -252,30 +254,19 @@ function MemberRow({ member, index, onEdit, onDelete, onView }: {
         })}
       </td>
       <td className="py-3 px-3">
-        <AnimatePresence>
-          {showActions ? (
-            <motion.div
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 10 }}
-              className="flex items-center gap-1"
-            >
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => onView(member._id)}>
-                <Eye className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => onEdit(member._id)}>
-                <Edit className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-destructive hover:text-destructive" onClick={() => onDelete(member._id)}>
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </motion.div>
-          ) : (
-            <Button variant="ghost" size="sm">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          )}
-        </AnimatePresence>
+        <div className="flex items-center gap-1">
+          <Button variant="outline" size="sm" className="h-7 px-2" onClick={() => onView(member._id)}>
+            <Eye className="h-3 w-3 mr-1" />
+            View
+          </Button>
+          <Button variant="outline" size="sm" className="h-7 px-2" onClick={() => onEdit(member._id)}>
+            <Edit className="h-3 w-3 mr-1" />
+            Edit
+          </Button>
+          <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-destructive hover:text-destructive" onClick={() => onDelete(member._id)}>
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
       </td>
     </motion.tr>
   );
@@ -532,6 +523,8 @@ export default function AdminMembersPage() {
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const [showFilters, setShowFilters] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [filters, setFilters] = useState({
     belt: "",
     status: "",
@@ -549,9 +542,10 @@ export default function AdminMembersPage() {
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
+    setCurrentPage(1); // Reset to first page when filters change
   };
 
-  const filteredMembers = useMemo(() => {
+  const { paginatedMembers, totalFilteredMembers } = useMemo(() => {
     let members = mockMembers.filter((m) => {
       const matchesSearch =
         m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -590,15 +584,21 @@ export default function AdminMembersPage() {
       return sortDirection === "asc" ? comparison : -comparison;
     });
 
-    return members;
-  }, [searchQuery, sortField, sortDirection, filters]);
+    const totalFilteredMembers = members.length;
+
+    // Apply pagination
+    const startIndex = (currentPage - 1) * pageSize;
+    const paginatedMembers = members.slice(startIndex, startIndex + pageSize);
+
+    return { paginatedMembers, totalFilteredMembers };
+  }, [searchQuery, sortField, sortDirection, filters, currentPage, pageSize]);
 
   const handleExportMembers = () => {
     toast.success("Exporting members to CSV...");
   };
 
   const handleEmailAll = () => {
-    toast.success(`Opening email composer for ${filteredMembers.length} members...`);
+    toast.success(`Opening email composer for ${totalFilteredMembers} members...`);
   };
 
   const handleView = (id: string) => {
@@ -629,8 +629,9 @@ export default function AdminMembersPage() {
       <div className="min-h-screen bg-background relative">
         <DojoBackgroundPattern />
         <Navigation />
-
-        <main className="container mx-auto p-4 space-y-6 relative z-10">
+        <div className="flex">
+          <AdminSidebar />
+          <main className="flex-1 md:ml-64 container mx-auto p-4 space-y-6 relative z-10">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -786,7 +787,7 @@ export default function AdminMembersPage() {
                   <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
                     <Users className="h-5 w-5 text-primary" />
                     Dojo Members
-                    <Badge variant="secondary">{filteredMembers.length}</Badge>
+                    <Badge variant="secondary">{totalFilteredMembers}</Badge>
                   </CardTitle>
                   <CardDescription>
                     Click column headers to sort
@@ -804,9 +805,9 @@ export default function AdminMembersPage() {
               </div>
             </CardHeader>
             <CardContent className="px-0 sm:px-6">
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto overflow-y-auto max-h-[600px]">
                 <table className="w-full min-w-[900px]">
-                  <thead>
+                  <thead className="sticky top-0 bg-background z-10">
                     <tr className="border-b text-left">
                       <SortableHeader field="name" currentSort={sortField} currentDirection={sortDirection} onSort={handleSort}>
                         Name
@@ -830,7 +831,7 @@ export default function AdminMembersPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredMembers.map((member, index) => (
+                    {paginatedMembers.map((member: Member, index: number) => (
                       <MemberRow
                         key={member._id}
                         member={member}
@@ -842,7 +843,7 @@ export default function AdminMembersPage() {
                     ))}
                   </tbody>
                 </table>
-                {filteredMembers.length === 0 && (
+                {paginatedMembers.length === 0 && (
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -854,9 +855,150 @@ export default function AdminMembersPage() {
                   </motion.div>
                 )}
               </div>
+
+              {/* Pagination Controls */}
+              {totalFilteredMembers > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4 px-4 sm:px-0"
+                >
+                  {/* Showing X to Y of Z */}
+                  <div className="text-sm text-muted-foreground order-2 sm:order-1">
+                    Showing {Math.min((currentPage - 1) * pageSize + 1, totalFilteredMembers)} to{" "}
+                    {Math.min(currentPage * pageSize, totalFilteredMembers)} of {totalFilteredMembers} members
+                  </div>
+
+                  {/* Page Navigation */}
+                  <div className="flex items-center gap-1 order-1 sm:order-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 w-8 p-0"
+                      onClick={() => setCurrentPage(1)}
+                      disabled={currentPage === 1}
+                      aria-label="First page"
+                    >
+                      <ChevronsLeft className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 w-8 p-0"
+                      onClick={() => setCurrentPage(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      aria-label="Previous page"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+
+                    {/* Page Numbers */}
+                    <div className="flex items-center gap-1">
+                      {(() => {
+                        const totalPages = Math.ceil(totalFilteredMembers / pageSize);
+                        const pages: (number | string)[] = [];
+
+                        if (totalPages <= 5) {
+                          // Show all pages if 5 or less
+                          for (let i = 1; i <= totalPages; i++) {
+                            pages.push(i);
+                          }
+                        } else {
+                          // Always show first page
+                          pages.push(1);
+
+                          if (currentPage > 3) {
+                            pages.push("...");
+                          }
+
+                          // Show pages around current page
+                          const start = Math.max(2, currentPage - 1);
+                          const end = Math.min(totalPages - 1, currentPage + 1);
+
+                          for (let i = start; i <= end; i++) {
+                            if (!pages.includes(i)) {
+                              pages.push(i);
+                            }
+                          }
+
+                          if (currentPage < totalPages - 2) {
+                            pages.push("...");
+                          }
+
+                          // Always show last page
+                          if (!pages.includes(totalPages)) {
+                            pages.push(totalPages);
+                          }
+                        }
+
+                        return pages.map((page, index) => (
+                          page === "..." ? (
+                            <span key={`ellipsis-${index}`} className="px-2 text-muted-foreground">
+                              ...
+                            </span>
+                          ) : (
+                            <Button
+                              key={page}
+                              variant={currentPage === page ? "default" : "outline"}
+                              size="sm"
+                              className="h-8 w-8 p-0"
+                              onClick={() => setCurrentPage(page as number)}
+                            >
+                              {page}
+                            </Button>
+                          )
+                        ));
+                      })()}
+                    </div>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 w-8 p-0"
+                      onClick={() => setCurrentPage(currentPage + 1)}
+                      disabled={currentPage >= Math.ceil(totalFilteredMembers / pageSize)}
+                      aria-label="Next page"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 w-8 p-0"
+                      onClick={() => setCurrentPage(Math.ceil(totalFilteredMembers / pageSize))}
+                      disabled={currentPage >= Math.ceil(totalFilteredMembers / pageSize)}
+                      aria-label="Last page"
+                    >
+                      <ChevronsRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  {/* Page Size Selector */}
+                  <div className="flex items-center gap-2 order-3">
+                    <label htmlFor="pageSize" className="text-sm text-muted-foreground whitespace-nowrap">
+                      Per page:
+                    </label>
+                    <select
+                      id="pageSize"
+                      className="h-8 px-2 rounded-md border bg-background text-sm"
+                      value={pageSize}
+                      onChange={(e) => {
+                        const newSize = Number(e.target.value);
+                        setPageSize(newSize);
+                        setCurrentPage(1); // Reset to first page when page size changes
+                      }}
+                    >
+                      <option value={10}>10</option>
+                      <option value={25}>25</option>
+                      <option value={50}>50</option>
+                    </select>
+                  </div>
+                </motion.div>
+              )}
             </CardContent>
           </Card>
         </main>
+        </div>
 
         <MobileNavigation />
         <AddMemberModal isOpen={showAddModal} onClose={() => setShowAddModal(false)} />

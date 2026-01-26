@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import Navigation from "@/components/Navigation";
 import MobileNavigation from "@/components/MobileNavigation";
+import CoachSidebar from "@/components/CoachSidebar";
 import QRCodeGenerator from "@/components/QRCodeGenerator";
 import PageTransition from "@/components/PageTransition";
 import {
@@ -472,8 +473,9 @@ export default function CoachDashboard() {
         {/* Dojo background pattern */}
         <DojoBackgroundPattern />
 
+        <CoachSidebar />
         <Navigation />
-        <main className="container mx-auto p-4 space-y-6 relative z-10">
+        <main className="container mx-auto p-4 space-y-6 relative z-10 md:ml-64">
           {/* Header with Background Image */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import Navigation from "@/components/Navigation";
 import MobileNavigation from "@/components/MobileNavigation";
 import PageTransition from "@/components/PageTransition";
+import AdminSidebar from "@/components/AdminSidebar";
 import {
   CreditCard,
   Search,
@@ -416,8 +417,9 @@ export default function AdminPaymentsPage() {
       <div className="min-h-screen bg-background relative">
         <DojoBackgroundPattern />
         <Navigation />
-
-        <main className="container mx-auto p-4 space-y-6 relative z-10">
+        <div className="flex">
+          <AdminSidebar />
+          <main className="flex-1 md:ml-64 container mx-auto p-4 space-y-6 relative z-10">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -563,9 +565,9 @@ export default function AdminPaymentsPage() {
               </div>
             </CardHeader>
             <CardContent className="px-0 sm:px-6">
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto overflow-y-auto max-h-[600px]">
                 <table className="w-full min-w-[900px]">
-                  <thead>
+                  <thead className="sticky top-0 bg-background z-10">
                     <tr className="border-b text-left">
                       <th className="pb-3 px-3 font-medium">Member</th>
                       <th className="pb-3 px-3 font-medium">Type</th>
@@ -597,6 +599,7 @@ export default function AdminPaymentsPage() {
             </CardContent>
           </Card>
         </main>
+        </div>
 
         <MobileNavigation />
       </div>

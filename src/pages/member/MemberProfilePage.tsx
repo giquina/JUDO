@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import Navigation from "@/components/Navigation";
 import MobileNavigation from "@/components/MobileNavigation";
+import MemberSidebar from "@/components/MemberSidebar";
 import PageTransition from "@/components/PageTransition";
 import { useAuth } from "@/lib/auth";
 import {
@@ -217,8 +218,9 @@ export default function MemberProfilePage() {
     <PageTransition>
       <div className="min-h-screen bg-background">
         <Navigation />
+        <MemberSidebar />
 
-        <main className="container mx-auto p-4 space-y-6 pb-24">
+        <main className="container mx-auto p-4 space-y-6 pb-24 md:ml-64">
           {/* Header with Profile Card */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}

@@ -9,7 +9,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['icon.svg', 'icon-192.svg', 'icon-512.svg'],
+      includeAssets: ['icon.svg', 'icon-192.svg', 'icon-512.svg', 'favicon.png', 'apple-touch-icon.png'],
       manifest: {
         name: 'Judo Dojo Manager',
         short_name: 'Judo Dojo',
@@ -43,6 +43,12 @@ export default defineConfig({
             sizes: '512x512',
             type: 'image/svg+xml',
             purpose: 'any'
+          },
+          {
+            src: 'apple-touch-icon.png',
+            sizes: '180x180',
+            type: 'image/png',
+            purpose: 'apple touch icon'
           }
         ]
       },
