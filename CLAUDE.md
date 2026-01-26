@@ -4,19 +4,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Judo Club Manager for University of London at Birkbeck - a React/TypeScript web app with Convex backend.
+Judo Club Manager for University of London at Birkbeck - a React/TypeScript PWA with Convex backend.
 
 **Live:** https://judo-club-app.vercel.app
+
+**Status:** UI complete with mock data. Remaining: real Convex data, magic link auth, Stripe integration.
 
 ## Commands
 
 ```bash
 npm run dev          # Vite dev server (localhost:5173)
-npm run build        # TypeScript check + Vite production build
+npm run build        # Generate icons + TypeScript check + Vite build
 npm run lint         # ESLint
 npx convex dev       # Convex backend (separate terminal)
 npx convex deploy    # Deploy Convex to production
 ```
+
+## Test Accounts
+
+Use "Demo: Click to Sign In" button on login page:
+- `admin@bbk.ac.uk` - Admin access
+- `coach@bbk.ac.uk` - Coach access
+- `a.chen@bbk.ac.uk` - Member access
 
 ## Architecture
 
@@ -59,8 +68,16 @@ Tables: `members`, `classes`, `attendance`, `payments`, `admins`
 
 - `VITE_CONVEX_URL` - Convex deployment URL (required)
 
+## Deployment
+
+```bash
+npm run build              # Verify build succeeds
+git push                   # Auto-deploys to Vercel
+npx convex deploy          # Deploy backend changes
+```
+
 ## Related Files
 
-- `AGENT.md` - Universal AI assistant instructions
+- `AGENT.md` - Universal AI assistant instructions (more detailed)
 - `TODO.md` - Task tracking
 - `SUGGESTIONS.md` - Feature suggestions

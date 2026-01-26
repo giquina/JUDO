@@ -10,6 +10,7 @@ import Navigation from "@/components/Navigation";
 import MobileNavigation from "@/components/MobileNavigation";
 import PageTransition from "@/components/PageTransition";
 import AdminSidebar from "@/components/AdminSidebar";
+import DashboardWrapper from "@/components/DashboardWrapper";
 import {
   Users,
   CreditCard,
@@ -571,7 +572,7 @@ export default function AdminDashboard() {
         <Navigation />
         <div className="flex">
           <AdminSidebar />
-          <main className="flex-1 md:ml-64 container mx-auto p-4 space-y-6 relative z-10">
+          <DashboardWrapper className="flex-1 md:ml-64 container mx-auto p-4 space-y-6 relative z-10">
           {/* Header with Background Image */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -859,7 +860,7 @@ export default function AdminDashboard() {
               </motion.div>
             )}
           </AnimatePresence>
-        </main>
+        </DashboardWrapper>
         </div>
 
         {/* Mobile Bottom Navigation */}

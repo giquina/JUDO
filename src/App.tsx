@@ -4,6 +4,9 @@ import { Toaster } from "sonner";
 import { ThemeProvider } from "./components/ThemeProvider";
 import ErrorBoundary from "./components/ErrorBoundary";
 import ProtectedRoute from "./components/ProtectedRoute";
+import NetworkStatus from "./components/NetworkStatus";
+import CommandPalette from "./components/CommandPalette";
+import InstallPrompt from "./components/InstallPrompt";
 import { useAuth } from "./lib/auth";
 import { Spinner } from "./components/ui/spinner";
 import NotFound from "./pages/NotFound";
@@ -77,6 +80,7 @@ function App() {
     <ErrorBoundary>
       <ThemeProvider defaultTheme="system" storageKey="judo-theme">
         <BrowserRouter>
+          <CommandPalette />
           <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/" element={<HomeRedirect />} />
@@ -163,6 +167,8 @@ function App() {
           </Suspense>
         </BrowserRouter>
         <Toaster richColors position="top-center" />
+        <NetworkStatus />
+        <InstallPrompt />
       </ThemeProvider>
     </ErrorBoundary>
   );

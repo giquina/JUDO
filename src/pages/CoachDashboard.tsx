@@ -10,6 +10,7 @@ import MobileNavigation from "@/components/MobileNavigation";
 import CoachSidebar from "@/components/CoachSidebar";
 import QRCodeGenerator from "@/components/QRCodeGenerator";
 import PageTransition from "@/components/PageTransition";
+import DashboardWrapper from "@/components/DashboardWrapper";
 import {
   Users,
   CheckCircle2,
@@ -475,7 +476,7 @@ export default function CoachDashboard() {
 
         <CoachSidebar />
         <Navigation />
-        <main className="container mx-auto p-4 space-y-6 relative z-10 md:ml-64">
+        <DashboardWrapper className="container mx-auto p-4 space-y-6 relative z-10 md:ml-64">
           {/* Header with Background Image */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -799,7 +800,7 @@ export default function CoachDashboard() {
               </Button>
             </motion.div>
           </motion.div>
-        </main>
+        </DashboardWrapper>
 
         {/* Mobile Bottom Navigation */}
         <MobileNavigation />

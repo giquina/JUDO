@@ -7,6 +7,7 @@ import Navigation from "@/components/Navigation";
 import MobileNavigation from "@/components/MobileNavigation";
 import MemberSidebar from "@/components/MemberSidebar";
 import PageTransition from "@/components/PageTransition";
+import DashboardWrapper from "@/components/DashboardWrapper";
 import BeltJourney from "@/components/BeltJourney";
 import {
   Trophy,
@@ -424,7 +425,7 @@ export default function MemberProgressPage() {
         <Navigation />
         <MemberSidebar />
 
-        <main className="container mx-auto p-4 space-y-6 pb-24 md:ml-64">
+        <DashboardWrapper className="container mx-auto p-4 space-y-6 pb-24 md:ml-64">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -666,7 +667,7 @@ export default function MemberProgressPage() {
               </CardContent>
             </Card>
           </motion.div>
-        </main>
+        </DashboardWrapper>
 
         <MobileNavigation />
       </div>

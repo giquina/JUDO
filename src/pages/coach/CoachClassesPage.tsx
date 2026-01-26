@@ -8,6 +8,7 @@ import Navigation from "@/components/Navigation";
 import MobileNavigation from "@/components/MobileNavigation";
 import CoachSidebar from "@/components/CoachSidebar";
 import PageTransition from "@/components/PageTransition";
+import DashboardWrapper from "@/components/DashboardWrapper";
 import {
   Calendar,
   Clock,
@@ -380,7 +381,7 @@ export default function CoachClassesPage() {
         <CoachSidebar />
         <Navigation />
 
-        <main className="container mx-auto p-4 space-y-6 relative z-10 md:ml-64">
+        <DashboardWrapper className="container mx-auto p-4 space-y-6 relative z-10 md:ml-64">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -507,7 +508,7 @@ export default function CoachClassesPage() {
               <p className="text-muted-foreground">No classes match your search</p>
             </motion.div>
           )}
-        </main>
+        </DashboardWrapper>
 
         <MobileNavigation />
       </div>

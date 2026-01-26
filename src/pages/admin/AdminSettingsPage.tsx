@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import Navigation from "@/components/Navigation";
 import MobileNavigation from "@/components/MobileNavigation";
 import PageTransition from "@/components/PageTransition";
+import DashboardWrapper from "@/components/DashboardWrapper";
 import AdminSidebar from "@/components/AdminSidebar";
 import {
   Settings,
@@ -701,7 +702,7 @@ export default function AdminSettingsPage() {
         <Navigation />
         <div className="flex">
           <AdminSidebar />
-          <main className="flex-1 md:ml-64 container mx-auto p-4 space-y-6 relative z-10">
+          <DashboardWrapper className="flex-1 md:ml-64 container mx-auto p-4 space-y-6 relative z-10">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -741,7 +742,7 @@ export default function AdminSettingsPage() {
             <NotificationSettingsSection />
             <DangerZoneSection />
           </motion.div>
-        </main>
+        </DashboardWrapper>
         </div>
 
         <MobileNavigation />

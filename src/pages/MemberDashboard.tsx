@@ -10,6 +10,7 @@ import MemberSidebar from "@/components/MemberSidebar";
 import CheckInQR from "@/components/CheckInQR";
 import PageTransition from "@/components/PageTransition";
 import BeltJourney from "@/components/BeltJourney";
+import DashboardWrapper from "@/components/DashboardWrapper";
 import { Calendar, Clock, Trophy, CheckCircle2, XCircle, Dumbbell, Flame, Star, Zap, Target } from "lucide-react";
 
 // Mock data - will be replaced with Convex queries
@@ -453,7 +454,7 @@ export default function MemberDashboard() {
 
         <Navigation />
         <MemberSidebar />
-        <main className="container mx-auto p-4 space-y-6 relative z-10 md:ml-64">
+        <DashboardWrapper className="container mx-auto p-4 space-y-6 relative z-10 md:ml-64">
           {/* Welcome Header with Dojo Image */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -863,7 +864,7 @@ export default function MemberDashboard() {
               </CardContent>
             </Card>
           </motion.div>
-        </main>
+        </DashboardWrapper>
 
         {/* Mobile Bottom Navigation */}
         <MobileNavigation />
