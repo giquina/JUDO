@@ -14,7 +14,7 @@ These are the most critical items to address before user testing or production d
 | 1 | **Replace DEV_MODE authentication with Convex Auth** | Production will fail without real auth | Security |
 | 2 | **Connect all dashboards to real Convex data** | Currently using mock data everywhere | Code Quality |
 | 3 | **Add form validation and input sanitization** | Security vulnerability and poor UX | Security |
-| 4 | **Implement error boundaries for all routes** | App crashes propagate to entire application | Code Quality |
+| ~~4~~ | ~~**Implement error boundaries for all routes**~~ | ~~App crashes propagate to entire application~~ | :white_check_mark: Done |
 | 5 | **Add loading skeletons for all data-fetching components** | Poor perceived performance without them | UX/UI |
 
 ---
@@ -30,7 +30,7 @@ These are the most critical items to address before user testing or production d
 | Add focus-visible states to all buttons | :yellow_circle: Medium | Current buttons rely on hover states only. Add `focus-visible:ring-2 focus-visible:ring-primary` to all interactive elements. |
 | Improve color contrast on muted text | :yellow_circle: Medium | `text-muted-foreground` on light backgrounds fails WCAG AA. Adjust to minimum 4.5:1 ratio. |
 | Add skip-to-content link | :green_circle: Low | Landing page has extensive navigation. Add skip link for keyboard users. |
-| Implement prefers-reduced-motion | :yellow_circle: Medium | Framer Motion animations run regardless of user preferences. Wrap animations in `useReducedMotion()` check. |
+| ~~Implement prefers-reduced-motion~~ | :white_check_mark: Done | ~~Framer Motion animations run regardless of user preferences.~~ Added `useReducedMotion()` hook in `src/hooks/useReducedMotion.ts`. Used in SubscriptionSuccess, LandingPage. |
 
 ### Mobile Experience Improvements
 
@@ -115,11 +115,11 @@ These are the most critical items to address before user testing or production d
 
 | Suggestion | Impact | Details |
 |------------|--------|---------|
-| Create strict types for user roles | :red_circle: High | Role is typed as `string` in multiple places. Create `type UserRole = 'member' \| 'coach' \| 'admin'` and use consistently. |
+| ~~Create strict types for user roles~~ | :white_check_mark: Done | ~~Role is typed as `string` in multiple places.~~ Created `UserRole` type in `src/types/auth.ts` and applied consistently. |
 | Add Zod schemas for API responses | :red_circle: High | Convex responses are not validated at runtime. Add validation for critical data like payments. |
 | Type the `MOCK_USERS` record properly | :yellow_circle: Medium | `auth.tsx` uses `Record<string, ...>` but should use specific email union type in DEV mode. |
 | Add discriminated unions for subscription status | :yellow_circle: Medium | `subscriptionStatus` + `subscriptionTier` combinations should be typed as union for impossible state prevention. |
-| Replace `as any` casts | :green_circle: Low | `ProtectedRoute.tsx` line 25 uses `as any`. Replace with proper type narrowing. |
+| ~~Replace `as any` casts~~ | :white_check_mark: Done | ~~`ProtectedRoute.tsx` line 25 uses `as any`.~~ Replaced with proper `as UserRole` type cast. |
 
 ### Component Reusability
 
@@ -127,7 +127,7 @@ These are the most critical items to address before user testing or production d
 |------------|--------|---------|
 | Extract `StatCard` to shared component | :red_circle: High | `StatCard` is defined in `MemberDashboard.tsx` and duplicated as `KPICard` in `AdminDashboard.tsx`. Unify into single component. |
 | Create `DataTable` generic component | :yellow_circle: Medium | Member table in admin is custom. Extract to reusable component with sorting, filtering, pagination props. |
-| Extract `DojoBackgroundPattern` to shared component | :green_circle: Low | Duplicated across dashboards. Move to `components/backgrounds/DojoPattern.tsx`. |
+| ~~Extract `DojoBackgroundPattern` to shared component~~ | :white_check_mark: Done | ~~Duplicated across dashboards.~~ Moved to `src/components/backgrounds/DojoPattern.tsx`. |
 | Create `AnimatedList` wrapper component | :yellow_circle: Medium | Staggered animation pattern repeated in many files. Create reusable wrapper. |
 | Extract belt color mapping to utility | :green_circle: Low | `BELT_COLORS` defined in multiple files. Move to `lib/constants.ts`. |
 
@@ -135,7 +135,7 @@ These are the most critical items to address before user testing or production d
 
 | Suggestion | Impact | Details |
 |------------|--------|---------|
-| Add error boundaries per route | :red_circle: High | Single `ErrorBoundary` in `App.tsx` catches everything. Add granular boundaries per dashboard section. |
+| ~~Add error boundaries per route~~ | :white_check_mark: Done | ~~Single `ErrorBoundary` in `App.tsx` catches everything.~~ Added `RouteErrorBoundary.tsx` for granular per-route error handling. |
 | Handle Convex connection errors gracefully | :red_circle: High | No handling for Convex WebSocket disconnection. Show reconnecting state to users. |
 | Add form submission error states | :yellow_circle: Medium | Login page and other forms don't show field-level errors. Implement with react-hook-form. |
 | Log errors to monitoring service | :yellow_circle: Medium | `ErrorBoundary.tsx` only console.logs. Integrate Sentry or similar for production monitoring. |
@@ -305,6 +305,7 @@ Key files mentioned in this document:
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0 | January 2026 | Initial comprehensive suggestions document |
+| 1.1 | January 2026 | Marked completed: prefers-reduced-motion, UserRole types, DojoPattern extraction, RouteErrorBoundary, `as any` casts fixed |
 
 ---
 
