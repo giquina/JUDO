@@ -95,9 +95,12 @@
 
 ### Data Connection
 - [ ] Connect all 16 pages to real Convex data (replace mock)
-- [ ] Implement real authentication (magic links)
-- [ ] Create Stripe checkout session endpoint
-- [ ] Set up Stripe webhooks
+- [ ] Implement real authentication via Convex Auth (magic links via Resend)
+  - Auth provider structure ready in `src/lib/auth.tsx`
+  - Just needs Convex Auth integration to replace mock
+- [x] **Stripe client-side integration complete** (`src/lib/stripe.ts`, `PaymentButton.tsx`)
+  - [ ] Create Convex HTTP endpoint for checkout sessions
+  - [ ] Set up Stripe webhooks for subscription events
 
 ### Status & Feedback
 - [ ] Add tooltips explaining status badges ("At risk" = no attendance in 14+ days)
@@ -164,6 +167,9 @@
 - [x] **Add AlertDialog and ConfirmDialog components** - Reusable confirmation dialogs
 - [x] **Add RouteErrorBoundary** - Per-route error boundaries for better error handling
 - [x] **Add tooltip component** - Shadcn/UI tooltip for UI hints
+- [x] **Add loading skeleton components** - Full skeleton library in `src/components/ui/skeleton.tsx`
+  - Skeleton, CardSkeleton, TableRowSkeleton, ListSkeleton, GridSkeleton, TextSkeleton
+  - Note: Not yet used in all pages - integrate when connecting real data
 
 ---
 

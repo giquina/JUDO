@@ -15,7 +15,7 @@ These are the most critical items to address before user testing or production d
 | 2 | **Connect all dashboards to real Convex data** | Currently using mock data everywhere | Code Quality |
 | 3 | **Add form validation and input sanitization** | Security vulnerability and poor UX | Security |
 | ~~4~~ | ~~**Implement error boundaries for all routes**~~ | ~~App crashes propagate to entire application~~ | :white_check_mark: Done |
-| 5 | **Add loading skeletons for all data-fetching components** | Poor perceived performance without them | UX/UI |
+| ~~5~~ | ~~**Add loading skeletons for all data-fetching components**~~ | Skeleton components created in `src/components/ui/skeleton.tsx` | :white_check_mark: Created |
 
 ---
 
@@ -48,7 +48,7 @@ These are the most critical items to address before user testing or production d
 | Suggestion | Impact | Details |
 |------------|--------|---------|
 | Add stagger delay to list items | :green_circle: Low | `MemberDashboard.tsx` already has this, but `CoachDashboard` and sub-pages lack consistent animation patterns. |
-| Implement skeleton loading shimmer | :yellow_circle: Medium | Replace spinner-only loading with skeleton UI matching content shape. Use `animate-pulse` on skeleton components. |
+| ~~Implement skeleton loading shimmer~~ | :white_check_mark: Done | ~~Replace spinner-only loading with skeleton UI.~~ Created full skeleton library with shimmer in `src/components/ui/skeleton.tsx`. |
 | Add micro-interactions to form inputs | :green_circle: Low | Inputs feel static. Add subtle scale/border animations on focus. |
 | Reduce confetti particle count on low-end devices | :yellow_circle: Medium | `MemberDashboard.tsx` creates 50 particles which may lag on older phones. Detect performance tier. |
 | Add page exit animations | :green_circle: Low | `PageTransition.tsx` has entrance animations but exits are abrupt. Add `AnimatePresence` with exit variants. |
@@ -306,6 +306,7 @@ Key files mentioned in this document:
 |---------|------|---------|
 | 1.0 | January 2026 | Initial comprehensive suggestions document |
 | 1.1 | January 2026 | Marked completed: prefers-reduced-motion, UserRole types, DojoPattern extraction, RouteErrorBoundary, `as any` casts fixed |
+| 1.2 | January 2026 | Added: skeleton loading shimmer done, Stripe client-side integration exists |
 
 ---
 
